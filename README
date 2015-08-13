@@ -1,0 +1,20 @@
+# Öffimonitor
+
+display the Wiener Linien timetable for nearby bus/tram/subway lines on a
+screen in the Metalab Hauptraum
+
+Written in Javascript for use on a Raspberry Pi in Midori in Kiosk mode.
+
+You need to enable cross-site requests for this to work, since I was too lazy
+to implement a JSON Proxy for the Wiener Linien API, which does not allow
+cross-site requests.
+
+In case of chrome (which I use for testing on my laptop), this can be
+accomplished as follows:
+```
+chrome --disable-web-security
+```
+
+Note that this is neither pretty nor finished.
+
+Happy hacking!
