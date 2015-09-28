@@ -1,6 +1,57 @@
+body {
+	margin:0;
+	font-family: Helvetica, Arial, sans-serif;
+}
+
+#container {
+	margin: 20px;
+}
+
+tr:nth-child(2n) {
+	background: #eee;
+}
+
 table {
-    border-collapse: collapse
+    border: none;
+    border-spacing: 0px;
+    text-align: center;
+    width: 100%;
 }
 td {
-    border: 1px solid #000
+    border: none;
+    height: 30px;
+    padding-top: 5px;
+}
+
+@keyframes blink {
+    /**
+     * At the start of the animation the dot
+     * has an opacity of .2
+     */
+    0% {
+      opacity: .2;
+    }
+    /**
+     * At 20% the dot is fully visible and
+     * then fades out slowly
+     */
+    20% {
+      opacity: 1;
+    }
+    /**
+     * Until it reaches an opacity of .2 and
+     * the animation can start again
+     */
+    100% {
+      opacity: .2;
+    }
+}
+
+td.soon:nth-child(1)::before {
+	content: "⚫ ";
+	animation-name: blink;
+	animation-duration: 1.4s;
+	animation-iteration-count: infinite;
+	animation-fill-mode: both;
+	color: #9ACD66;
 }

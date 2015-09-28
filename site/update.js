@@ -52,7 +52,21 @@ function make_row(table, entries)
 
 	for (var i = 0; i < entries.length; i++) {
 		var td = document.createElement("td");
-		td.appendChild(document.createTextNode(entries[i]));
+		if (typeof entries[i] === "object") {
+			td.appendChild(entries[i]);
+		} else if (typeof entries[i] === "number" && (entries[i]%1000) === 0) {
+			var currentTime = new Date().getTime();
+			var waitMs = entries[i] - currentTime;
+
+			var waitMinutes = Math.floor(waitMs / 60000);
+			var waitSeconds = ((waitMs % 60000) / 1000).toFixed(0);
+
+			if (waitMinutes < 4) {td.className = "soon";}
+
+			td.appendChild(document.createTextNode(waitMinutes + ":" + (waitSeconds < 10 ? '0' : '') + waitSeconds));
+		} else {
+			td.appendChild(document.createTextNode(entries[i]));
+		}
 		tr.appendChild(td);
 	}
 
@@ -65,7 +79,7 @@ function display_table(table)
 
 	// fall back to inserting into document.body if no previous "overview"
 	// element was found
-	var parentElement = document.body;
+	var parentElement = document.getElementById('container');
 
 	// dispose of the previous display table (if any)
        	if ((overviewElement = document.getElementById('overview'))) {
@@ -91,8 +105,8 @@ function update_view(json)
 			var dep = mon[i].lines[l].departures.departure;
 			for (var j = 0; j < dep.length; j++)
 				make_row(table, [
-					dep[j].departureTime.timePlanned,
-					lines[l].name,
+					formatTimestamp(dep[j].departureTime.timePlanned),
+					formatLines(lines[l].name),
 					mon[i].locationStop.properties.title,
 					lines[l].towards
 				]);
@@ -100,6 +114,25 @@ function update_view(json)
 	}
 
 	display_table(table);
+}
+
+function formatTimestamp(timestamp)
+{
+	var depTime = new Date(timestamp).getTime();
+	return depTime;
+}
+
+function formatLines(line)
+{
+	if (line !== "U2") {
+		return line;
+	} else {
+		var img = document.createElement("img");
+		img.src = "piktogramme/u2.svg";
+		img.width = 30;
+		img.height = 30;
+		return img;
+	}
 }
 
 function update()
@@ -129,5 +162,5 @@ function update()
 
 window.onload = function () {
 	update();
-	window.setInterval(update, 15000);
+//	window.setInterval(update, 15000);
 };
