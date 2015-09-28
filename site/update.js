@@ -50,8 +50,6 @@ function make_row(table, entry)
 {
 	var tr = document.createElement("tr");
 
-	console.log(entry);
-
 	var currentTime = new Date().getTime();
 	var waitMs = entry.timestamp - currentTime;
 	var waitMinutes = Math.floor(waitMs / 60000);
@@ -59,7 +57,8 @@ function make_row(table, entry)
 
 
 	var tdTime = document.createElement("td");
-	if (waitMinutes < 4) {tdTime.className = "soon";}
+	if (waitMinutes < (entry.walkTime + 3)) {tdTime.className = "soon";}
+	if (waitMinutes < (entry.walkTime)) {tdTime.className = "supersoon";}
 	if (waitSeconds < 0) {waitSeconds = waitSeconds * -1;}
 	tdTime.appendChild(document.createTextNode(waitMinutes + "m" + (waitSeconds < 10 ? '0' : '') + waitSeconds + "s"));
 	tr.appendChild(tdTime);
@@ -80,26 +79,6 @@ function make_row(table, entry)
 	var tdTowards = document.createElement("td");
 	tdTowards.appendChild(document.createTextNode(entry.towards));
 	tr.appendChild(tdTowards);
-
-	/*	for (var i = 0; i < entries.length; i++) {
-		var td = document.createElement("td");
-		if (typeof entries[i] === "object") {
-			td.appendChild(entries[i]);
-		} else if (typeof entries[i] === "number" && (entries[i]%1000) === 0) {
-			var currentTime = new Date().getTime();
-			var waitMs = entries[i] - currentTime;
-
-			var waitMinutes = Math.floor(waitMs / 60000);
-			var waitSeconds = ((waitMs % 60000) / 1000).toFixed(0);
-
-			if (waitMinutes < 4) {td.className = "soon";}
-
-			td.appendChild(document.createTextNode(waitMinutes + "m" + (waitSeconds < 10 ? '0' : '') + waitSeconds + "s"));
-		} else {
-			td.appendChild(document.createTextNode(entries[i]));
-		}
-		tr.appendChild(td);
-	}*/
 
 	table.lastChild.appendChild(tr);
 }
@@ -128,26 +107,39 @@ function update_view(json)
 	var table = make_table(["Zeit", "Linie", "Ab", "Nach"]);
 	var mon = json.data.monitors;
 
+	var allowedStations = ["Rathaus", "Schottentor"];
+	var walkTimes = {"Rathaus": 2, "Schottentor": 10};
+	var allowedLines = ["2", "U2"];
 	var values = [];
 
 	// XXX This part particularly unfinished:
 	// TODO sort by time
 	for (var i = 0; i < mon.length; i++) {
-		var lines = mon[i].lines;
+		if (allowedStations.indexOf(mon[i].locationStop.properties.title) > -1) {
+			var lines = mon[i].lines;
+			var walkTime = walkTimes[mon[i].locationStop.properties.title];
+		} else {
+			continue;
+		}
+		
 		for (var l = 0; l < lines.length; l++) {
-			var dep = mon[i].lines[l].departures.departure;
-			for (var j = 0; j < dep.length; j++)
-				values[values.length] = {"timestamp": formatTimestamp(dep[j].departureTime.timeReal), "line": formatLines(lines[l].name), "stop": mon[i].locationStop.properties.title, "towards": lines[l].towards};
+
+			if (allowedLines.indexOf(mon[i].lines[l].name) > -1) {
+				var dep = mon[i].lines[l].departures.departure;
+			} else {
+				continue;
+			}
+
+			for (var j = 0; j < dep.length; j++) {
+				values[values.length] = {"timestamp": formatTimestamp(dep[j].departureTime.timeReal), "walkTime": walkTime, "line": formatLines(lines[l].name), "stop": mon[i].locationStop.properties.title, "towards": lines[l].towards};
+			}
 		}
 	}
 
-	console.log(values);
-
 	values.sort(function(a, b) {
 		return a.timestamp - b.timestamp;
+		//return parseFloat(a.timestamp + a.walkTime * 60 * 1000) - parseFloat(b.timestamp + b.walkTime * 60 * 1000);
 	});
-
-	console.log(values);
 
 	for (var i = 0; i < values.length; i++) {
 		make_row(table, values[i]);
@@ -204,5 +196,5 @@ function update()
 
 window.onload = function () {
 	update();
-//	window.setInterval(update, 15000);
+	window.setInterval(update, 15000);
 };

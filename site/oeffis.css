@@ -11,6 +11,10 @@ tr:nth-child(2n) {
 	background: #eee;
 }
 
+thead {
+    font-weight: bold;
+}
+
 table {
     border: none;
     border-spacing: 0px;
@@ -53,5 +57,14 @@ td.soon:nth-child(1)::before {
 	animation-duration: 1.4s;
 	animation-iteration-count: infinite;
 	animation-fill-mode: both;
-	color: #9ACD66;
+	color: #27ae60;
+}
+
+td.supersoon:nth-child(1)::before {
+    content: "⚫ ";
+    animation-name: blink;
+    animation-duration: 1.4s;
+    animation-iteration-count: infinite;
+    animation-fill-mode: both;
+    color: #c0392b;
 }
