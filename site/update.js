@@ -171,6 +171,8 @@ function formatLines(line)
 
 function update()
 {
+	var currentTime = new Date();
+	document.getElementById('currentTime').innerHTML = (currentTime.getHours() < 10 ? '0' : '') + currentTime.getHours() + ":" + (currentTime.getMinutes() < 10 ? '0' : '') + currentTime.getMinutes();
 	var req = new XMLHttpRequest();
 	req.open('GET', api_url);
 	req.onreadystatechange = function () {

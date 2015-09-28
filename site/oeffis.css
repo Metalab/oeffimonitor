@@ -7,7 +7,20 @@ body {
 	margin: 20px;
 }
 
-tr:nth-child(2n) {
+h1 {
+    margin-bottom:0;
+}
+
+#currentTime{
+    float:right;
+}
+
+p {
+    margin-top:5px;
+    font-size: 20px;
+}
+
+tbody > tr:nth-child(2n+1) {
 	background: #eee;
 }
 
