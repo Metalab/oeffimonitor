@@ -46,11 +46,42 @@ function make_table(head)
 	return table;
 }
 
-function make_row(table, entries)
+function make_row(table, entry)
 {
 	var tr = document.createElement("tr");
 
-	for (var i = 0; i < entries.length; i++) {
+	console.log(entry);
+
+	var currentTime = new Date().getTime();
+	var waitMs = entry.timestamp - currentTime;
+	var waitMinutes = Math.floor(waitMs / 60000);
+	var waitSeconds = ((waitMs % 60000) / 1000).toFixed(0);
+
+
+	var tdTime = document.createElement("td");
+	if (waitMinutes < 4) {tdTime.className = "soon";}
+	if (waitSeconds < 0) {waitSeconds = waitSeconds * -1;}
+	tdTime.appendChild(document.createTextNode(waitMinutes + "m" + (waitSeconds < 10 ? '0' : '') + waitSeconds + "s"));
+	tr.appendChild(tdTime);
+
+	var tdLine = document.createElement("td");
+
+	if (typeof entry.line === "object") {
+		tdLine.appendChild(entry.line);
+	} else {
+		tdLine.appendChild(document.createTextNode(entry.line));
+	}
+	tr.appendChild(tdLine);
+
+	var tdStop = document.createElement("td");
+	tdStop.appendChild(document.createTextNode(entry.stop));
+	tr.appendChild(tdStop);
+
+	var tdTowards = document.createElement("td");
+	tdTowards.appendChild(document.createTextNode(entry.towards));
+	tr.appendChild(tdTowards);
+
+	/*	for (var i = 0; i < entries.length; i++) {
 		var td = document.createElement("td");
 		if (typeof entries[i] === "object") {
 			td.appendChild(entries[i]);
@@ -63,12 +94,12 @@ function make_row(table, entries)
 
 			if (waitMinutes < 4) {td.className = "soon";}
 
-			td.appendChild(document.createTextNode(waitMinutes + ":" + (waitSeconds < 10 ? '0' : '') + waitSeconds));
+			td.appendChild(document.createTextNode(waitMinutes + "m" + (waitSeconds < 10 ? '0' : '') + waitSeconds + "s"));
 		} else {
 			td.appendChild(document.createTextNode(entries[i]));
 		}
 		tr.appendChild(td);
-	}
+	}*/
 
 	table.lastChild.appendChild(tr);
 }
@@ -97,6 +128,8 @@ function update_view(json)
 	var table = make_table(["Zeit", "Linie", "Ab", "Nach"]);
 	var mon = json.data.monitors;
 
+	var values = [];
+
 	// XXX This part particularly unfinished:
 	// TODO sort by time
 	for (var i = 0; i < mon.length; i++) {
@@ -104,13 +137,20 @@ function update_view(json)
 		for (var l = 0; l < lines.length; l++) {
 			var dep = mon[i].lines[l].departures.departure;
 			for (var j = 0; j < dep.length; j++)
-				make_row(table, [
-					formatTimestamp(dep[j].departureTime.timePlanned),
-					formatLines(lines[l].name),
-					mon[i].locationStop.properties.title,
-					lines[l].towards
-				]);
+				values[values.length] = {"timestamp": formatTimestamp(dep[j].departureTime.timeReal), "line": formatLines(lines[l].name), "stop": mon[i].locationStop.properties.title, "towards": lines[l].towards};
 		}
+	}
+
+	console.log(values);
+
+	values.sort(function(a, b) {
+		return a.timestamp - b.timestamp;
+	});
+
+	console.log(values);
+
+	for (var i = 0; i < values.length; i++) {
+		make_row(table, values[i]);
 	}
 
 	display_table(table);
@@ -124,14 +164,16 @@ function formatTimestamp(timestamp)
 
 function formatLines(line)
 {
-	if (line !== "U2") {
-		return line;
-	} else {
+	if (line === "U2") {
 		var img = document.createElement("img");
 		img.src = "piktogramme/u2.svg";
 		img.width = 30;
 		img.height = 30;
 		return img;
+	} else if (line === "2") {
+		return "Tram " + line;
+	} else {
+		return line;
 	}
 }
 
