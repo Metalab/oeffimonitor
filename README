@@ -3,6 +3,8 @@
 display the Wiener Linien timetable for nearby bus/tram/subway lines on a
 screen in the Metalab Hauptraum
 
+Copy settings.template.js to settings.js and modify it for your needs (you have to add your own API key).
+
 Written in Javascript for use on a Raspberry Pi in Midori in Kiosk mode.
 
 You need to enable cross-site requests for this to work, since I was too lazy
