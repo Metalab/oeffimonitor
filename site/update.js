@@ -21,10 +21,6 @@
 // vim: set ts=8 noet: Use tabs, not spaces!
 "use strict";
 
-var api_key = 'XXXXXXXXXX';
-//var api_url = 'http://www.wienerlinien.at/ogd_realtime/monitor?rbl=4205&rbl=4210&rbl=252&rbl=269&sender=' + api_key;
-var api_url = '../test/response.json'; // local copy for testing
-
 /**** table functions ****/
 /* these might be prettier in OO, but I really don't care enough right now */
 function make_table(head)
@@ -48,19 +44,18 @@ function make_table(head)
 
 function make_row(table, entry)
 {
-	var tr = document.createElement("tr");
-
 	var currentTime = new Date().getTime();
 	var waitMs = entry.timestamp - currentTime;
 	var waitMinutes = Math.floor(waitMs / 60000);
 	var waitSeconds = ((waitMs % 60000) / 1000).toFixed(0);
 
+	if (waitMs < 0 || waitMs < entry.unreachTime*1000) { return false; }
 
+	var tr = document.createElement("tr");
 	var tdTime = document.createElement("td");
-	if (waitMinutes < (entry.walkTime + 3)) {tdTime.className = "soon";}
-	if (waitMinutes < (entry.walkTime)) {tdTime.className = "supersoon";}
-	if (waitSeconds < 0) {waitSeconds = waitSeconds * -1;}
-	tdTime.appendChild(document.createTextNode(waitMinutes + "m" + (waitSeconds < 10 ? '0' : '') + waitSeconds + "s"));
+	if (waitMs < (entry.walkTime + 180) * 1000) {tdTime.className = "soon";}
+	if (waitMs < entry.walkTime * 1000) {tdTime.className = "supersoon";}
+	tdTime.appendChild(document.createTextNode(waitMinutes + "m" + /*(waitSeconds < 10 ? '0' : '') + */Math.floor(waitSeconds / 10) + "0s"));
 	tr.appendChild(tdTime);
 
 	var tdLine = document.createElement("td");
@@ -107,31 +102,30 @@ function update_view(json)
 	var table = make_table(["Zeit", "Linie", "Ab", "Nach"]);
 	var mon = json.data.monitors;
 
-	var allowedStations = ["Rathaus", "Schottentor"];
-	var walkTimes = {"Rathaus": 2, "Schottentor": 10};
-	var allowedLines = ["2", "U2"];
 	var values = [];
 
 	// XXX This part particularly unfinished:
 	// TODO sort by time
 	for (var i = 0; i < mon.length; i++) {
-		if (allowedStations.indexOf(mon[i].locationStop.properties.title) > -1) {
-			var lines = mon[i].lines;
-			var walkTime = walkTimes[mon[i].locationStop.properties.title];
-		} else {
-			continue;
-		}
+		var lines = mon[i].lines;
+		var walkTime = walkTimes[mon[i].locationStop.properties.title].walkTime;
+		var unreachTime = walkTimes[mon[i].locationStop.properties.title].unreachTime;
 		
 		for (var l = 0; l < lines.length; l++) {
 
-			if (allowedLines.indexOf(mon[i].lines[l].name) > -1) {
+			if (mon[i].lines[l].towards !== "BETRIEBSSCHLUSS ! BENÜTZEN SIE BITTE DIE NIGHTLINE" &&
+				mon[i].lines[l].name !== "VRT") {
 				var dep = mon[i].lines[l].departures.departure;
 			} else {
 				continue;
 			}
 
 			for (var j = 0; j < dep.length; j++) {
-				values[values.length] = {"timestamp": formatTimestamp(dep[j].departureTime.timeReal), "walkTime": walkTime, "line": formatLines(lines[l].name), "stop": mon[i].locationStop.properties.title, "towards": lines[l].towards};
+				if (dep[j].departureTime.timeReal === undefined) {
+					values[values.length] = {"timestamp": formatTimestamp(dep[j].departureTime.timePlanned), "walkTime": walkTime, "unreachTime": unreachTime, "line": formatLines(lines[l].name), "stop": mon[i].locationStop.properties.title, "towards": lines[l].towards};
+				} else {
+					values[values.length] = {"timestamp": formatTimestamp(dep[j].departureTime.timeReal), "walkTime": walkTime, "unreachTime": unreachTime, "line": formatLines(lines[l].name), "stop": mon[i].locationStop.properties.title, "towards": lines[l].towards};
+				}
 			}
 		}
 	}
@@ -142,6 +136,7 @@ function update_view(json)
 	});
 
 	for (var i = 0; i < values.length; i++) {
+		console.log(values[i]);
 		make_row(table, values[i]);
 	}
 
@@ -162,8 +157,16 @@ function formatLines(line)
 		img.width = 30;
 		img.height = 30;
 		return img;
-	} else if (line === "2") {
+	} else if (line === "U3") {
+		var img = document.createElement("img");
+		img.src = "piktogramme/u3.svg";
+		img.width = 30;
+		img.height = 30;
+		return img;
+	} else if (line.indexOf("D") > -1 || line.match(/^[0-9]+$/) != null) {
 		return "Tram " + line;
+	} else if (line.indexOf("A") > -1) {
+		return "Bus " + line;
 	} else {
 		return line;
 	}
@@ -198,5 +201,5 @@ function update()
 
 window.onload = function () {
 	update();
-	window.setInterval(update, 15000);
+	window.setInterval(update, 10000);
 };
