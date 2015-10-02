@@ -145,7 +145,8 @@ function update_view(json)
 
 function formatTimestamp(timestamp)
 {
-	var depTime = new Date(timestamp).getTime();
+	var isoStamp = timestamp.split('.')[0] + '+' + timestamp.split('.')[1].split('+')[1].match(/.{2}/g)[0] + ':00';
+	var depTime = new Date(isoStamp).getTime();
 	return depTime;
 }
 
