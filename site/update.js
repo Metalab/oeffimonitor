@@ -53,9 +53,14 @@ function make_row(table, entry)
 
 	var tr = document.createElement("tr");
 	var tdTime = document.createElement("td");
-	if (waitMs < (entry.walkTime + 180) * 1000) {tdTime.className = "soon";}
-	if (waitMs < entry.walkTime * 1000) {tdTime.className = "supersoon";}
-	tdTime.appendChild(document.createTextNode(waitMinutes + "m" + /*(waitSeconds < 10 ? '0' : '') + */Math.floor(waitSeconds / 10) + "0s"));
+	if (waitMs < entry.walkTime * 1000) {
+		tdTime.className = "time supersoon";
+	} else if (waitMs < (entry.walkTime + 180) * 1000) {
+		tdTime.className = "time soon";
+	} else {
+		tdTime.className = "time";
+	}
+	tdTime.appendChild(document.createTextNode((waitMinutes < 10 ? '0' : '') + waitMinutes + "m" + /*(waitSeconds < 10 ? '0' : '') + */Math.floor(waitSeconds / 10) + "0s"));
 	tr.appendChild(tdTime);
 
 	var tdLine = document.createElement("td");
@@ -165,9 +170,15 @@ function formatLines(line)
 		img.height = 30;
 		return img;
 	} else if (line.indexOf("D") > -1 || line.match(/^[0-9]+$/) != null) {
-		return "Tram " + line;
+		var element = document.createElement("span");
+		element.className = "tram";
+		element.innerHTML = line;
+		return element;
 	} else if (line.indexOf("A") > -1) {
-		return "Bus " + line;
+		var element = document.createElement("span");
+		element.className = "bus";
+		element.innerHTML = line;
+		return element;
 	} else {
 		return line;
 	}
