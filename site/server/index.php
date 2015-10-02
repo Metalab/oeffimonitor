@@ -1,7 +1,7 @@
 <?php
 
 $api_key = 'XXXXXXXXXXX';
-$api_ids = [
+$api_ids = array(
 	"252","269", // Rathaus 2er
 	"4205","4210", // Rathaus U2
 
@@ -19,7 +19,7 @@ $api_ids = [
 
 	"1376", // Auerspergstraße 46er (nur stadtauswärts)
 	"5691" // Auerspergstraße N46
-];
+);
 $api_url = 'http://www.wienerlinien.at/ogd_realtime/monitor?rbl='.implode("&rbl=",$api_ids).'&sender='.$api_key;
 
 $curl = curl_init();
