@@ -19,4 +19,24 @@ chrome --disable-web-security
 
 Note that this is neither pretty nor finished.
 
+#### nodejs server:
+
+Installation:
+```
+  git clone https://github.com/metalab/oeffimonitor
+  cd oeffimonitor
+  npm install
+  npm run build # builds the server.js file to the root of the project.
+```
+
+Usage:
+```
+  npm run dev # runs site/server/index.js using babel-node on port 1337
+
+  npm run build # builds site/server/index.js to server.js
+
+  sudo npm start # first builds then runs server.js on port 80
+```
+
+
 Happy hacking!
