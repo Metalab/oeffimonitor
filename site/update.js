@@ -127,7 +127,7 @@ function update_view(json)
 
 			for (var j = 0; j < dep.length; j++) {
 				if (dep[j].departureTime.timeReal === undefined && dep[j].departureTime.timePlanned === undefined) {
-					console.log({"timestamp": formatTimestamp(dep[j].departureTime.timePlanned), "walkTime": walkTime, "unreachTime": unreachTime, "line": formatLines(lines[l].name), "stop": mon[i].locationStop.properties.title, "towards": lines[l].towards});
+					console.log({"timestamp": dep[j].departureTime.timePlanned, "walkTime": walkTime, "unreachTime": unreachTime, "line": formatLines(lines[l].name), "stop": mon[i].locationStop.properties.title, "towards": lines[l].towards});
 				} else if (dep[j].departureTime.timeReal === undefined) {
 					values[values.length] = {"timestamp": formatTimestamp(dep[j].departureTime.timePlanned), "walkTime": walkTime, "unreachTime": unreachTime, "line": formatLines(lines[l].name), "stop": mon[i].locationStop.properties.title, "towards": lines[l].towards};
 				} else {
