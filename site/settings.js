@@ -1,5 +1,6 @@
-var api_url = 'server/index.php';
+//var api_url = 'server/index.php';
 //var api_url = 'test/response.json'; // local copy for testing
+var api_url = '/api';
 
 var walkTimes = {
 // walkTime = walking distance in seconds

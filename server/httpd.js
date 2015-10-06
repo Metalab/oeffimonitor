@@ -40,13 +40,11 @@ function handleRequest(request, response)
 		console.log("Hit: "+path);
 		var head_sent = false;
 		var apiRequest = http.get(settings.api_url, function(apiResponse) {
-			console.log(apiResponse);
-			return;
-			if (res.statusCode !== 200) {
+			if (apiResponse.statusCode !== 200) {
 				apiResponse.emit('end');
 				return sendError(response, 500);
 			} else if (!head_sent) {
-				var ct = apiResponse.getHeader('Content-Type');
+				var ct = apiResponse.headers['content-type'];
 				response.writeHead(200, {
 					'Content-Type': ct ? ct : 'application/json'
 				});
