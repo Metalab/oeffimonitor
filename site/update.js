@@ -181,6 +181,11 @@ function formatLines(line)
 		element.className = "bus";
 		element.innerHTML = line;
 		return element;
+	} else if (line.indexOf("N") > -1) {
+		var element = document.createElement("span");
+		element.className = "nightline";
+		element.innerHTML = line;
+		return element;
 	} else {
 		return line;
 	}
