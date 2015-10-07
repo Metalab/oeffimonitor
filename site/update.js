@@ -60,7 +60,7 @@ function make_row(table, entry)
 	} else {
 		tdTime.className = "time";
 	}
-	tdTime.appendChild(document.createTextNode((waitMinutes < 10 ? '0' : '') + waitMinutes + "m" + /*(waitSeconds < 10 ? '0' : '') + */Math.floor(waitSeconds / 10) + "0s"));
+	tdTime.appendChild(document.createTextNode((waitMinutes < 10 ? '0' : '') + waitMinutes + "'" + /*(waitSeconds < 10 ? '0' : '') + */Math.floor(waitSeconds / 10) + "0''"));
 	tr.appendChild(tdTime);
 
 	var tdLine = document.createElement("td");
@@ -162,8 +162,8 @@ function formatLines(line)
 	if (line === "U2") {
 		var img = document.createElement("img");
 		img.src = "piktogramme/u2.svg";
-		img.width = 30;
-		img.height = 30;
+		img.width = 40;
+		img.height = 40;
 		return img;
 	} else if (line === "U3") {
 		var img = document.createElement("img");

@@ -1,16 +1,10 @@
 body {
 	margin:0;
 	font-family: Helvetica, Arial, sans-serif;
-	overflow:hidden;
 }
 
 #container {
 	margin: 20px;
-}
-
-#container > p {
-	margin-top:5px;
-	font-size: 40px;
 }
 
 #error {
@@ -23,29 +17,12 @@ body {
 	-webkit-transform: translate(-50%, -50%);
 	transform: translate(-50%, -50%);
 	z-index: 100;
-
-	font-size:20px;
-	line-height:20px;
 	margin:0;
-}
-
-h1 {
-	margin-bottom:0;
-	display:none;
 }
 
 #currentTime{
 	float:right;
 	font-weight:bold;
-	margin-right:20px;
-}
-
-tbody > tr:nth-child(2n+1) {
-	background: #eee;
-}
-
-thead {
-	font-weight: bold;
 }
 
 table {
@@ -54,34 +31,17 @@ table {
 	text-align: left;
 	width: 100%;
 }
-td {
-	border: none;
-	height: 40px;
-	font-size: 30px;
+
+thead {
+	font-weight: bold;
 }
 
-@keyframes blink {
-	/**
-	* At the start of the animation the dot
-	* has an opacity of .2
-	*/
-	0% {
-		opacity: .2;
-	}
-	/**
-	* At 20% the dot is fully visible and
-	* then fades out slowly
-	*/
-	20% {
-		opacity: 1;
-	}
-	/**
-	* Until it reaches an opacity of .2 and
-	* the animation can start again
-	*/
-	100% {
-		opacity: .2;
-	}
+tbody > tr:nth-child(2n+1) {
+	background: #eee;
+}
+
+td {
+	border: none;
 }
 
 tr > td:nth-child(1) {
@@ -99,12 +59,20 @@ tr > td:nth-child(2) span, tr > td:nth-child(2) img {
 	left: 50%;
 	-webkit-transform: translate(-50%, -50%);
 	transform: translate(-50%, -50%);
+}
 
-	height: 30px;
-	line-height: 30px;
-
-	font-size: 20px;
+tr > td:nth-child(2) span {
+	padding: 0 3px;
+	font-size: 90%;
 	font-weight: bold;
+}
+
+tr > td:nth-child(2) img {
+	height: 80%;
+}
+
+tr > td:nth-child(3) {
+	padding-right: 5px;
 }
 
 td.time:nth-child(1)::before {
@@ -134,7 +102,6 @@ td.soon:nth-child(1)::before {
 	-webkit-border-radius: 50%;
 	-moz-border-radius: 50%;
 	border-radius: 50%;
-	width: 30px;
 	background: #000;
 	color: #FFF;
 }
@@ -149,4 +116,63 @@ td.soon:nth-child(1)::before {
 	padding: 0 3px;
 	background: #140D4F;
 	color: #F9EC28;
+}
+
+@media (max-width: 1280px) {
+	body {
+		overflow:hidden;
+	}
+
+	h1 {
+		font-size: 40px;
+	}
+
+	#error {
+		font-size:20px;
+		line-height:20px;
+	}
+
+	td {
+		height: 40px;
+		font-size: 28px !important;
+		line-height: 38px;
+	}
+
+	tr > td:nth-child(2) span {
+		height: 38px;
+	}
+
+	tr > td:nth-child(2) img {
+		height: 38px;
+	}
+
+	.tram {
+		width: 38px;
+		padding: 0 !important;
+	}
+}
+
+
+@keyframes blink {
+	/**
+	* At the start of the animation the dot
+	* has an opacity of .2
+	*/
+	0% {
+		opacity: .2;
+	}
+	/**
+	* At 20% the dot is fully visible and
+	* then fades out slowly
+	*/
+	20% {
+		opacity: 1;
+	}
+	/**
+	* Until it reaches an opacity of .2 and
+	* the animation can start again
+	*/
+	100% {
+		opacity: .2;
+	}
 }
