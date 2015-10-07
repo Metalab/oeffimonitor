@@ -120,6 +120,7 @@ function sendError(response, code) {
 	const html = `<!DOCTYPE html>
 <html>
 	<head>
+		<link rel="icon" href="/favicon.ico" />
 		<title>${m}</title>
 	</head>
 	<body>
@@ -133,7 +134,8 @@ function tryStaticFile(response, path) {
 	try {
 		const extension = path.split('.').pop();
 		const ct = contentTypes[extension] || 'application/octet-stream';
-		const buf = fs.readFileSync(join(process.cwd(), 'site', path));
+		const filePath = join(process.cwd(), 'site', path);
+		const buf = fs.readFileSync(filePath);
 		sendResponse(response, buf, ct, 200);
 		console.log(`Hit: ${path}`);
 	} catch (e) {
@@ -145,11 +147,11 @@ function tryStaticFile(response, path) {
 function handleRequest(request, response) {
 	let path = request.url.split('?')[0];
 
-	if (path === '/favicon.ico' || path === '/robots.txt') {
+	if (path === '/robots.txt') {
 		return sendError(response, 404); // don't log these
 	}
 
-	if (path[path.length-1] === '/') {
+	if (path[path.length - 1] === '/') {
 		path += 'index.html';
 	}
 
