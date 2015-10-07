@@ -71,7 +71,7 @@ class TableFactory {
       (Math.floor(waitSeconds / 10) + '0s'),
     ].join(''));
 
-    tdTime.appendChild();
+    tdTime.appendChild(textNode);
     tr.appendChild(tdTime);
 
     const tdLine = document.createElement('td');
@@ -91,7 +91,7 @@ class TableFactory {
     tdTowards.appendChild(document.createTextNode(entry.towards));
     tr.appendChild(tdTowards);
 
-    table.lastChild.appendChild(tr);
+    this.table.lastChild.appendChild(tr);
   }
 
   display() {
