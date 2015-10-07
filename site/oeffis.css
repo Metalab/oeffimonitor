@@ -23,6 +23,10 @@ body {
 	-webkit-transform: translate(-50%, -50%);
 	transform: translate(-50%, -50%);
 	z-index: 100;
+
+	font-size:30px;
+	line-height:30px;
+	margin:0;
 }
 
 h1 {
