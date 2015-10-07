@@ -7,9 +7,11 @@
     "test": "test"
   },
   "scripts": {
-    "start": "npm run build && NODE_ENV='production' node --harmony httpd.js",
+    "start": "npm run browserify && npm run build && NODE_ENV='production' node --harmony httpd.js",
     "build": "babel server/httpd.js -o ./httpd.js",
-    "dev": "babel-node server/httpd.js"
+    "dev": "babel-node server/httpd.js",
+    "browserify": "browserify ./site/update.js -t [babelify --stage 0] -o site/bundle.js",
+    "watchify": "watchify ./site/update.js -t [babelify --stage 0] -o site/bundle.js"
   },
   "repository": {
     "type": "git",
@@ -23,7 +25,10 @@
   "homepage": "https://github.com/metalab/oeffimonitor",
   "dependencies": {
     "babel": "^5.8.23",
-    "object-assign": "^4.0.1"
+    "babelify": "^6.3.0",
+    "browserify": "^11.2.0",
+    "object-assign": "^4.0.1",
+    "watchify": "^3.4.0"
   },
   "babel": {
     "stage": 0
