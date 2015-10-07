@@ -97,7 +97,7 @@ function sendError(response, code)
 {
 	var m = code + ' ' + http.STATUS_CODES[code];
 	var html = '<!DOCTYPE html>\n<html>\n<head>\n<title>' + m +
-		'</title>\n<body>\n<h1>' + m + '</h1>\n</body>\n</html>\n';
+		'</title>\n</head>\n<body>\n<h1>' + m + '</h1>\n</body>\n</html>\n';
 	sendResponse(response, html, 'text/html', code);
 }
 
