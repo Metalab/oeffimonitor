@@ -193,6 +193,9 @@ function formatLines(line)
 
 function update()
 {
+	document.getElementById("error").style.display = "none";
+	document.getElementById("container").style.opacity = "1";
+
 	var currentTime = new Date();
 	document.getElementById('currentTime').innerHTML = (currentTime.getHours() < 10 ? '0' : '') + currentTime.getHours() + ":" + (currentTime.getMinutes() < 10 ? '0' : '') + currentTime.getMinutes();
 	var req = new XMLHttpRequest();
@@ -211,6 +214,8 @@ function update()
 			update_view(json);
 		} catch (e) {
 			if (e instanceof SyntaxError) // invalid json document received
+				document.getElementById("error").style.display = "block";
+				document.getElementById("container").style.opacity = "0.2";
 				console.log('wienerlinien returned invalid json')/*TODO*/;
 			throw e;
 		}

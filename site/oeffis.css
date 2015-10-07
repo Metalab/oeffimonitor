@@ -8,20 +8,32 @@ body {
 	margin: 20px;
 }
 
+#container > p {
+	margin-top:5px;
+	font-size: 40px;
+}
+
+#error {
+	background-color: #F2DEDE;
+	position:absolute;
+	padding: 10px 20px;
+	border-left: 8px solid #A94442;
+	top: 50%;
+	left: 50%;
+	-webkit-transform: translate(-50%, -50%);
+	transform: translate(-50%, -50%);
+	z-index: 100;
+}
+
 h1 {
-    margin-bottom:0;
-    display:none;
+	margin-bottom:0;
+	display:none;
 }
 
 #currentTime{
-    float:right;
-    font-weight:bold;
-    margin-right:20px;
-}
-
-p {
-    margin-top:5px;
-    font-size: 40px;
+	float:right;
+	font-weight:bold;
+	margin-right:20px;
 }
 
 tbody > tr:nth-child(2n+1) {
@@ -29,14 +41,14 @@ tbody > tr:nth-child(2n+1) {
 }
 
 thead {
-    font-weight: bold;
+	font-weight: bold;
 }
 
 table {
-    border: none;
-    border-spacing: 0px;
-    text-align: left;
-    width: 100%;
+	border: none;
+	border-spacing: 0px;
+	text-align: left;
+	width: 100%;
 }
 td {
 	border: none;
@@ -45,27 +57,27 @@ td {
 }
 
 @keyframes blink {
-    /**
-     * At the start of the animation the dot
-     * has an opacity of .2
-     */
-    0% {
-      opacity: .2;
-    }
-    /**
-     * At 20% the dot is fully visible and
-     * then fades out slowly
-     */
-    20% {
-      opacity: 1;
-    }
-    /**
-     * Until it reaches an opacity of .2 and
-     * the animation can start again
-     */
-    100% {
-      opacity: .2;
-    }
+	/**
+	* At the start of the animation the dot
+	* has an opacity of .2
+	*/
+	0% {
+		opacity: .2;
+	}
+	/**
+	* At 20% the dot is fully visible and
+	* then fades out slowly
+	*/
+	20% {
+		opacity: 1;
+	}
+	/**
+	* Until it reaches an opacity of .2 and
+	* the animation can start again
+	*/
+	100% {
+		opacity: .2;
+	}
 }
 
 tr > td:nth-child(1) {
@@ -92,7 +104,7 @@ tr > td:nth-child(2) span, tr > td:nth-child(2) img {
 }
 
 td.time:nth-child(1)::before {
-	content: "⚫ ";
+	content: "⚫&nbsp;";
 	opacity:0;
 }
 
