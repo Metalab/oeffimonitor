@@ -23,16 +23,16 @@ Installation:
   git clone https://github.com/metalab/oeffimonitor
   cd oeffimonitor
   npm install
-  npm run build # builds the server.js file to the root of the project.
+  npm start # builds the server.js file to the root of the project, then runs it
 ```
 
 Usage:
 ```
-  npm run dev # runs site/server/index.js using babel-node on port 1337
+  npm run dev # runs server/httpd.js using babel-node on port specified in settings
 
-  npm run build # builds site/server/index.js to server.js
+  npm run build # builds server/httpd.js to httpd.js
 
-  sudo npm start # first builds then runs server.js on port 80
+  sudo npm start # first builds then runs httpd.js on port specified in settings
 ```
 
 
