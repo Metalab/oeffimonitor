@@ -19,211 +19,250 @@
  *
  */
 // vim: set ts=8 noet: Use tabs, not spaces!
-"use strict";
+'use strict';
+
+import settings from './settings';
 
 /**** table functions ****/
-/* these might be prettier in OO, but I really don't care enough right now */
-function make_table(head)
-{
-	var table = document.createElement('table');
-	var thead = document.createElement('thead');
-	var tbody = document.createElement('tbody');
-	var tr = document.createElement('tr');
 
-	for (var i = 0; i < head.length; i++) {
-		var td = document.createElement("td");
-		td.appendChild(document.createTextNode(head[i]));
-		tr.appendChild(td);
-	}
+class TableFactory {
+  constructor(head) {
+    this.table = document.createElement('table');
+    const thead = document.createElement('thead');
+    const tbody = document.createElement('tbody');
+    const tr    = document.createElement('tr');
 
-	thead.appendChild(tr);
-	table.appendChild(thead);
-	table.appendChild(tbody);
-	return table;
+    for (let i = 0; i < head.length; i++) {
+      const td = document.createElement('td');
+      td.appendChild(document.createTextNode(head[i]));
+      tr.appendChild(td);
+    }
+
+    thead.appendChild(tr);
+    this.table.appendChild(thead);
+    this.table.appendChild(tbody);
+  }
+
+  row(entry) {
+    const currentTime = new Date().getTime();
+    const waitMs = entry.timestamp - currentTime;
+    const waitMinutes = Math.floor(waitMs / 60000);
+    const waitSeconds = ((waitMs % 60000) / 1000).toFixed(0);
+
+    if (waitMs < 0 || waitMs < entry.unreachTime*1000) { 
+      return false;
+    }
+
+    const tr = document.createElement('tr');
+    const tdTime = document.createElement('td');
+    if (waitMs < entry.walkTime * 1000) {
+      tdTime.className = 'time supersoon';
+    } else if (waitMs < (entry.walkTime + 180) * 1000) {
+      tdTime.className = 'time soon';
+    } else {
+      tdTime.className = 'time';
+    }
+
+    const textNode = document.createTextNode([
+      (waitMinutes < 10 ? '0' : ''),
+      waitMinutes,
+      'm',
+      /*(waitSeconds < 10 ? '0' : '') + */
+      (Math.floor(waitSeconds / 10) + '0s'),
+    ].join(''));
+
+    tdTime.appendChild();
+    tr.appendChild(tdTime);
+
+    const tdLine = document.createElement('td');
+
+    if (typeof entry.line === 'object') {
+      tdLine.appendChild(entry.line);
+    } else {
+      tdLine.appendChild(document.createTextNode(entry.line));
+    }
+    tr.appendChild(tdLine);
+
+    const tdStop = document.createElement('td');
+    tdStop.appendChild(document.createTextNode(entry.stop));
+    tr.appendChild(tdStop);
+
+    const tdTowards = document.createElement('td');
+    tdTowards.appendChild(document.createTextNode(entry.towards));
+    tr.appendChild(tdTowards);
+
+    table.lastChild.appendChild(tr);
+  }
+
+  display() {
+    let overviewElement;
+
+    // fall back to inserting into document.body if no previous 'overview'
+    // element was found
+    let parentElement = document.getElementById('container');
+
+    // dispose of the previous display table (if any)
+    if (overviewElement = document.getElementById('overview')) {
+      parentElement = overviewElement.parentElement;
+      parentElement.removeChild(overviewElement);
+    }
+
+    this.table.id = 'overview';
+    parentElement.appendChild(this.table);
+  }
 }
 
-function make_row(table, entry)
-{
-	var currentTime = new Date().getTime();
-	var waitMs = entry.timestamp - currentTime;
-	var waitMinutes = Math.floor(waitMs / 60000);
-	var waitSeconds = ((waitMs % 60000) / 1000).toFixed(0);
-
-	if (waitMs < 0 || waitMs < entry.unreachTime*1000) { return false; }
-
-	var tr = document.createElement("tr");
-	var tdTime = document.createElement("td");
-	if (waitMs < entry.walkTime * 1000) {
-		tdTime.className = "time supersoon";
-	} else if (waitMs < (entry.walkTime + 180) * 1000) {
-		tdTime.className = "time soon";
-	} else {
-		tdTime.className = "time";
-	}
-	tdTime.appendChild(document.createTextNode((waitMinutes < 10 ? '0' : '') + waitMinutes + "m" + /*(waitSeconds < 10 ? '0' : '') + */Math.floor(waitSeconds / 10) + "0s"));
-	tr.appendChild(tdTime);
-
-	var tdLine = document.createElement("td");
-
-	if (typeof entry.line === "object") {
-		tdLine.appendChild(entry.line);
-	} else {
-		tdLine.appendChild(document.createTextNode(entry.line));
-	}
-	tr.appendChild(tdLine);
-
-	var tdStop = document.createElement("td");
-	tdStop.appendChild(document.createTextNode(entry.stop));
-	tr.appendChild(tdStop);
-
-	var tdTowards = document.createElement("td");
-	tdTowards.appendChild(document.createTextNode(entry.towards));
-	tr.appendChild(tdTowards);
-
-	table.lastChild.appendChild(tr);
-}
-
-function display_table(table)
-{
-	var overviewElement;
-
-	// fall back to inserting into document.body if no previous "overview"
-	// element was found
-	var parentElement = document.getElementById('container');
-
-	// dispose of the previous display table (if any)
-       	if ((overviewElement = document.getElementById('overview'))) {
-		parentElement = overviewElement.parentElement;
-		parentElement.removeChild(overviewElement);
-	}
-
-	table.id = 'overview';
-	parentElement.appendChild(table);
-}
 /**** end of table stuff ****/
 
-function update_view(json)
-{
-	var table = make_table(["Zeit", "Linie", "Ab", "Nach"]);
-	var mon = json.data.monitors;
+function update_view(json) {
+  const tableFactory = new TableFactory(['Zeit', 'Linie', 'Ab', 'Nach']);
+  const {monitors} = json.data;
 
-	var values = [];
+  let values = [];
 
-	// XXX This part particularly unfinished:
-	// TODO sort by time
-	for (var i = 0; i < mon.length; i++) {
-		var lines = mon[i].lines;
-		var walkTime = walkTimes[mon[i].locationStop.properties.title].walkTime;
-		var unreachTime = walkTimes[mon[i].locationStop.properties.title].unreachTime;
-		
-		for (var l = 0; l < lines.length; l++) {
+  // XXX This part particularly unfinished:
+  // TODO sort by time
+  monitors.forEach(monitor => {
+    const lines = monitor.lines;
+    const walkTime = settings.walkTimes[monitor.locationStop.properties.title].walkTime;
+    const unreachTime = settings.walkTimes[monitor.locationStop.properties.title].unreachTime;
 
-			if (mon[i].lines[l].towards !== "BETRIEBSSCHLUSS ! BENÜTZEN SIE BITTE DIE NIGHTLINE" &&
-				mon[i].lines[l].name !== "VRT") {
-				var dep = mon[i].lines[l].departures.departure;
-			} else {
-				continue;
-			}
+    lines.forEach(line => {
+      let departures = [];
 
-			for (var j = 0; j < dep.length; j++) {
-				if (dep[j].departureTime.timeReal === undefined && dep[j].departureTime.timePlanned === undefined) {
-					console.log({"timestamp": dep[j].departureTime.timePlanned, "walkTime": walkTime, "unreachTime": unreachTime, "line": formatLines(lines[l].name), "stop": mon[i].locationStop.properties.title, "towards": lines[l].towards});
-				} else if (dep[j].departureTime.timeReal === undefined) {
-					values[values.length] = {"timestamp": formatTimestamp(dep[j].departureTime.timePlanned), "walkTime": walkTime, "unreachTime": unreachTime, "line": formatLines(lines[l].name), "stop": mon[i].locationStop.properties.title, "towards": lines[l].towards};
-				} else {
-					values[values.length] = {"timestamp": formatTimestamp(dep[j].departureTime.timeReal), "walkTime": walkTime, "unreachTime": unreachTime, "line": formatLines(lines[l].name), "stop": mon[i].locationStop.properties.title, "towards": lines[l].towards};
-				}
-			}
+      if (line.towards.indexOf('BETRIEBSSCHLUSS') < 0 && line.name !== 'VRT') {
+        departures = line.departures.departure;
+      }
+
+      departures.forEach(dep => {
+        const {timePlanned, timeReal} = dep.departureTime;
+        if (timeReal === undefined && timePlanned === undefined) {
+          console.log({
+            timePlanned,
+            walkTime,
+            unreachTime,
+            line: formatLines(line.name),
+            stop: monitor.locationStop.properties.title,
+            towards: line.towards,
+          });
+        } else if (timeReal === undefined) {
+          values[values.length] = {
+            timestamp: formatTimestamp(timePlanned),
+            walkTime,
+            unreachTime,
+            line: formatLines(line.name),
+            stop: monitor.locationStop.properties.title,
+            towards: line.towards,
+          };
+        } else {
+          values[values.length] = {
+            timestamp: formatTimestamp(timeReal),
+            walkTime,
+            unreachTime,
+            line: formatLines(line.name),
+            stop: monitor.locationStop.properties.title,
+            towards: line.towards,
+          };
+        }
+      });
+    });
+  });
+
+  values.sort(function(a, b) {
+    return a.timestamp - b.timestamp;
+    //return parseFloat(a.timestamp + a.walkTime * 60 * 1000) - parseFloat(b.timestamp + b.walkTime * 60 * 1000);
+  });
+
+  values.forEach(val => {
+    console.log(val);
+    tableFactory.row(val);
+  });
+
+  tableFactory.display();
+}
+
+function formatTimestamp(timestamp) {
+  const timeStampArray = timestamp.split('.');
+  const hours = timeStampArray[0];
+  const minutes = timeStampArray[1].split('+')[1].match(/.{2}/g)[0];
+  const isoStamp = `${hours}+${minutes}:00`;
+  const depTime = new Date(isoStamp).getTime();
+  return depTime;
+}
+
+function formatLines(line) {
+  if (line === 'U2') {
+    const img = document.createElement('img');
+    img.src = 'piktogramme/u2.svg';
+    img.width = 30;
+    img.height = 30;
+    return img;
+  } else if (line === 'U3') {
+    const img = document.createElement('img');
+    img.src = 'piktogramme/u3.svg';
+    img.width = 30;
+    img.height = 30;
+    return img;
+  } else if (line.indexOf('D') > -1 || line.match(/^[0-9]+$/) != null) {
+    const element = document.createElement('span');
+    element.className = 'tram';
+    element.innerHTML = line;
+    return element;
+  } else if (line.indexOf('A') > -1) {
+    const element = document.createElement('span');
+    element.className = 'bus';
+    element.innerHTML = line;
+    return element;
+  } else if (line.indexOf('N') > -1) {
+    const element = document.createElement('span');
+    element.className = 'nightline';
+    element.innerHTML = line;
+    return element;
+  } else {
+    return line;
+  }
+}
+
+function update() {
+  document.getElementById('error').style.display = 'none';
+  document.getElementById('container').style.opacity = '1';
+
+  const currentTime = new Date();
+	const currentTimeEle = document.getElementById('currentTime');
+	const hours = (currentTime.getHours() < 10 ? '0' : '') + currentTime.getHours();
+	const minutes = (currentTime.getMinutes() < 10 ? '0' : '') + currentTime.getMinutes();
+	currentTimeEle.innerHTML = `${hours}:${minutes}`;
+
+  const req = new XMLHttpRequest();
+  req.open('GET', settings.api_url);
+  req.onreadystatechange = () => {
+
+    if (req.readyState !== 4) {
+       return;
 		}
-	}
 
-	values.sort(function(a, b) {
-		return a.timestamp - b.timestamp;
-		//return parseFloat(a.timestamp + a.walkTime * 60 * 1000) - parseFloat(b.timestamp + b.walkTime * 60 * 1000);
-	});
+    // req.status == 0 in case of a local file (e.g. json file saved for testing)
+    if (req.status !== 200 && req.status !== 0) {
+      return; /* FIXME warning in case of multiple errors? */
+    }
 
-	for (var i = 0; i < values.length; i++) {
-		console.log(values[i]);
-		make_row(table, values[i]);
-	}
+    try {
+      const json = JSON.parse(req.responseText);
+      update_view(json);
+    } catch (e) {
+      if (e instanceof SyntaxError) { // invalid json document received
+        document.getElementById('error').style.display = 'block';
+      }
 
-	display_table(table);
+      document.getElementById('container').style.opacity = '0.2';
+      console.log('wienerlinien returned invalid json'); /*TODO*/
+      throw e;
+    }
+  };
+  req.send();
 }
 
-function formatTimestamp(timestamp)
-{
-	var isoStamp = timestamp.split('.')[0] + '+' + timestamp.split('.')[1].split('+')[1].match(/.{2}/g)[0] + ':00';
-	var depTime = new Date(isoStamp).getTime();
-	return depTime;
-}
-
-function formatLines(line)
-{
-	if (line === "U2") {
-		var img = document.createElement("img");
-		img.src = "piktogramme/u2.svg";
-		img.width = 30;
-		img.height = 30;
-		return img;
-	} else if (line === "U3") {
-		var img = document.createElement("img");
-		img.src = "piktogramme/u3.svg";
-		img.width = 30;
-		img.height = 30;
-		return img;
-	} else if (line.indexOf("D") > -1 || line.match(/^[0-9]+$/) != null) {
-		var element = document.createElement("span");
-		element.className = "tram";
-		element.innerHTML = line;
-		return element;
-	} else if (line.indexOf("A") > -1) {
-		var element = document.createElement("span");
-		element.className = "bus";
-		element.innerHTML = line;
-		return element;
-	} else if (line.indexOf("N") > -1) {
-		var element = document.createElement("span");
-		element.className = "nightline";
-		element.innerHTML = line;
-		return element;
-	} else {
-		return line;
-	}
-}
-
-function update()
-{
-	document.getElementById("error").style.display = "none";
-	document.getElementById("container").style.opacity = "1";
-
-	var currentTime = new Date();
-	document.getElementById('currentTime').innerHTML = (currentTime.getHours() < 10 ? '0' : '') + currentTime.getHours() + ":" + (currentTime.getMinutes() < 10 ? '0' : '') + currentTime.getMinutes();
-	var req = new XMLHttpRequest();
-	req.open('GET', api_url);
-	req.onreadystatechange = function () {
-
-		if (req.readyState !== 4)
-		       return;
-
-		// req.status == 0 in case of a local file (e.g. json file saved for testing)
-		if (req.status !== 200 && req.status !== 0)
-			return; /* FIXME warning in case of multiple errors? */
-
-		try {
-			var json = JSON.parse(req.responseText);
-			update_view(json);
-		} catch (e) {
-			if (e instanceof SyntaxError) // invalid json document received
-				document.getElementById("error").style.display = "block";
-				document.getElementById("container").style.opacity = "0.2";
-				console.log('wienerlinien returned invalid json')/*TODO*/;
-			throw e;
-		}
-	};
-	req.send();
-}
-
-window.onload = function () {
-	update();
-	window.setInterval(update, 10000);
+window.onload = () => {
+  update();
+  window.setInterval(update, 10000);
 };
