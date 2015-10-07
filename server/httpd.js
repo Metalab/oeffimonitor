@@ -1,3 +1,5 @@
+'use strict';
+
 import fs from 'fs';
 import {createServer, STATUS_CODES, get as getRequest} from 'http';
 import {join} from 'path';
@@ -40,7 +42,7 @@ const arc = { //api response cache
 	// pending response handles and trigger an API update
 	add(response) {
 		// cached API response not yet expired? Deliver it right away.
-		if (Date.now() - arc.lastUpdate < settings.api_cache_msec) {
+		if (Date.now() - arc.lastUpdate < settings.cache.msec) {
 			arc.deliver(response);
 			return true;
 		}
@@ -79,7 +81,7 @@ const arc = { //api response cache
 		arc.updating = true;
 		arc.data = [];
 
-		getRequest(settings.api_url, (response) => {
+		getRequest(settings.api.url, (response) => {
 			response.on('data', (chunk) => {
 				if (response.statusCode !== 200) {
 					return response.emit('error');
@@ -94,12 +96,12 @@ const arc = { //api response cache
 				arc.lastUpdate = Date.now();
 				arc.updating = false;
 			}).on('error', (e) => {
-				console.log('API: update failed: ' + e);
+				console.log(`API: update failed: ${e}`);
 				arc.updating = false;
 			});
 
 		}).on('error', (e) => {
-			console.log('API: update failed: ' + e);
+			console.log(`API: update failed ${e}`);
 			arc.updating = false;
 		});
 	},
@@ -165,6 +167,6 @@ function handleRequest(request, response) {
 }
 
 createServer(handleRequest)
-	.listen(settings.listen_port, () => {
-		console.log(`server listening to 0.0.0.0:${settings.listen_port}`);
+	.listen(settings.server.port, () => {
+		console.log(`server listening to 0.0.0.0:${settings.server.port}`);
 	});
