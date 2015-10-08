@@ -98,7 +98,7 @@ tr > td:nth-child(3) {
   opacity: 1;
 }
 
-.supersoon:nth-child(1)::before {
+.verysoon:nth-child(1)::before {
   color: #c0392b;
 }
 
