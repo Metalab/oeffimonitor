@@ -1,182 +1,181 @@
 body {
-	margin: 0;
-	font-family: Helvetica, Arial, sans-serif;
+  margin: 0;
+  font-family: Helvetica, Arial, sans-serif;
 }
 
 .container {
-	margin: 20px;
+  margin: 20px;
 }
 
 .error {
-	background-color: #F2DEDE;
-	position:absolute;
-	padding: 10px 20px;
-	border-left: 8px solid #A94442;
-	top: 50%;
-	left: 50%;
-	-webkit-transform: translate(-50%, -50%);
-	-moz-transform: translate(-50%, -50%);
-	-o-transform: translate(-50%, -50%);
-	-ms-transform: translate(-50%, -50%);
-	transform: translate(-50%, -50%);
-	z-index: 100;
-	margin: 0;
+  background-color: #F2DEDE;
+  position:absolute;
+  padding: 10px 20px;
+  border-left: 8px solid #A94442;
+  top: 50%;
+  left: 50%;
+  -webkit-transform: translate(-50%, -50%);
+  -moz-transform: translate(-50%, -50%);
+  -o-transform: translate(-50%, -50%);
+  -ms-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+  z-index: 100;
+  margin: 0;
 }
 
 .currentTime{
-	float: right;
-	font-weight: bold;
+  float: right;
+  font-weight: bold;
 }
 
 table {
-	border: none;
-	border-spacing: 0;
-	text-align: left;
-	width: 100%;
+  border: none;
+  border-spacing: 0;
+  text-align: left;
+  width: 100%;
 }
 
 thead {
-	font-weight: bold;
+  font-weight: bold;
 }
 
 tbody > tr:nth-child(2n+1) {
-	background: #eee;
+  background: #eee;
 }
 
 td {
-	border: none;
+  border: none;
 }
 
 tr > td:nth-child(1) {
-	text-align: center;
+  text-align: center;
 }
 
 tr > td:nth-child(2) {
-	text-align: center;
-	position: relative;
+  text-align: center;
+  position: relative;
 }
 
 tr > td:nth-child(2) span, tr > td:nth-child(2) img {
-	position: absolute;
-	top: 50%;
-	left: 50%;
-	-webkit-transform: translate(-50%, -50%);
-	-moz-transform: translate(-50%, -50%);
-	-o-transform: translate(-50%, -50%);
-	-ms-transform: translate(-50%, -50%);
-	transform: translate(-50%, -50%);
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  -webkit-transform: translate(-50%, -50%);
+  -moz-transform: translate(-50%, -50%);
+  -o-transform: translate(-50%, -50%);
+  -ms-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
 }
 
 tr > td:nth-child(2) span {
-	padding: 0 3px;
-	font-size: 90%;
-	font-weight: bold;
+  padding: 0 3px;
+  font-size: 90%;
+  font-weight: bold;
 }
 
 tr > td:nth-child(2) img {
-	height: 80%;
+  height: 80%;
 }
 
 tr > td:nth-child(3) {
-	padding-right: 5px;
+  padding-right: 5px;
 }
 
 .time:nth-child(1)::before {
-	content: "⚫\00a0";
-	opacity: 0;
+  content: "⚫\00a0";
+  opacity: 0;
 }
 
 .supersoon:nth-child(1)::before {
-	animation-name: blink;
-	animation-duration: 1.4s;
-	animation-iteration-count: infinite;
-	animation-fill-mode: both;
-	color: #c0392b;
-	opacity: 1;
-} 	  
+  animation-name: blink;
+  animation-duration: 1.4s;
+  animation-iteration-count: infinite;
+  animation-fill-mode: both;
+  color: #c0392b;
+  opacity: 1;
+}     
 
 .soon:nth-child(1)::before {
-	animation-name: blink;
-	animation-duration: 1.4s;
-	animation-iteration-count: infinite;
-	animation-fill-mode: both;
-	color: #27ae60;
-	opacity: 1;
+  animation-name: blink;
+  animation-duration: 1.4s;
+  animation-iteration-count: infinite;
+  animation-fill-mode: both;
+  color: #27ae60;
+  opacity: 1;
 }
 
 .tram {
-	border-radius: 50%;
-	background: #000;
-	color: #FFF;
+  border-radius: 50%;
+  background: #000;
+  color: #FFF;
 }
 
 .bus {
-	padding: 0 3px;
-	background: #030e6b;
-	color: #FFF;
+  padding: 0 3px;
+  background: #030e6b;
+  color: #FFF;
 }
 
 .nightline {
-	padding: 0 3px;
-	background: #140D4F;
-	color: #F9EC28;
+  padding: 0 3px;
+  background: #140D4F;
+  color: #F9EC28;
 }
 
 @media (max-width: 1280px) {
-	body {
-		overflow: hidden;
-	}
+  body {
+    overflow: hidden;
+  }
 
-	h1 {
-		font-size: 40px;
-	}
+  h1 {
+    font-size: 40px;
+  }
 
-	.error {
-		font-size: 20px;
-		line-height: 20px;
-	}
+  .error {
+    font-size: 20px;
+    line-height: 20px;
+  }
 
-	td {
-		height: 40px;
-		font-size: 28px;
-		line-height: 38px;
-	}
+  td {
+    height: 40px;
+    font-size: 28px;
+    line-height: 38px;
+  }
 
-	tr > td:nth-child(2) span {
-		height: 38px;
-	}
+  tr > td:nth-child(2) span {
+    height: 38px;
+  }
 
-	tr > td:nth-child(2) img {
-		height: 38px;
-	}
+  tr > td:nth-child(2) img {
+    height: 38px;
+  }
 
-	.tram {
-		width: 38px;
-		padding: 0;
-	}
+  .tram {
+    width: 38px;
+    padding: 0;
+  }
 }
 
-
 @keyframes blink {
-	/**
-	* At the start of the animation the dot
-	* has an opacity of .2
-	*/
-	0% {
-		opacity: .2;
-	}
-	/**
-	* At 20% the dot is fully visible and
-	* then fades out slowly
-	*/
-	20% {
-		opacity: 1;
-	}
-	/**
-	* Until it reaches an opacity of .2 and
-	* the animation can start again
-	*/
-	100% {
-		opacity: .2;
-	}
+  /**
+  * At the start of the animation the dot
+  * has an opacity of .2
+  */
+  0% {
+    opacity: .2;
+  }
+  /**
+  * At 20% the dot is fully visible and
+  * then fades out slowly
+  */
+  20% {
+    opacity: 1;
+  }
+  /**
+  * Until it reaches an opacity of .2 and
+  * the animation can start again
+  */
+  100% {
+    opacity: .2;
+  }
 }
