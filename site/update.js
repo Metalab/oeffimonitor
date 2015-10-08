@@ -18,7 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-// vim: set ts=8 noet: Use tabs, not spaces!
+
 'use strict';
 
 import settings from './settings';
