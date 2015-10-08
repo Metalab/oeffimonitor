@@ -12,7 +12,7 @@
     "dev": "babel-node server/httpd.js",
     "browserify": "browserify ./site/update.js -t [babelify --stage 0] -o site/bundle.js",
     "watchify": "watchify ./site/update.js -t [babelify --stage 0] -o site/bundle.js",
-    "lint": "jscs ./site/*.js ./server/*.js"
+    "lint": "jscs ./site/*.js ./server/*.js && csslint ./site/*.css"
   },
   "repository": {
     "type": "git",
@@ -28,6 +28,7 @@
     "babel": "^5.8.23",
     "babelify": "^6.3.0",
     "browserify": "^11.2.0",
+    "csslint": "^0.10.0",
     "jscs": "^2.2.1",
     "object-assign": "^4.0.1",
     "watchify": "^3.4.0"
@@ -36,8 +37,12 @@
     "stage": 0
   },
   "jscsConfig": {
-    "disallowKeywords": ["with"],
-    "disallowKeywordsOnNewLine": ["else"],
+    "disallowKeywords": [
+      "with"
+    ],
+    "disallowKeywordsOnNewLine": [
+      "else"
+    ],
     "disallowMixedSpacesAndTabs": true,
     "disallowMultipleVarDecl": "exceptUndefined",
     "disallowNewlineBeforeBlockStatements": true,
