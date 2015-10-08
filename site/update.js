@@ -80,6 +80,7 @@ class TableFactory {
     } else {
       tdLine.appendChild(document.createTextNode(entry.line));
     }
+
     tr.appendChild(tdLine);
 
     const tdStop = document.createElement('td');
@@ -201,8 +202,8 @@ function formatLines(line) {
   if (line === 'U2') {
     const img = document.createElement('img');
     img.src = 'piktogramme/u2.svg';
-    img.width = 30;
-    img.height = 30;
+    img.width = 40;
+    img.height = 40;
     return img;
   } else if (line === 'U3') {
     const img = document.createElement('img');
