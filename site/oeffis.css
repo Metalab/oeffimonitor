@@ -1,43 +1,41 @@
 body {
-	margin:0;
+	margin: 0;
 	font-family: Helvetica, Arial, sans-serif;
-	overflow:hidden;
+	overflow: hidden;
 }
 
-#container {
+.container {
 	margin: 20px;
 }
 
-#container > p {
-	margin-top:5px;
+.container > p {
+	margin-top: 5px;
 	font-size: 40px;
 }
 
-#error {
+.error {
 	background-color: #F2DEDE;
-	position:absolute;
+	position: absolute;
 	padding: 10px 20px;
 	border-left: 8px solid #A94442;
 	top: 50%;
 	left: 50%;
-	-webkit-transform: translate(-50%, -50%);
 	transform: translate(-50%, -50%);
 	z-index: 100;
-
-	font-size:20px;
-	line-height:20px;
-	margin:0;
+	font-size: 20px;
+	line-height: 20px;
+	margin: 0;
 }
 
 h1 {
-	margin-bottom:0;
-	display:none;
+	margin-bottom: 0;
+	display: none;
 }
 
-#currentTime{
-	float:right;
-	font-weight:bold;
-	margin-right:20px;
+.currentTime{
+	float: right;
+	font-weight: bold;
+	margin-right: 20px;
 }
 
 tbody > tr:nth-child(2n+1) {
@@ -50,7 +48,7 @@ thead {
 
 table {
 	border: none;
-	border-spacing: 0px;
+	border-spacing: 0;
 	text-align: left;
 	width: 100%;
 }
@@ -97,7 +95,6 @@ tr > td:nth-child(2) span, tr > td:nth-child(2) img {
 	position: absolute;
 	top: 50%;
 	left: 50%;
-	-webkit-transform: translate(-50%, -50%);
 	transform: translate(-50%, -50%);
 
 	height: 30px;
@@ -107,12 +104,12 @@ tr > td:nth-child(2) span, tr > td:nth-child(2) img {
 	font-weight: bold;
 }
 
-td.time:nth-child(1)::before {
+.time:nth-child(1)::before {
 	content: "⚫\00a0";
 	opacity:0;
 }
 
-td.supersoon:nth-child(1)::before {
+.supersoon:nth-child(1)::before {
 	animation-name: blink;
 	animation-duration: 1.4s;
 	animation-iteration-count: infinite;
@@ -121,7 +118,7 @@ td.supersoon:nth-child(1)::before {
 	opacity:1;
 } 	  
 
-td.soon:nth-child(1)::before {
+.soon:nth-child(1)::before {
 	animation-name: blink;
 	animation-duration: 1.4s;
 	animation-iteration-count: infinite;
@@ -131,8 +128,6 @@ td.soon:nth-child(1)::before {
 }
 
 .tram {
-	-webkit-border-radius: 50%;
-	-moz-border-radius: 50%;
 	border-radius: 50%;
 	width: 30px;
 	background: #000;
