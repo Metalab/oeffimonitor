@@ -99,15 +99,15 @@ class TableFactory {
 
     // Fall back to inserting into document.body if no previous 'overview'
     // Element was found
-    let parentElement = document.getElementById('container');
+    let parentElement = document.querySelector('.container');
 
     // Dispose of the previous display table (if any)
-    if (overviewElement = document.getElementById('overview')) {
+    if (overviewElement = document.querySelector('.overview')) {
       parentElement = overviewElement.parentElement;
       parentElement.removeChild(overviewElement);
     }
 
-    this.table.id = 'overview';
+    this.table.className = 'overview';
     parentElement.appendChild(this.table);
   }
 }
@@ -124,7 +124,7 @@ function updateView(json) {
   // TODO sort by time
   monitors.forEach(monitor => {
     const lines = monitor.lines;
-    const {title} = monitor.locationStop.properties.title;
+    const {title} = monitor.locationStop.properties;
     const {walkTimes} = settings;
     const walkTime = walkTimes[title].walkTime;
     const unreachTime = walkTimes[title].unreachTime;
@@ -232,11 +232,11 @@ function formatLines(line) {
 }
 
 function update() {
-  document.getElementById('error').style.display = 'none';
-  document.getElementById('container').style.opacity = '1';
+  document.querySelector('.error').style.display = 'none';
+  document.querySelector('.container').style.opacity = '1';
 
   const time = new Date();
-  const timeEle = document.getElementById('currentTime');
+  const timeEle = document.querySelector('.currentTime');
   const hours = (time.getHours() < 10 ? '0' : '') + time.getHours();
   const minutes = (time.getMinutes() < 10 ? '0' : '') + time.getMinutes();
   timeEle.innerHTML = `${hours}:${minutes}`;
@@ -260,10 +260,10 @@ function update() {
       updateView(json);
     } catch (e) {
       if (e instanceof SyntaxError) { // Invalid json document received
-        document.getElementById('error').style.display = 'block';
+        document.querySelector('.error').style.display = 'block';
       }
 
-      document.getElementById('container').style.opacity = '0.2';
+      document.querySelector('.container').style.opacity = '0.2';
       /* TODO */
       console.log('wienerlinien returned invalid json');
       throw e;
