@@ -1,62 +1,36 @@
 body {
-	margin: 0;
+	margin:0;
 	font-family: Helvetica, Arial, sans-serif;
-<<<<<<< HEAD
-	overflow: hidden;
-=======
->>>>>>> 01a8593e922e3f4ae8340b0af72aab2320695f5c
 }
 
 .container {
 	margin: 20px;
 }
 
-<<<<<<< HEAD
-.container > p {
-	margin-top: 5px;
-	font-size: 40px;
-}
-
 .error {
-=======
-#error {
->>>>>>> 01a8593e922e3f4ae8340b0af72aab2320695f5c
 	background-color: #F2DEDE;
-	position: absolute;
+	position:absolute;
 	padding: 10px 20px;
 	border-left: 8px solid #A94442;
 	top: 50%;
 	left: 50%;
+	-webkit-transform: translate(-50%, -50%);
+	-moz-transform: translate(-50%, -50%);
+	-o-transform: translate(-50%, -50%);
+	-ms-transform: translate(-50%, -50%);
 	transform: translate(-50%, -50%);
 	z-index: 100;
-<<<<<<< HEAD
-	font-size: 20px;
-	line-height: 20px;
-	margin: 0;
-}
-
-h1 {
-	margin-bottom: 0;
-	display: none;
-}
-
-.currentTime{
-	float: right;
-	font-weight: bold;
-	margin-right: 20px;
-=======
 	margin:0;
 }
 
-#currentTime{
+.currentTime{
 	float:right;
 	font-weight:bold;
->>>>>>> 01a8593e922e3f4ae8340b0af72aab2320695f5c
 }
 
 table {
 	border: none;
-	border-spacing: 0px;
+	border-spacing: 0;
 	text-align: left;
 	width: 100%;
 }
@@ -65,16 +39,8 @@ thead {
 	font-weight: bold;
 }
 
-<<<<<<< HEAD
-table {
-	border: none;
-	border-spacing: 0;
-	text-align: left;
-	width: 100%;
-=======
 tbody > tr:nth-child(2n+1) {
 	background: #eee;
->>>>>>> 01a8593e922e3f4ae8340b0af72aab2320695f5c
 }
 
 td {
@@ -94,6 +60,10 @@ tr > td:nth-child(2) span, tr > td:nth-child(2) img {
 	position: absolute;
 	top: 50%;
 	left: 50%;
+	-webkit-transform: translate(-50%, -50%);
+	-moz-transform: translate(-50%, -50%);
+	-o-transform: translate(-50%, -50%);
+	-ms-transform: translate(-50%, -50%);
 	transform: translate(-50%, -50%);
 }
 
@@ -103,9 +73,6 @@ tr > td:nth-child(2) span {
 	font-weight: bold;
 }
 
-<<<<<<< HEAD
-.time:nth-child(1)::before {
-=======
 tr > td:nth-child(2) img {
 	height: 80%;
 }
@@ -114,8 +81,7 @@ tr > td:nth-child(3) {
 	padding-right: 5px;
 }
 
-td.time:nth-child(1)::before {
->>>>>>> 01a8593e922e3f4ae8340b0af72aab2320695f5c
+.time:nth-child(1)::before {
 	content: "⚫\00a0";
 	opacity:0;
 }
@@ -165,14 +131,14 @@ td.time:nth-child(1)::before {
 		font-size: 40px;
 	}
 
-	#error {
+	.error {
 		font-size:20px;
 		line-height:20px;
 	}
 
 	td {
 		height: 40px;
-		font-size: 28px !important;
+		font-size: 28px;
 		line-height: 38px;
 	}
 
@@ -186,7 +152,7 @@ td.time:nth-child(1)::before {
 
 	.tram {
 		width: 38px;
-		padding: 0 !important;
+		padding: 0;
 	}
 }
 
