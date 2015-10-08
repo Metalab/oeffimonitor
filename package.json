@@ -45,7 +45,7 @@
     "disallowSpaceAfterObjectKeys": true,
     "disallowSpaceAfterPrefixUnaryOperators": true,
     "disallowSpacesInFunction": {
-        "beforeOpeningRoundBrace": true
+      "beforeOpeningRoundBrace": true
     },
     "disallowSpacesInsideParentheses": true,
     "disallowTrailingWhitespace": true,
@@ -55,17 +55,17 @@
     "requireCapitalizedConstructors": true,
     "requireCurlyBraces": true,
     "requireSpaceAfterKeywords": [
-        "if",
-        "else",
-        "for",
-        "while",
-        "do",
-        "switch",
-        "case",
-        "return",
-        "try",
-        "catch",
-        "typeof"
+      "if",
+      "else",
+      "for",
+      "while",
+      "do",
+      "switch",
+      "case",
+      "return",
+      "try",
+      "catch",
+      "typeof"
     ],
     "requireSpaceAfterLineComment": true,
     "requireSpaceAfterBinaryOperators": true,
@@ -73,10 +73,10 @@
     "requireSpaceBeforeBlockStatements": true,
     "requireSpaceBeforeObjectValues": true,
     "requireSpacesInFunction": {
-        "beforeOpeningCurlyBrace": true
+      "beforeOpeningCurlyBrace": true
     },
     "requireTrailingComma": {
-        "ignoreSingleLine": true
+      "ignoreSingleLine": true
     },
     "validateIndentation": 2,
     "validateLineBreaks": "LF",
