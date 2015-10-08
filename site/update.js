@@ -23,8 +23,7 @@
 
 import settings from './settings';
 
-/**** table functions ****/
-
+/**** Table functions ****/
 class TableFactory {
   constructor(head) {
     this.table = document.createElement('table');
@@ -49,7 +48,7 @@ class TableFactory {
     const waitMinutes = Math.floor(waitMs / 60000);
     const waitSeconds = ((waitMs % 60000) / 1000).toFixed(0);
 
-    if (waitMs < 0 || waitMs < entry.unreachTime*1000) { 
+    if (waitMs < 0 || waitMs < entry.unreachTime * 1000) {
       return false;
     }
 
@@ -97,11 +96,11 @@ class TableFactory {
   display() {
     let overviewElement;
 
-    // fall back to inserting into document.body if no previous 'overview'
-    // element was found
+    // Fall back to inserting into document.body if no previous 'overview'
+    // Element was found
     let parentElement = document.getElementById('container');
 
-    // dispose of the previous display table (if any)
+    // Dispose of the previous display table (if any)
     if (overviewElement = document.getElementById('overview')) {
       parentElement = overviewElement.parentElement;
       parentElement.removeChild(overviewElement);
@@ -112,9 +111,9 @@ class TableFactory {
   }
 }
 
-/**** end of table stuff ****/
+/**** End of table stuff ****/
 
-function update_view(json) {
+function updateView(json) {
   const tableFactory = new TableFactory(['Zeit', 'Linie', 'Ab', 'Nach']);
   const {monitors} = json.data;
 
@@ -124,8 +123,10 @@ function update_view(json) {
   // TODO sort by time
   monitors.forEach(monitor => {
     const lines = monitor.lines;
-    const walkTime = settings.walkTimes[monitor.locationStop.properties.title].walkTime;
-    const unreachTime = settings.walkTimes[monitor.locationStop.properties.title].unreachTime;
+    const {title} = monitor.locationStop.properties.title;
+    const {walkTimes} = settings;
+    const walkTime = walkTimes[title].walkTime;
+    const unreachTime = walkTimes[title].unreachTime;
 
     lines.forEach(line => {
       let departures = [];
@@ -170,7 +171,13 @@ function update_view(json) {
 
   values.sort(function(a, b) {
     return a.timestamp - b.timestamp;
-    //return parseFloat(a.timestamp + a.walkTime * 60 * 1000) - parseFloat(b.timestamp + b.walkTime * 60 * 1000);
+
+    /*
+    // Complicated offsetTime calculation
+    const offsetTime = parseFloat(a.timestamp + a.walkTime * 60 * 1000);
+    offsetTime -= parseFloat(b.timestamp + b.walkTime * 60 * 1000);
+    return offsetTime
+    */
   });
 
   values.forEach(val => {
@@ -227,35 +234,37 @@ function update() {
   document.getElementById('error').style.display = 'none';
   document.getElementById('container').style.opacity = '1';
 
-  const currentTime = new Date();
-	const currentTimeEle = document.getElementById('currentTime');
-	const hours = (currentTime.getHours() < 10 ? '0' : '') + currentTime.getHours();
-	const minutes = (currentTime.getMinutes() < 10 ? '0' : '') + currentTime.getMinutes();
-	currentTimeEle.innerHTML = `${hours}:${minutes}`;
+  const time = new Date();
+  const timeEle = document.getElementById('currentTime');
+  const hours = (time.getHours() < 10 ? '0' : '') + time.getHours();
+  const minutes = (time.getMinutes() < 10 ? '0' : '') + time.getMinutes();
+  timeEle.innerHTML = `${hours}:${minutes}`;
 
   const req = new XMLHttpRequest();
-  req.open('GET', settings.api_url);
+  req.open('GET', settings.api.url);
   req.onreadystatechange = () => {
 
     if (req.readyState !== 4) {
-       return;
-		}
+      return;
+    }
 
-    // req.status == 0 in case of a local file (e.g. json file saved for testing)
+    // Local File: req.status == 0 (e.g. json file saved for testing)
     if (req.status !== 200 && req.status !== 0) {
-      return; /* FIXME warning in case of multiple errors? */
+      /* FIXME warning in case of multiple errors? */
+      return;
     }
 
     try {
       const json = JSON.parse(req.responseText);
-      update_view(json);
+      updateView(json);
     } catch (e) {
-      if (e instanceof SyntaxError) { // invalid json document received
+      if (e instanceof SyntaxError) { // Invalid json document received
         document.getElementById('error').style.display = 'block';
       }
 
       document.getElementById('container').style.opacity = '0.2';
-      console.log('wienerlinien returned invalid json'); /*TODO*/
+      /* TODO */
+      console.log('wienerlinien returned invalid json');
       throw e;
     }
   };

@@ -11,7 +11,8 @@
     "build": "babel server/httpd.js -o ./httpd.js",
     "dev": "babel-node server/httpd.js",
     "browserify": "browserify ./site/update.js -t [babelify --stage 0] -o site/bundle.js",
-    "watchify": "watchify ./site/update.js -t [babelify --stage 0] -o site/bundle.js"
+    "watchify": "watchify ./site/update.js -t [babelify --stage 0] -o site/bundle.js",
+    "lint": "jscs ./site/*.js ./server/*.js"
   },
   "repository": {
     "type": "git",
@@ -27,10 +28,58 @@
     "babel": "^5.8.23",
     "babelify": "^6.3.0",
     "browserify": "^11.2.0",
+    "jscs": "^2.2.1",
     "object-assign": "^4.0.1",
     "watchify": "^3.4.0"
   },
   "babel": {
     "stage": 0
+  },
+  "jscsConfig": {
+    "disallowKeywords": ["with"],
+    "disallowKeywordsOnNewLine": ["else"],
+    "disallowMixedSpacesAndTabs": true,
+    "disallowMultipleVarDecl": "exceptUndefined",
+    "disallowNewlineBeforeBlockStatements": true,
+    "disallowQuotedKeysInObjects": true,
+    "disallowSpaceAfterObjectKeys": true,
+    "disallowSpaceAfterPrefixUnaryOperators": true,
+    "disallowSpacesInFunction": {
+        "beforeOpeningRoundBrace": true
+    },
+    "disallowSpacesInsideParentheses": true,
+    "disallowTrailingWhitespace": true,
+    "maximumLineLength": 80,
+    "requireCamelCaseOrUpperCaseIdentifiers": true,
+    "requireCapitalizedComments": true,
+    "requireCapitalizedConstructors": true,
+    "requireCurlyBraces": true,
+    "requireSpaceAfterKeywords": [
+        "if",
+        "else",
+        "for",
+        "while",
+        "do",
+        "switch",
+        "case",
+        "return",
+        "try",
+        "catch",
+        "typeof"
+    ],
+    "requireSpaceAfterLineComment": true,
+    "requireSpaceAfterBinaryOperators": true,
+    "requireSpaceBeforeBinaryOperators": true,
+    "requireSpaceBeforeBlockStatements": true,
+    "requireSpaceBeforeObjectValues": true,
+    "requireSpacesInFunction": {
+        "beforeOpeningCurlyBrace": true
+    },
+    "requireTrailingComma": {
+        "ignoreSingleLine": true
+    },
+    "validateIndentation": 2,
+    "validateLineBreaks": "LF",
+    "validateQuoteMarks": "'"
   }
 }
