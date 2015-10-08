@@ -28,11 +28,15 @@ Installation:
 
 Usage:
 ```
-  npm run dev # runs server/httpd.js using babel-node on port specified in settings
+  npm start # first builds then runs httpd.js on port specified in settings
 
-  npm run build # builds server/httpd.js to httpd.js
+  npm run build # builds server usingbabel and client side javascript using browserify
 
-  sudo npm start # first builds then runs httpd.js on port specified in settings
+  npm run browserify # builds client side javascript
+
+  npm run watchify # builds client side javascript and starts a watch task
+
+  npm run lint # lints javascript and css files
 ```
 
 
