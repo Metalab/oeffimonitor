@@ -55,9 +55,9 @@ class TableFactory {
     const tr = document.createElement('tr');
     const tdTime = document.createElement('td');
     if (waitMs < entry.walkTime * 1000) {
-      tdTime.className = 'time supersoon';
+      tdTime.className = 'time supersoon blink';
     } else if (waitMs < (entry.walkTime + 180) * 1000) {
-      tdTime.className = 'time soon';
+      tdTime.className = 'time soon blink';
     } else {
       tdTime.className = 'time';
     }

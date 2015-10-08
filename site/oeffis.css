@@ -86,22 +86,20 @@ tr > td:nth-child(3) {
   opacity: 0;
 }
 
-.supersoon:nth-child(1)::before {
+.blink:nth-child(1)::before {
   animation-duration: 1.4s;
   animation-fill-mode: both;
   animation-iteration-count: infinite;
   animation-name: blink;
-  color: #c0392b;
-  opacity: 1;
 }
 
 .soon:nth-child(1)::before {
-  animation-duration: 1.4s;
-  animation-fill-mode: both;
-  animation-iteration-count: infinite;
-  animation-name: blink;
   color: #27ae60;
   opacity: 1;
+}
+
+.supersoon:nth-child(1)::before {
+  color: #c0392b;
 }
 
 .tram {
