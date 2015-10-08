@@ -12,7 +12,7 @@
     "dev": "babel-node server/httpd.js",
     "browserify": "browserify ./site/update.js -t [babelify --stage 0] -o site/bundle.js",
     "watchify": "watchify ./site/update.js -t [babelify --stage 0] -o site/bundle.js",
-    "lint": "csslint ./site/*.css && jscs ./site/settings.js ./site/update.js ./server/*.js"
+    "lint": "csslint ./site/*.css --quiet && jscs ./site/settings.js ./site/update.js ./server/*.js"
   },
   "repository": {
     "type": "git",
