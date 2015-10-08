@@ -1,6 +1,6 @@
 body {
-  margin: 0;
   font-family: Helvetica, Arial, sans-serif;
+  margin: 0;
 }
 
 .container {
@@ -8,19 +8,19 @@ body {
 }
 
 .error {
-  background-color: #F2DEDE;
-  position:absolute;
-  padding: 10px 20px;
-  border-left: 8px solid #A94442;
-  top: 50%;
-  left: 50%;
-  -webkit-transform: translate(-50%, -50%);
   -moz-transform: translate(-50%, -50%);
-  -o-transform: translate(-50%, -50%);
   -ms-transform: translate(-50%, -50%);
+  -o-transform: translate(-50%, -50%);
+  -webkit-transform: translate(-50%, -50%);
+  background-color: #F2DEDE;
+  border-left: 8px solid #A94442;
+  left: 50%;
+  margin: 0;
+  padding: 10px 20px;
+  position:absolute;
+  top: 50%;
   transform: translate(-50%, -50%);
   z-index: 100;
-  margin: 0;
 }
 
 .currentTime{
@@ -29,8 +29,8 @@ body {
 }
 
 table {
-  border: none;
   border-spacing: 0;
+  border: none;
   text-align: left;
   width: 100%;
 }
@@ -57,20 +57,20 @@ tr > td:nth-child(2) {
 }
 
 tr > td:nth-child(2) span, tr > td:nth-child(2) img {
+  left: 50%;
   position: absolute;
   top: 50%;
-  left: 50%;
-  -webkit-transform: translate(-50%, -50%);
   -moz-transform: translate(-50%, -50%);
-  -o-transform: translate(-50%, -50%);
   -ms-transform: translate(-50%, -50%);
+  -o-transform: translate(-50%, -50%);
+  -webkit-transform: translate(-50%, -50%);
   transform: translate(-50%, -50%);
 }
 
 tr > td:nth-child(2) span {
-  padding: 0 3px;
   font-size: 90%;
   font-weight: bold;
+  padding: 0 3px;
 }
 
 tr > td:nth-child(2) img {
@@ -87,39 +87,39 @@ tr > td:nth-child(3) {
 }
 
 .supersoon:nth-child(1)::before {
-  animation-name: blink;
   animation-duration: 1.4s;
-  animation-iteration-count: infinite;
   animation-fill-mode: both;
+  animation-iteration-count: infinite;
+  animation-name: blink;
   color: #c0392b;
   opacity: 1;
-}     
+}
 
 .soon:nth-child(1)::before {
-  animation-name: blink;
   animation-duration: 1.4s;
-  animation-iteration-count: infinite;
   animation-fill-mode: both;
+  animation-iteration-count: infinite;
+  animation-name: blink;
   color: #27ae60;
   opacity: 1;
 }
 
 .tram {
-  border-radius: 50%;
   background: #000;
+  border-radius: 50%;
   color: #FFF;
 }
 
 .bus {
-  padding: 0 3px;
   background: #030e6b;
   color: #FFF;
+  padding: 0 3px;
 }
 
 .nightline {
-  padding: 0 3px;
   background: #140D4F;
   color: #F9EC28;
+  padding: 0 3px;
 }
 
 @media (max-width: 1280px) {
@@ -137,8 +137,8 @@ tr > td:nth-child(3) {
   }
 
   td {
-    height: 40px;
     font-size: 28px;
+    height: 40px;
     line-height: 38px;
   }
 
@@ -151,8 +151,8 @@ tr > td:nth-child(3) {
   }
 
   .tram {
-    width: 38px;
     padding: 0;
+    width: 38px;
   }
 }
 
