@@ -115,7 +115,7 @@ function update_view(json)
 		var lines = mon[i].lines;
 		var walkTime = walkTimes[mon[i].locationStop.properties.title].walkTime;
 		var unreachTime = walkTimes[mon[i].locationStop.properties.title].unreachTime;
-		
+
 		for (var l = 0; l < lines.length; l++) {
 
 			if (mon[i].lines[l].towards !== "BETRIEBSSCHLUSS ! BENÜTZEN SIE BITTE DIE NIGHTLINE" &&
@@ -168,8 +168,8 @@ function formatLines(line)
 	} else if (line === "U3") {
 		var img = document.createElement("img");
 		img.src = "piktogramme/u3.svg";
-		img.width = 30;
-		img.height = 30;
+		img.width = 40;
+		img.height = 40;
 		return img;
 	} else if (line.indexOf("D") > -1 || line.match(/^[0-9]+$/) != null) {
 		var element = document.createElement("span");
@@ -203,11 +203,13 @@ function update()
 	req.onreadystatechange = function () {
 
 		if (req.readyState !== 4)
-		       return;
+			return;
 
 		// req.status == 0 in case of a local file (e.g. json file saved for testing)
-		if (req.status !== 200 && req.status !== 0)
-			return; /* FIXME warning in case of multiple errors? */
+		if (req.status !== 200 && req.status !== 0) {
+			console.log('no connection to api');
+			return;
+		}
 
 		try {
 			var json = JSON.parse(req.responseText);
@@ -216,7 +218,7 @@ function update()
 			if (e instanceof SyntaxError) // invalid json document received
 				document.getElementById("error").style.display = "block";
 				document.getElementById("container").style.opacity = "0.2";
-				console.log('wienerlinien returned invalid json')/*TODO*/;
+				console.log('api returned invalid json')/*TODO*/;
 			throw e;
 		}
 	};
