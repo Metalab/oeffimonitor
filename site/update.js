@@ -65,7 +65,8 @@ function make_row(table, entry)
 	var tdTimeString = document.createElement("b");
 	tdTimeString.appendChild(document.createTextNode(waitTimeString));
 	tdTime.appendChild(tdTimeString);
-	tdTime.appendChild(document.createTextNode(" +" + (waitMinutes < 10 ? '0' : '') + waitMinutes + "'" + /*(waitSeconds < 10 ? '0' : '') + */Math.floor(waitSeconds / 10) + "0''"));
+
+	tdTime.appendChild(document.createTextNode("\u00A0+" + (waitMinutes < 10 ? '0' : '') + waitMinutes + "m" + /*(waitSeconds < 10 ? '0' : '') + */Math.floor(waitSeconds / 10) + "0s"));
 	tr.appendChild(tdTime);
 
 	var tdLine = document.createElement("td");
@@ -110,7 +111,7 @@ function display_table(table)
 
 function update_view(json)
 {
-	var table = make_table(["Fährt in", "Linie", "Ab", "Nach"]);
+	var table = make_table(["Fährt um/in", "Linie", "Ab", "Nach"]);
 	var mon = json.data.monitors;
 
 	var values = [];
