@@ -104,7 +104,7 @@ function display_table(table)
 
 function update_view(json)
 {
-	var table = make_table(["Zeit", "Linie", "Ab", "Nach"]);
+	var table = make_table(["Fährt in", "Linie", "Ab", "Nach"]);
 	var mon = json.data.monitors;
 
 	var values = [];

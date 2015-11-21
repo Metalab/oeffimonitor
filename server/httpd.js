@@ -119,7 +119,7 @@ function tryStaticFile(response, path)
 function handleRequest(request, response)
 {
 	var path = request.url.split('?')[0];
-	
+
 	if (path === "/favicon.ico" || path === "/robots.txt")
 		return sendError(response, 404); // don't log these
 
@@ -141,3 +141,4 @@ function handleRequest(request, response)
 
 var server = http.createServer(handleRequest);
 server.listen(settings.listen_port);
+console.log("Server started at port "+settings.listen_port);
