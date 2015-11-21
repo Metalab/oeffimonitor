@@ -45,6 +45,7 @@ function make_table(head)
 function make_row(table, entry)
 {
 	var currentTime = new Date().getTime();
+	var waitTimeString = formatTime(entry.timestamp);
 	var waitMs = entry.timestamp - currentTime;
 	var waitMinutes = Math.floor(waitMs / 60000);
 	var waitSeconds = ((waitMs % 60000) / 1000).toFixed(0);
@@ -60,7 +61,11 @@ function make_row(table, entry)
 	} else {
 		tdTime.className = "time";
 	}
-	tdTime.appendChild(document.createTextNode((waitMinutes < 10 ? '0' : '') + waitMinutes + "'" + /*(waitSeconds < 10 ? '0' : '') + */Math.floor(waitSeconds / 10) + "0''"));
+
+	var tdTimeString = document.createElement("b");
+	tdTimeString.appendChild(document.createTextNode(waitTimeString));
+	tdTime.appendChild(tdTimeString);
+	tdTime.appendChild(document.createTextNode(" +" + (waitMinutes < 10 ? '0' : '') + waitMinutes + "'" + /*(waitSeconds < 10 ? '0' : '') + */Math.floor(waitSeconds / 10) + "0''"));
 	tr.appendChild(tdTime);
 
 	var tdLine = document.createElement("td");
@@ -77,7 +82,8 @@ function make_row(table, entry)
 	tr.appendChild(tdStop);
 
 	var tdTowards = document.createElement("td");
-	tdTowards.appendChild(document.createTextNode(entry.towards));
+	console.log(capitalizeFirstLetter(entry.towards));
+	tdTowards.appendChild(document.createTextNode(capitalizeFirstLetter(entry.towards)));
 	tr.appendChild(tdTowards);
 
 	table.lastChild.appendChild(tr);
@@ -148,6 +154,20 @@ function update_view(json)
 	}
 
 	display_table(table);
+}
+
+function formatTime(timestamp) {
+	var date = new Date(timestamp);
+	var hours = "0" + date.getHours();
+	var minutes = "0" + date.getMinutes();
+
+	var formattedTime = hours.substr(-2) + ':' + minutes.substr(-2);
+	return formattedTime;
+}
+
+function capitalizeFirstLetter(str)
+{
+    return str.replace(/\w[^- ]*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});
 }
 
 function formatTimestamp(timestamp)
