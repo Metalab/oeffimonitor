@@ -48,6 +48,10 @@ function make_row(table, entry)
 	var waitTimeString = formatTime(entry.timestamp);
 	var waitMs = entry.timestamp - currentTime;
 	var waitMinutes = Math.floor(waitMs / 60000);
+	var waitHours = Math.floor(waitMinutes / 60);
+	if (waitHours) {
+		waitMinutes -= 60;
+	}
 	var waitSeconds = ((waitMs % 60000) / 1000).toFixed(0);
 
 	if (waitMs < 0 || waitMs < entry.unreachTime*1000) { return false; }
@@ -66,7 +70,7 @@ function make_row(table, entry)
 	tdTimeString.appendChild(document.createTextNode(waitTimeString));
 	tdTime.appendChild(tdTimeString);
 
-	tdTime.appendChild(document.createTextNode("\u00A0+" + (waitMinutes < 10 ? '0' : '') + waitMinutes + "m" + /*(waitSeconds < 10 ? '0' : '') + */Math.floor(waitSeconds / 10) + "0s"));
+	tdTime.appendChild(document.createTextNode("\u00A0+" + (waitHours ? waitHours + 'h' : '') + (waitMinutes < 10 ? '0' : '') + waitMinutes + "m" + /*(waitSeconds < 10 ? '0' : '') + */Math.floor(waitSeconds / 10) + "0s"));
 	tr.appendChild(tdTime);
 
 	var tdLine = document.createElement("td");
