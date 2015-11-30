@@ -10,6 +10,6 @@ var walkTimes = {
 	"Volkstheater": {"walkTime": 480, "unreachTime": 300},
 	"Landesgerichtsstraße": {"walkTime": 480, "unreachTime": 300},
 	"Auerspergstraße": {"walkTime": 300, "unreachTime": 180},
-	"Burgtheater/Rathausplatz": {"walkTime": 480, "unreachTime": 
+	"Rathausplatz/Burgtheater": {"walkTime": 480, "unreachTime": 
 300}
 };

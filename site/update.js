@@ -124,8 +124,8 @@ function update_view(json)
 	// TODO sort by time
 	for (var i = 0; i < mon.length; i++) {
 		var lines = mon[i].lines;
-		var walkTime = walkTimes[mon[i].locationStop.properties.title].walkTime;
-		var unreachTime = walkTimes[mon[i].locationStop.properties.title].unreachTime;
+		var walkTime = walkTimes[mon[i].locationStop.properties.title] ? walkTimes[mon[i].locationStop.properties.title].walkTime : 480;
+		var unreachTime = walkTimes[mon[i].locationStop.properties.title] ? walkTimes[mon[i].locationStop.properties.title].unreachTime : 0;
 
 		for (var l = 0; l < lines.length; l++) {
 
