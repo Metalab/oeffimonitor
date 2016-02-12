@@ -2,7 +2,8 @@
  * Öffimonitor - display the Wiener Linien timetable for nearby bus/tram/subway
  * lines on a screen in the Metalab Hauptraum
  *
- * Copyright (C) 2015   Moritz Wilhelmy
+ * Copyright (C) 2015-2016   Moritz Wilhelmy
+ * Copyright (C) 2015-2016   Bernhard Hayden
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -20,6 +21,8 @@
  */
 // vim: set ts=8 noet: Use tabs, not spaces!
 "use strict";
+
+var /*const*/ debug = false;
 
 /**** table functions ****/
 /* these might be prettier in OO, but I really don't care enough right now */
@@ -87,7 +90,8 @@ function make_row(table, entry)
 	tr.appendChild(tdStop);
 
 	var tdTowards = document.createElement("td");
-	console.log(capitalizeFirstLetter(entry.towards));
+	if (debug)
+		console.log(capitalizeFirstLetter(entry.towards));
 	tdTowards.appendChild(document.createTextNode(capitalizeFirstLetter(entry.towards)));
 	tr.appendChild(tdTowards);
 
@@ -138,7 +142,8 @@ function update_view(json)
 
 			for (var j = 0; j < dep.length; j++) {
 				if (dep[j].departureTime.timeReal === undefined && dep[j].departureTime.timePlanned === undefined) {
-					console.log({"timestamp": dep[j].departureTime.timePlanned, "walkTime": walkTime, "unreachTime": unreachTime, "line": formatLines(lines[l].name), "stop": mon[i].locationStop.properties.title, "towards": lines[l].towards});
+					if (debug)
+						console.log({"timestamp": dep[j].departureTime.timePlanned, "walkTime": walkTime, "unreachTime": unreachTime, "line": formatLines(lines[l].name), "stop": mon[i].locationStop.properties.title, "towards": lines[l].towards}); // FIXME: console.log doesn't seem to handle objects, if you need this, turn it into a string
 				} else if (dep[j].departureTime.timeReal === undefined) {
 					values[values.length] = {"timestamp": formatTimestamp(dep[j].departureTime.timePlanned), "walkTime": walkTime, "unreachTime": unreachTime, "line": formatLines(lines[l].name), "stop": mon[i].locationStop.properties.title, "towards": lines[l].towards};
 				} else {
@@ -154,7 +159,8 @@ function update_view(json)
 	});
 
 	for (var i = 0; i < values.length; i++) {
-		console.log(values[i]);
+		if (debug)
+			console.log(values[i]);
 		make_row(table, values[i]);
 	}
 
