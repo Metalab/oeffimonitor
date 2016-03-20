@@ -7,9 +7,9 @@ body {
 
 h1 { margin: 20px; }
 
-
 #error {
 	background-color: #F2DEDE;
+	color: black;
 	position:absolute;
 	padding: 10px 20px;
 	border-left: 8px solid #A94442;
