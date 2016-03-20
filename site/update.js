@@ -119,7 +119,7 @@ function display_table(table)
 
 function update_view(json)
 {
-	var table = make_table(["Fährt um/in", "Linie", "Ab", "Nach"]);
+	var table = make_table(["Departure", "Line", "Closest Station", "Destination"]);
 	var mon = json.data.monitors;
 
 	var values = [];
