@@ -1,9 +1,12 @@
 body {
 	margin:0;
 	font-family: Helvetica, Arial, sans-serif;
+	background-color: black;
+	color: #ddd;
 }
 
-#container { margin: 20px; }
+h1 { margin: 20px; }
+
 
 #error {
 	background-color: #F2DEDE;
@@ -29,7 +32,8 @@ table {
 }
 
 thead { font-weight: bold; }
-tbody > tr:nth-child(2n+1) { background: #eee; }
+tbody > tr:nth-child(2n) { background: #222; }
+tbody > tr:nth-child(2n+1) { background: #333; }
 td { border: none; }
 tr > td:nth-child(1) { text-align: center; }
 
