@@ -192,13 +192,13 @@ function formatLines(line)
 {
 	if (line === "U2") {
 		var img = document.createElement("img");
-		img.src = "piktogramme/u2.svg";
+		img.src = "assets/u2.svg";
 		img.width = 40;
 		img.height = 40;
 		return img;
 	} else if (line === "U3") {
 		var img = document.createElement("img");
-		img.src = "piktogramme/u3.svg";
+		img.src = "assets/u3.svg";
 		img.width = 40;
 		img.height = 40;
 		return img;
