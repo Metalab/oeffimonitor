@@ -114,17 +114,17 @@ td.soon:nth-child(1)::before {
 }
 
 @media (max-width: 1280px) {
-	body { overflow:hidden; }
-	h1 { font-size: 40px; }
+	body { overflow: hidden; }
+	h1 { font-size: 50px; }
 
 	#error {
 		font-size:20px;
 		line-height:20px;
 	}
 	td {
-		height: 40px;
-		font-size: 28px !important;
-		line-height: 38px;
+		height: 52px;
+		font-size: 40px !important;
+		line-height: 50px;
 	}
 
 	tr > td:nth-child(2) span { height: 38px; }
