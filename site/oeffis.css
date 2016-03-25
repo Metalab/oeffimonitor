@@ -1,16 +1,16 @@
 @font-face {
-	font-family: 'Roboto';
-	src: url('assets/Roboto-Regular.ttf');
+	font-family: 'Roboto Condensed';
+	src: url('assets/RobotoCondensed-Regular.ttf');
 }
 @font-face {
-    font-family: 'Roboto';
-    src: url('assets/Roboto-Bold.ttf');
+    font-family: 'Roboto Condensed';
+    src: url('assets/RobotoCondensed-Bold.ttf');
     font-weight: bold;
 }
 
 body {
 	margin:0;
-	font-family: 'Roboto', Helvetica, Arial, sans-serif;
+	font-family: 'Roboto Condensed', Helvetica, Arial, sans-serif;
 	background-color: black;
 	color: #ddd;
 }
