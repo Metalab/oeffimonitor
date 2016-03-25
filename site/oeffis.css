@@ -122,16 +122,18 @@ td.soon:nth-child(1)::before {
 		line-height:20px;
 	}
 	td {
-		height: 52px;
-		font-size: 40px !important;
-		line-height: 50px;
+		height: 60px;
+		font-size: 48px !important;
+		line-height: 58px;
+		overflow: hidden;
+		white-space: nowrap;
 	}
 
-	tr > td:nth-child(2) span { height: 38px; }
-	tr > td:nth-child(2) img { height: 38px; }
+	tr > td:nth-child(2) span { height: 58px; }
+	tr > td:nth-child(2) img { height: 58px; }
 
 	.tram {
-		width: 38px;
+		width: 58px;
 		padding: 0 !important;
 	}
 }
