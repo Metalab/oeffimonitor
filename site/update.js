@@ -71,7 +71,7 @@ function make_row(table, entry)
 
 	var tdTimeString = document.createElement("b");
 	tdTimeString.appendChild(document.createTextNode(waitTimeString));
-	tdTime.appendChild(tdTimeString);
+	// tdTime.appendChild(tdTimeString); small display, hide actual time and only display waitTime, maybe CSS would be more elegant, to only hide when width too small
 
 	tdTime.appendChild(document.createTextNode("\u00A0+" + (waitHours ? waitHours + 'h' : '') + (waitMinutes < 10 ? '0' : '') + waitMinutes + "m" + /*(waitSeconds < 10 ? '0' : '') + */Math.floor(waitSeconds / 10) + "0s"));
 	tr.appendChild(tdTime);
