@@ -13,7 +13,7 @@ body {
 	font-family: 'Roboto Condensed', Helvetica, Arial, sans-serif;
 	background-color: white;
 	color: black;
-	font-size:12pt;
+	font-size:14pt;
 }
 
 h1 { margin: 20px; }
@@ -80,13 +80,19 @@ tr > td:nth-child(3) { padding-right: 10px; }
 }
 .bus {
 	padding: 0 3px;
-	background: #030e6b;
+	/*background: #030e6b;*/
+	background: black; /* Nook simple touch is only black and white */
 	color: #FFF;
 }
 .nightline {
 	padding: 0 3px;
+/*	
+	Nook simple touch is only black and white
 	background: #140D4F;
 	color: #F9EC28;
+*/
+	background: #000;
+	color: #FFF;
 }
 
 body { overflow: hidden; }
