@@ -11,8 +11,9 @@
 body {
 	margin:0;
 	font-family: 'Roboto Condensed', Helvetica, Arial, sans-serif;
-	background-color: black;
-	color: #eee;
+	background-color: white;
+	color: black;
+	font-size:12pt;
 }
 
 h1 { margin: 20px; }
@@ -42,8 +43,8 @@ table {
 }
 
 thead { font-weight: bold; }
-tbody > tr:nth-child(2n) { background: #222; }
-tbody > tr:nth-child(2n+1) { background: #333; }
+/* tbody > tr:nth-child(2n) { background: #222; }*/
+/*tbody > tr:nth-child(2n+1) { background: #333; }*/
 td { border: none; }
 tr > td:nth-child(1) { text-align: center; }
 
@@ -60,40 +61,13 @@ tr > td:nth-child(2) span, tr > td:nth-child(2) img {
 }
 tr > td:nth-child(2) span {
 	padding: 0 3px;
-	font-size: 90%;
+	font-size: 0.9em;
 	font-weight: bold;
 }
 
 tr > td:nth-child(2) img { height: 80%; }
 tr > td:nth-child(3) { padding-right: 10px; }
 
-td.time:nth-child(1)::before {
-	content: "⚫\00a0";
-	opacity:0;
-}
-td.supersoon:nth-child(1)::before {
-	animation-name: blink;
-	animation-duration: 1.4s;
-	animation-iteration-count: infinite;
-	animation-fill-mode: both;
-	-webkit-animation-name: blink;
-	-webkit-animation-duration: 1.4s;
-	-webkit-animation-iteration-count: infinite;
-	-webkit-animation-fill-mode: both;
-	color: #c0392b;
-	opacity:1;
-}
-td.soon:nth-child(1)::before {
-	animation-name: blink;
-	animation-duration: 1.4s;
-	animation-iteration-count: infinite;
-	animation-fill-mode: both;
-	-webkit-animation-name: blink;
-	-webkit-animation-duration: 1.4s;
-	-webkit-animation-iteration-count: infinite;
-	-webkit-animation-fill-mode: both;
-	color: #27ae60;
-	opacity:1;
 }
 .tram {
 	-webkit-border-radius: 50%;
@@ -115,31 +89,27 @@ td.soon:nth-child(1)::before {
 
 @media (max-width: 1280px) {
 	body { overflow: hidden; }
-	h1 { font-size: 50px; }
+	h1 { font-size: 5em; }
 
 	#error {
-		font-size:20px;
-		line-height:20px;
+		font-size:3em;
+		line-height:3em;
 	}
 	td {
 		height: 60px;
-		font-size: 48px !important;
-		line-height: 58px;
+		font-size: 3em;
+		line-height: 3em;
 		overflow: hidden;
 		white-space: nowrap;
 	}
 	tr > td:nth-child(2) span, tr > td:nth-child(2) img {
-		height: 58px;
+		/*height: 58px;
 		min-width: 58px;
-		padding: 0 !important;
+		padding: 0 !important;*/
 	}
 	tr > td:nth-child(3) {
-		padding-left: 10px;
+		/*padding-left: 10px;*/
 	}
 }
 
-@keyframes blink {
-	0% { opacity: .2; }
-	20% { opacity: 1; }
-	100% { opacity: .2; }
-}
+
