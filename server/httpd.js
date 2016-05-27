@@ -5,27 +5,13 @@
  */
 
 var app = require('./app');
-var debug = require('debug')('webworker:server');
+var debug = require('debug')('server:httpd');
 var http = require('http');
+var settings = require(__dirname + '/settings.js');
 
-/**
- * Get port from environment and store in Express.
- */
-
-var port = normalizePort(process.env.WEBWORKER_PORT || '3000');
-app.set('port', port);
-
-/**
- * Create HTTP server.
- */
-
+app.set('port', settings.listen_port);
 var server = http.createServer(app);
-
-/**
- * Listen on provided port, on all network interfaces.
- */
-
-server.listen(port);
+server.listen(settings.listen_port);
 server.on('error', onError);
 server.on('listening', onListening);
 
@@ -86,5 +72,5 @@ function onListening() {
   var bind = typeof addr === 'string'
     ? 'pipe ' + addr
     : 'port ' + addr.port;
-  debug('Listening on ' + bind);
+	debug('Listening on ' + bind);
 }

@@ -13,6 +13,15 @@ Written in Javascript for use on a Raspberry Pi in a CSS3 capable browser in Kio
 4.  Run ```node server/httpd.js```
 5.  Open Öffimonitor in a browser of your choice.
 
+## Debugging
+
+Öffimonitor by default logs no messages while running. It uses https://github.com/visionmedia/debug for logging.
+The DEBUG environment variable is used to enable these based on space or comma-delimited names. Here are some examples:
+DEBUG=server:*
+DEBUG=*
+DEBUG=server:httpd server:api
+
+
 ## Start from systemd
 (Taken from https://rocketeer.be/articles/deploying-node-js-with-systemd/)
 

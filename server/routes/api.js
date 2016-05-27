@@ -1,5 +1,7 @@
 var http = require('http');
+var debug = require('debug')('server:api');
 var settings = require("../settings");
+
 var arc = { //api response cache
 	pending          : new Set(), // set of pending response objects
 	lastUpdate       : 0,  // Date.now() of the last completed update
@@ -13,6 +15,7 @@ var arc = { //api response cache
 	add     : function (response) {
 		// cached API response not yet expired? Deliver it right away.
 		if (Date.now() - arc.lastUpdate < settings.api_cache_msec) {
+			debug("api response from cache");
 			arc.deliver(response);
 			return true;
 		}
@@ -63,12 +66,12 @@ var arc = { //api response cache
 				arc.lastUpdate = Date.now();
 				arc.updating = false;
 			}).on('error', function(e) {
-				console.log('API: update failed: ' + e);
+				debug('update failed: ' + e);
 				arc.updating = false;
 			});
 
 		}).on('error', function(e) {
-			console.log('API: update failed: ' + e);
+			debug('update failed: ' + e);
 			arc.updating = false;
 		});
 	},
