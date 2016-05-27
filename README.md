@@ -13,6 +13,19 @@ Written in Javascript for use on a Raspberry Pi in a CSS3 capable browser in Kio
 4.  Run ```node server/httpd.js```
 5.  Open Öffimonitor in a browser of your choice.
 
+## Start from systemd
+(Taken from https://rocketeer.be/articles/deploying-node-js-with-systemd/)
+
+Copy the provided script init-script/oeffimonitor.service to /etc/systemd/system/ **and adjust paths and user in the script**.
+Then the Öffimonitor can be started using the systemd:
+
+```bash
+# systemctl start oeffimonitor
+```
+
+Systemd will monitor the node process and restart the server as appropriate
+
+
 Happy hacking!
 
 

@@ -1,11 +1,15 @@
 #!/usr/bin/env node
 
+<<<<<<< HEAD
 /**
  * Module dependencies.
  */
 
 var app = require('./app');
 var debug = require('debug')('webworker:server');
+=======
+var fs = require('fs');
+>>>>>>> 690feb902dcfd6807da42b70d99837d34bcb266e
 var http = require('http');
 
 /**
