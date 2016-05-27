@@ -15,12 +15,17 @@ Written in Javascript for use on a Raspberry Pi in a CSS3 capable browser in Kio
 
 ## Debugging
 
-Öffimonitor by default logs no messages while running. It uses https://github.com/visionmedia/debug for logging.
+Öffimonitor by default logs HTTP requests but no further  messages while running. It uses https://github.com/visionmedia/debug for logging.
 The DEBUG environment variable is used to enable these based on space or comma-delimited names. Here are some examples:
 DEBUG=server:*
 DEBUG=*
 DEBUG=server:httpd server:api
 
+### Save debug output to a file
+
+You can save all debug statements to a file by piping them.
+Example:
+    $ DEBUG_FD=3 server/httpd.js 3> debug.log
 
 ## Start from systemd
 (Taken from https://rocketeer.be/articles/deploying-node-js-with-systemd/)
