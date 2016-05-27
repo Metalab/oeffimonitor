@@ -13,7 +13,7 @@ body {
 	font-family: 'Roboto Condensed', Helvetica, Arial, sans-serif;
 	background-color: white;
 	color: black;
-	font-size:14pt;
+	font-size:12pt;
 }
 
 h1 { margin: 20px; }
@@ -43,7 +43,7 @@ table {
 }
 
 thead { font-weight: bold; }
-/* tbody > tr:nth-child(2n) { background: #222; }*/
+tbody > tr:nth-child(2n) { background: #eee; }
 /*tbody > tr:nth-child(2n+1) { background: #333; }*/
 td { border: none; }
 tr > td:nth-child(1) { 
@@ -70,7 +70,6 @@ tr > td:nth-child(2) span {
 tr > td:nth-child(2) img { height: 80%; }
 tr > td:nth-child(3) { padding-right: 10px; }
 
-}
 .tram {
 	-webkit-border-radius: 50%;
 	-moz-border-radius: 50%;
@@ -102,7 +101,7 @@ h1 { font-size: 5em; }
 }
 
 td {
-    height: 60px;
+    /*height: 60px;*/
     font-size: 3em;
     overflow: hidden;
     white-space: nowrap;
@@ -117,3 +116,5 @@ tr > td:nth-child(2) span, tr > td:nth-child(2) img {
 tr > td:nth-child(3) {
     /*padding-left: 10px;*/
 }
+
+
