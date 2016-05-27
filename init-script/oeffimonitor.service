@@ -1,0 +1,15 @@
+[Service]
+ExecStart=/usr/bin/env server/httpd.js
+WorkingDirectory=/home/node/oeffimonitor/deploy
+
+User=node
+Group=node
+StandardInput=null
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=oeffimonitor
+Restart=always
+Environment=PATH=/usr/bin:/usr/sbin:/home/node/node/bin
+
+[Install]
+WantedBy=multi-user.target
