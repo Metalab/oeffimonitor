@@ -1,0 +1,15 @@
+extends layout
+
+block head
+	meta(http-equiv='Content-Type', content='text/html; charset=utf-8')
+	script(type='text/javascript', src='update.js')
+	script(type='text/javascript', src='settings.js')
+	link(href='/themes/' + theme, type='text/css', rel='stylesheet')
+
+block content
+	#container
+		h1 #{title}
+			span#currentTime
+	#error
+		h2 Oh noes, something broke!
+		p Sorry but Öffimonitor will be back soon.

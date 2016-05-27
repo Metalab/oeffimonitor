@@ -1,0 +1,119 @@
+@font-face {
+	font-family: 'Roboto Condensed';
+	src: url('assets/RobotoCondensed-Regular.ttf');
+}
+@font-face {
+	font-family: 'Roboto Condensed';
+  src: url('assets/RobotoCondensed-Bold.ttf');
+  font-weight: bold;
+}
+
+body {
+	margin:0;
+	font-family: 'Roboto Condensed', Helvetica, Arial, sans-serif;
+	background-color: white;
+	color: black;
+	font-size:14pt;
+}
+
+h1 { margin: 20px; }
+
+#error {
+	background-color: #F2DEDE;
+	color: black;
+	position:absolute;
+	padding: 10px 20px;
+	border-left: 8px solid #A94442;
+	top: 50%;
+	left: 50%;
+	-webkit-transform: translate(-50%, -50%);
+	transform: translate(-50%, -50%);
+	z-index: 100;
+	margin:0;
+}
+#currentTime{
+	float:right;
+	font-weight:bold;
+}
+table {
+	border: none;
+	border-spacing: 0px;
+	text-align: left;
+	width: 100%;
+}
+
+thead { font-weight: bold; }
+/* tbody > tr:nth-child(2n) { background: #222; }*/
+/*tbody > tr:nth-child(2n+1) { background: #333; }*/
+td { border: none; }
+tr > td:nth-child(1) { 
+    text-align: left; 
+}
+
+tr > td:nth-child(2) {
+	text-align: center;
+	position: relative;
+}
+tr > td:nth-child(2) span, tr > td:nth-child(2) img {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	-webkit-transform: translate(-50%, -50%);
+	transform: translate(-50%, -50%);
+}
+tr > td:nth-child(2) span {
+	padding: 0 3px;
+	font-size: 0.9em;
+	font-weight: bold;
+}
+
+tr > td:nth-child(2) img { height: 80%; }
+tr > td:nth-child(3) { padding-right: 10px; }
+
+}
+.tram {
+	-webkit-border-radius: 50%;
+	-moz-border-radius: 50%;
+	border-radius: 50%;
+	background: #000;
+	color: #FFF;
+}
+.bus {
+	padding: 0 3px;
+	/*background: #030e6b;*/
+	background: black; /* Nook simple touch is only black and white */
+	color: #FFF;
+}
+.nightline {
+	padding: 0 3px;
+/*	
+	Nook simple touch is only black and white
+	background: #140D4F;
+	color: #F9EC28;
+*/
+	background: #000;
+	color: #FFF;
+}
+
+body { overflow: hidden; }
+h1 { font-size: 5em; }
+#error {
+    font-size:3em;
+}
+
+td {
+    height: 60px;
+    font-size: 3em;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+tr > td:nth-child(2) span, tr > td:nth-child(2) img {
+    /*height: 58px;
+    min-width: 58px;
+    padding: 0 !important;*/
+}
+
+tr > td:nth-child(3) {
+    /*padding-left: 10px;*/
+}
