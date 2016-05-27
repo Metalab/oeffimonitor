@@ -21,6 +21,8 @@ var api_ids = [
 var api_url = 'http://www.wienerlinien.at/ogd_realtime/monitor?sender='+api_key+'&rbl='+api_ids.join("&rbl=");
 
 module.exports = {
+	'title':					'Next public transport connections from Metalab',
+	'theme':					'metalab.css',
 	'api_url'         :   api_url,
 	'api_key'         :   api_key,
 	'api_ids'         :   api_ids,
