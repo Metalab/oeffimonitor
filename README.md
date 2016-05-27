@@ -15,7 +15,14 @@ Written in Javascript for use on a Raspberry Pi in a CSS3 capable browser in Kio
 
 Happy hacking!
 
-## Debugging
+### Theme support
+
+Enter the name of the appropriate css file in the ```server/settings.js``` file. It should be located under ````site/themes```.
+Contained in the repository are two themes:
+- ```metalab.css```: Design as used by metalab
+- ```nook.css```: Simplified design for use on a nook simple touch eInk Reader, black and white only
+
+### Debugging
 
 Öffimonitor by default logs HTTP requests but no further  messages while running. It uses https://github.com/visionmedia/debug for logging.
 The DEBUG environment variable is used to enable these based on space or comma-delimited names. Here are some examples:
@@ -23,13 +30,13 @@ DEBUG=server:*
 DEBUG=*
 DEBUG=server:httpd server:api
 
-### Save debug output to a file
+#### Save debug output to a file
 
 You can save all debug statements to a file by piping them.
 Example:
     $ DEBUG_FD=3 server/httpd.js 3> debug.log
 
-## Start from systemd
+### Start from systemd
 (Taken from https://rocketeer.be/articles/deploying-node-js-with-systemd/)
 
 Copy the provided script init-script/oeffimonitor.service to /etc/systemd/system/ **and adjust paths and user in the script**.
