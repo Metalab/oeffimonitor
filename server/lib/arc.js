@@ -1,9 +1,15 @@
 "use strict";
-const http = require('http');
-const debug = require('debug')('server:lib:Arc');
-const EventEmitter = require('events');
-const settings = require("../settings");
-const _ = require('lodash');
+var http = require('http');
+var debug = require('debug')('server:lib:Arc');
+var events = require('events');
+var settings = require("../settings");
+var _ = require('lodash');
+var util = require("util");
+
+// TODO deprecated in node > v0.12.0, leave for now to be compatible with older versions on ARM
+// should be replaced by class ... extends ...
+util.inherits(Arc, events.EventEmitter);
+module.exports = Arc;
 
 /**
  * Arc - API Response Cache
@@ -16,10 +22,9 @@ const _ = require('lodash');
  * @constructor
  */
 
-class Arc extends EventEmitter {
-
-  constructor(options) {
-    super();
+function Arc(options) {
+    // Super Constructor
+    events.EventEmitter.call(this);
     // Set  default options - TODO might be better to remove settings dependency
     this.options = {
       maxAgeMilliSeconds: settings.api_cache_msec,
@@ -40,95 +45,98 @@ class Arc extends EventEmitter {
       debug("#apiResponseReceived");
       this.apiResponseReceived()
     });
-  }
 
-  /**
-   * isExpired - checks if the currently cached result is already expired
-   *
-   * @return {bool} true if expired
-   */
-  isExpired() {
-    var isExpired = Date.now() - this.lastUpdate > this.options.maxAgeMilliSeconds;
-    debug("Response expired: %s",isExpired);
-    return isExpired;
-  }
+    this.isExpired = isExpired;
+    this.add = add;
+    this.apiResponseReceived = apiResponseReceived;
+    this.sendResponse = sendResponse;
+    this.update = update;
 
-  /**
-   * add - register a response to be completed when a result is received from the web api
-   *
-   * @param  {Response} response Node HTTP Response object to receive the web api result
-   */
-  add(response) {
-    // cached API response not yet expired? Deliver it right away.
-		if (this.isExpired()) {
-      debug("Add response handle to pending");
-      this.pending.add(response);
-  		this.update();
-  		return;
-		}
-    debug("Send cached response");
-    this.sendResponse(response);
-  }
+    /**
+     * isExpired - checks if the currently cached result is already expired
+     *
+     * @return {bool} true if expired
+     */
+    function isExpired() {
+      var isExpired = Date.now() - this.lastUpdate > this.options.maxAgeMilliSeconds;
+      debug("Response expired: %s",isExpired);
+      return isExpired;
+    }
 
-  /**
-   * apiResponseReceived - flush all pending response objects with the buffered response
-   */
-  apiResponseReceived() {
-    this.lastUpdate = Date.now();
-    this.updating = false;
-    this.pending.forEach(this.sendResponse, this);
-  };
+    /**
+     * add - register a response to be completed when a result is received from the web api
+     *
+     * @param  {Response} response Node HTTP Response object to receive the web api result
+     */
+    function add(response) {
+      // cached API response not yet expired? Deliver it right away.
+  		if (this.isExpired()) {
+        debug("Add response handle to pending");
+        this.pending.add(response);
+    		this.update();
+    		return;
+  		}
+      debug("Send cached response");
+      this.sendResponse(response);
+    }
 
-  /**
-   * sendResponse - deliver a cached web api result to a response and remove the response handle
-   *
-   * @param  {Response} responseHandle response handle to send result to
-   */
-  sendResponse(responseHandle) {
-    responseHandle.type(this.contentType);
-		responseHandle.status(200);
-		responseHandle.send(this.bufferedResponse); // TODO what happens if this timed out?
-		this.pending.delete(responseHandle);
-  };
+    /**
+     * apiResponseReceived - flush all pending response objects with the buffered response
+     */
+    function apiResponseReceived() {
+      this.lastUpdate = Date.now();
+      this.updating = false;
+      this.pending.forEach(this.sendResponse, this);
+    };
+
+    /**
+     * sendResponse - deliver a cached web api result to a response and remove the response handle
+     *
+     * @param  {Response} responseHandle response handle to send result to
+     */
+    function sendResponse(responseHandle) {
+      responseHandle.type(this.contentType);
+  		responseHandle.status(200);
+  		responseHandle.send(this.bufferedResponse); // TODO what happens if this timed out?
+  		this.pending.delete(responseHandle);
+    };
 
 
-  /**
-   * update - send a request to the web api place received data in bufferedResponse
-   */
-  update(){
-      if (this.updating) {
-        return; // Update already in progress
-      }
-      this.updating = true;
-      var _this = this;
-      debug("Send web api request");
-      http.get(this.options.apiUrl, processResponse).on('error', onError);
-
-      function onError(error) {
-        debug('api request to URL('+this.options.apiUrl+') failed: ' + error);
-        _this.updating = false; // TODO better handling? Response Handles will only be completed next time someone asks and a result is received
-      };
-
-      function processResponse(response) {
-        var receivedChunks = [];
-        response
-          .on('data', onChunkReceived)
-          .on('end', onResponseCompletelyReceived)
-          .on('error', onError);
-
-        function onChunkReceived(chunk) {
-          if (response.statusCode !== 200)
-            return response.emit('error');
-          _this.contentType = response.headers['content-type'];
-          receivedChunks.push(chunk);
+    /**
+     * update - send a request to the web api place received data in bufferedResponse
+     */
+    function update(){
+        if (this.updating) {
+          return; // Update already in progress
         }
+        this.updating = true;
+        var _this = this;
+        debug("Send web api request");
+        http.get(this.options.apiUrl, processResponse).on('error', onError);
 
-        function onResponseCompletelyReceived(){
-          _this.bufferedResponse = Buffer.concat(receivedChunks);
-          _this.emit('apiResponseReceived');
-        }
-      };
-  }
+        function onError(error) {
+          debug('api request to URL('+this.options.apiUrl+') failed: ' + error);
+          _this.updating = false; // TODO better handling? Response Handles will only be completed next time someone asks and a result is received
+        };
+
+        function processResponse(response) {
+          var receivedChunks = [];
+          response
+            .on('data', onChunkReceived)
+            .on('end', onResponseCompletelyReceived)
+            .on('error', onError);
+
+          function onChunkReceived(chunk) {
+            if (response.statusCode !== 200)
+              return response.emit('error');
+            _this.contentType = response.headers['content-type'];
+            receivedChunks.push(chunk);
+          }
+
+          function onResponseCompletelyReceived(){
+            _this.bufferedResponse = Buffer.concat(receivedChunks);
+            _this.emit('apiResponseReceived');
+          }
+        };
+    }
 };
-
-module.exports = Arc;
