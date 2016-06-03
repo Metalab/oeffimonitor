@@ -18,12 +18,14 @@ var api_ids = [
         "1376", // Auerspergstraße 46er (nur stadtauswärts)
         "5691" // Auerspergstraße N46
 ];
-var api_url = 'http://www.wienerlinien.at/ogd_realtime/monitor?sender='+api_key+'&rbl='+api_ids.join("&rbl=");
+var api_urls = {
+  realtime: 'http://www.wienerlinien.at/ogd_realtime/monitor?sender='+api_key+'&rbl='+api_ids.join("&rbl=")
+}
 
 module.exports = {
 	'title':					'Next public transport connections from Metalab',
 	'theme':					'metalab.css',
-	'api_url'         :   api_url,
+  'api_urls'        :   api_urls,
 	'api_key'         :   api_key,
 	'api_ids'         :   api_ids,
 	'api_cache_msec'  :   6000,     // cache API responses for this many milliseconds; default: 6s
