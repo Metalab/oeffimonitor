@@ -9,11 +9,11 @@
 }
 
 body {
-	margin:0;
+	margin:0 0.5em 0 0.5em;
 	font-family: 'Roboto Condensed', Helvetica, Arial, sans-serif;
 	background-color: white;
 	color: black;
-	font-size:50px;
+	font-size:45px;
 }
 
 #error {
@@ -93,7 +93,7 @@ tr > td:nth-child(3) { padding-right: 10px; }
 body { overflow: hidden; }
 
 h1 {
-	font-size: 1.5em;
+	font-size: 1.2em;
 	margin: 0.2em 0 0.2em 0;
 }
 #error {
@@ -108,10 +108,10 @@ td {
 
 /* Weather forecast */
 #weather {
-	border-bottom: 1px solid black;
+	/*border-bottom: 1px solid black;*/
 }
 
 #forecast {
-	height:8em;
-	border:1px dotted black;
+	height:6em;
+	/*border:1px dotted black;*/
 }
