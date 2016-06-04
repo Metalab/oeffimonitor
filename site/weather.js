@@ -10,10 +10,9 @@
     forecast.addEventListener("load", function(){
       console.log("Forecast Load Event");
       weather = new WeatherWidget(document.getElementById('forecast').contentDocument);
-      updateWeather();
       var icons = Object.keys(weather.icon);
       var iconIndex = 0;
-      window.setTimeout(switchIcon,2000);
+      switchIcon();
 
       function switchIcon() {
         console.log("Switch to icon "
@@ -25,15 +24,9 @@
         weather.setIcon(weather.icon[icons[iconIndex]]);
         weather.setTemperatures(iconIndex,iconIndex);
         iconIndex >= (icons.length - 1) ? iconIndex = 0 : iconIndex++;
-        window.setTimeout(switchIcon,2000); // timeout recursion
+        window.setTimeout(switchIcon,10000); // timeout recursion
       };
     });
-  }
-
-  function updateWeather() {
-    // console.log("Icon:"+weather.getIcon());
-    // weather.setIcon("#tsra");
-    // console.log("Icon:"+weather.getIcon());
   }
 
   function WeatherWidget(svg) {
@@ -98,8 +91,8 @@
      * @param  {Number} max maximum temperature expected
      */
     function setTemperatures(min, max) {
-      setText(minTemperature,min.toFixed(0));
-      setText(maxTemperature,max.toFixed(0));
+      setText(minTemperature,(0 - 5 - min).toFixed(0));
+      setText(maxTemperature,(10 + max).toFixed(0));
       function setText(node,text) {
         var textNode = svg.createTextNode(text);
         if (node.firstChild !== null) {
