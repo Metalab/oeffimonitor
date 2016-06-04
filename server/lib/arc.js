@@ -96,6 +96,9 @@ function Arc(options) {
      * @param  {Response} responseHandle response handle to send result to
      */
     function sendResponse(responseHandle) {
+      responseHandle.header('Cache-Control', 'private, no-cache, no-store, must-revalidate');
+      responseHandle.header('Expires', '-1');
+      responseHandle.header('Pragma', 'no-cache');
       if (this.contentType) responseHandle.type(this.contentType);
   		responseHandle.status(this.statusCode);
   		responseHandle.send(this.bufferedResponse); // TODO what happens if this timed out?
