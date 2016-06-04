@@ -72,7 +72,7 @@ function make_row(table, entry)
 	var tdTimeString = document.createElement("b");
 	tdTimeString.appendChild(document.createTextNode(waitTimeString));
 	tdTimeString.className="departureTime";
-	tdTime.appendChild(tdTimeString); 
+	tdTime.appendChild(tdTimeString);
 
 	tdTime.appendChild(document.createTextNode("\u00A0+" + (waitHours ? waitHours + 'h' : '') + (waitMinutes < 10 ? '0' : '') + waitMinutes + "m" + /*(waitSeconds < 10 ? '0' : '') + */Math.floor(waitSeconds / 10) + "0s"));
 	tr.appendChild(tdTime);
@@ -257,7 +257,8 @@ function update()
 	req.send();
 }
 
-window.onload = function () {
+document.addEventListener("DOMContentLoaded", updateOeffiTable);
+function updateOeffiTable() {
 	update();
 	window.setInterval(update, 10000);
 };

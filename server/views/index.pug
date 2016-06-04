@@ -2,11 +2,15 @@ extends layout
 
 block head
 	meta(http-equiv='Content-Type', content='text/html; charset=utf-8')
+	script(type='text/javascript', src='weather.js')
 	script(type='text/javascript', src='update.js')
 	script(type='text/javascript', src='settings.js')
 	link(href='/themes/' + theme, type='text/css', rel='stylesheet')
 
 block content
+	#weather
+		h1 Weather Forecast
+		object#forecast(type="image/svg+xml",data="/themes/assets/weather.svg")
 	#container
 		h1 #{title}
 			span#currentTime
