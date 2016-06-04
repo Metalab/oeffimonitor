@@ -9,7 +9,7 @@
     forecast.addEventListener("load", function(event){
       console.log("Load event");
       weather = new WeatherWidget(document.getElementById('forecast').contentDocument);
-      updateDisplay(); // start update loop
+      window.setInterval(updateDisplay,10000); // schedule reload
     });
   }
 
@@ -38,8 +38,6 @@
       forecast:null,
       checkAllLoaded: function checkAllLoaded() {
         if (!this.current || !this.forecast) return;
-        window.setTimeout(updateDisplay,10000); // schedule reload
-        console.log('setTimeout weather data');
         setErrorIconVisible(false);
         callback(this);
       }
@@ -48,7 +46,7 @@
     getHTTP('/weather',onCurrentWeatherLoaded,onError);
     getHTTP('/forecast',onForecastLoaded,onError);
 
-    function onError() { setErrorIconVisible(true); window.setTimeout(updateDisplay,10000); console.log('setTimeout onError'); }
+    function onError() { setErrorIconVisible(true); }
     function onCurrentWeatherLoaded() { weatherData.current = this.response; weatherData.checkAllLoaded(); }
     function onForecastLoaded() { weatherData.forecast = this.response; weatherData.checkAllLoaded(); }
   }
