@@ -9,6 +9,7 @@
     forecast.addEventListener("load", function(event){
       console.log("Load event");
       weather = new WeatherWidget(document.getElementById('forecast').contentDocument);
+      updateDisplay();
       window.setInterval(updateDisplay,10000); // schedule reload
     });
   }
