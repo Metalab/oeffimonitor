@@ -2,17 +2,22 @@ extends layout
 
 block head
 	meta(http-equiv='Content-Type', content='text/html; charset=utf-8')
-	script(type='text/javascript', src='weather.js')
+	script(type='text/javascript', src='js/weather/WeatherWidget.js')
+	script(type='text/javascript', src='js/weather/weather.js')
 	script(type='text/javascript', src='update.js')
 	script(type='text/javascript', src='settings.js')
 	link(href='/themes/' + theme, type='text/css', rel='stylesheet')
 
 block content
 	#weather
-		h1 Weather Forecast
+		h1
+			span.error#weatherError ⚠
+			| Weather Forecast
 		object#forecast(type="image/svg+xml",data="/themes/assets/weather.svg")
 	#container
-		h1 #{title}
+		h1
+			span.error#trafficError ⚠
+			| #{title}
 			span#currentTime
 	#error
 		h2 Oh noes, something broke!

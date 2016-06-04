@@ -16,6 +16,12 @@ body {
 	font-size:45px;
 }
 
+span.error {
+	color:red;
+	font-family:sans-serif;
+	display:none;
+}
+
 #error {
 	background-color: #F2DEDE;
 	color: black;
@@ -112,6 +118,38 @@ td {
 }
 
 #forecast {
-	height:6em;
+	/*height:6em;*/
+	width:90%;
 	/*border:1px dotted black;*/
+}
+
+/* SVG styles */
+svg {
+	fill:black;
+	font-family:"Roboto Condensed";
+}
+
+line {
+	stroke:black;
+}
+
+svg text#currentTemperature {
+	text-anchor:middle;
+	font-size:80px;
+}
+
+svg text.forecastTime {
+	text-anchor:middle;
+	font-size:60px;
+}
+
+svg text.forecastTemperature {
+	text-anchor:middle;
+	/*font-weight:bold;*/
+	font-size:30px;
+}
+
+
+line.separator {
+	 stroke-width:2;
 }
