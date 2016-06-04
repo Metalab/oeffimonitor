@@ -1,14 +1,11 @@
 (function () {
   var svg;
   var weather;
-  console.log("Add Window Event Listener");
   document.addEventListener("DOMContentLoaded", onReady);
 
   function onReady(){
-    console.log("Add forecast Event Listener");
     var forecast = document.getElementById('forecast');
     forecast.addEventListener("load", function(){
-      console.log("Forecast Load Event");
       weather = new WeatherWidget(document.getElementById('forecast').contentDocument);
       var icons = Object.keys(weather.icon);
       var iconIndex = 0;
@@ -16,7 +13,7 @@
 
       function switchIcon() {
         console.log("Switch to icon "
-          + weather.icon[icons[iconIndex]]
+          + icons[iconIndex]
           +" (idx: "
           + iconIndex
           +")"
@@ -37,29 +34,29 @@
     this.getIcon = getIcon;
     this.setTemperatures = setTemperatures;
     this.icon = {
-      bkn: '#bkn',
+      mostlyCloudy: '#bkn',
       blizzard: '#blizzard',
       cold: '#cold',
-      du: '#du',
-      few: '#few',
-      fg: '#fg',
-      fu: '#fu',
-      fzra: '#fzra',
-      hi_shwrs: '#hi_shwrs',
+      dust: '#du',
+      fewClouds: '#few',
+      fog: '#fg',
+      smoke: '#fu',
+      freezingRain: '#fzra',
+      rainShowersInVicinity: '#hi_shwrs',
       hot: '#hot',
-      ip: '#ip',
+      icePellets: '#ip',
       mix: '#mix',
-      ovc: '#ovc',
-      ra: '#ra',
-      raip: '#raip',
-      rasn: '#rasn',
-      sct: '#sct',
+      overcast: '#ovc',
+      rain: '#ra',
+      rainIcePellets: '#raip',
+      rainSnow: '#rasn',
+      partlyCloudy: '#sct',
       sctfg: '#sctfg',
-      scttsra: '#scttsra',
-      shra: '#shra',
-      skc: '#skc',
-      sn: '#sn',
-      tsra: '#tsra',
+      thunderstormInVicinity: '#scttsra',
+      rainShowers: '#shra',
+      clearSky: '#skc',
+      snow: '#sn',
+      thunderstormRain: '#tsra',
       wind: '#wind'
     };
 
