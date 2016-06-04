@@ -13,7 +13,7 @@ body {
 	font-family: 'Roboto Condensed', Helvetica, Arial, sans-serif;
 	background-color: white;
 	color: black;
-	font-size:12pt;
+	font-size:50px;
 }
 
 #error {
@@ -44,8 +44,8 @@ thead { font-weight: bold; }
 tbody > tr:nth-child(2n) { background: #eee; }
 /*tbody > tr:nth-child(2n+1) { background: #333; }*/
 td { border: none; }
-tr > td:nth-child(1) { 
-    text-align: left; 
+tr > td:nth-child(1) {
+    text-align: left;
 }
 
 tr > td:nth-child(2) {
@@ -91,16 +91,27 @@ tr > td:nth-child(3) { padding-right: 10px; }
 }
 
 body { overflow: hidden; }
-h1 { font-size: 5em; }
+
+h1 {
+	font-size: 1.5em;
+	margin: 0.2em 0 0.2em 0;
+}
 #error {
-    font-size:3em;
+    font-size:1em;
 }
 
 td {
-    font-size: 3em;
+    font-size: 1em;
     overflow: hidden;
     white-space: nowrap;
 }
 
+/* Weather forecast */
+#weather {
+	border-bottom: 1px solid black;
+}
 
- 
+#forecast {
+	height:8em;
+	border:1px dotted black;
+}
