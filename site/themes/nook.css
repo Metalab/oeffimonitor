@@ -145,7 +145,11 @@ svg text.forecastTime {
 
 svg text.forecastTemperature {
 	text-anchor:middle;
-	/*font-weight:bold;*/
+	font-size:30px;
+}
+
+svg text#lastUpdate {
+	text-anchor:end;
 	font-size:30px;
 }
 
