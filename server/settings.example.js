@@ -19,7 +19,9 @@ var api_ids = [
         "5691" // Auerspergstraße N46
 ];
 var api_urls = {
-  realtime: 'http://www.wienerlinien.at/ogd_realtime/monitor?sender='+api_key+'&rbl='+api_ids.join("&rbl=")
+  realtime: 'http://www.wienerlinien.at/ogd_realtime/monitor?sender='+api_key+'&rbl='+api_ids.join("&rbl="),
+  weather: 'http://api.openweathermap.org/data/2.5/weather?id=CITY_ID&appid=API_KEY&units=metric',
+  forecast: 'http://api.openweathermap.org/data/2.5/forecast?id=CITY_ID&appid=API_KEY&units=metric'
 }
 
 module.exports = {
