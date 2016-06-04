@@ -1,36 +1,33 @@
 (function () {
-  var svg;
   var weather;
   var mapping = new WeatherConditionMapping();
+  var forecast;
   document.addEventListener("DOMContentLoaded", onReady);
 
   function onReady(){
-    var forecast = document.getElementById('forecast');
+    forecast = document.getElementById('forecast');
     forecast.addEventListener("load", function(){
       weather = new WeatherWidget(document.getElementById('forecast').contentDocument);
-      /*weather.setCurrentIcon(weather.icons.rain);
-      weather.setForecasts([
-        { iconId: weather.icons.snow, time: '06:00' },
-        { iconId: weather.icons.rain, time: '16:00' },
-        { iconId: weather.icons.freezingRain, time: '13:00' },
-        { iconId: weather.icons.clearSky, time: '00:00' }
-      ]);*/
-      getWeatherData(onWeatherDataReceived);
-      function onWeatherDataReceived(weatherData){
-        weather.setCurrentIcon(mapping.getIcon(weatherData.current.weather[0].id));
-        weather.setCurrentTemperature(weatherData.current.main.temp);
-        var forecasts = weatherData.forecast.list;
-        var relevantForecasts = forecasts.slice(0,Math.min(4,forecasts.length));
-        var processedForecasts = relevantForecasts.map(function (forecast){
-          return {
-            iconId: mapping.getIcon(forecast.weather[0].id),
-            time: formatTime(forecast.dt * 1000), // format is seconds since unix epoch, convert to msecs
-            temperature: forecast.main.temp
-          };
-        });
-        weather.setForecasts(processedForecasts);
-      }
+      updateDisplay(); // start update loop
     });
+  }
+
+  function updateDisplay() {
+    getWeatherData(onWeatherDataReceived);
+    function onWeatherDataReceived(weatherData){
+      weather.setCurrentIcon(mapping.getIcon(weatherData.current.weather[0].id));
+      weather.setCurrentTemperature(weatherData.current.main.temp);
+      var forecasts = weatherData.forecast.list;
+      var relevantForecasts = forecasts.slice(0,Math.min(4,forecasts.length));
+      var processedForecasts = relevantForecasts.map(function (forecast){
+        return {
+          iconId: mapping.getIcon(forecast.weather[0].id),
+          time: formatTime(forecast.dt * 1000), // format is seconds since unix epoch, convert to msecs
+          temperature: forecast.main.temp
+        };
+      });
+      weather.setForecasts(processedForecasts);
+    }
   }
 
   function getWeatherData(callback){
@@ -40,6 +37,8 @@
       forecast:null,
       checkAllLoaded: function checkAllLoaded() {
         if (!this.current || !this.forecast) return;
+        window.setTimeout(updateDisplay,10000); // schedule reload
+        console.log('setTimeout weather data');
         setErrorIconVisible(false);
         callback(this);
       }
@@ -48,7 +47,7 @@
     getHTTP('/weather',onCurrentWeatherLoaded,onError);
     getHTTP('/forecast',onForecastLoaded,onError);
 
-    function onError() { setErrorIconVisible(true); }
+    function onError() { setErrorIconVisible(true); window.setTimeout(updateDisplay,10000); console.log('setTimeout onError'); }
     function onCurrentWeatherLoaded() { weatherData.current = this.response; weatherData.checkAllLoaded(); }
     function onForecastLoaded() { weatherData.forecast = this.response; weatherData.checkAllLoaded(); }
   }
@@ -64,16 +63,31 @@
 
   function getHTTP(url,completeCallback,errorCallback) {
     var request = new XMLHttpRequest();
-    request.addEventListener("load",completeCallback);
+    request.addEventListener("load",statusInterceptor);
     request.addEventListener("error",errorCallback);
     request.responseType = 'json';
     request.open('GET',url);
     request.send();
+
+    function statusInterceptor() {
+      if (this.status != 200) {
+        errorCallback.apply(this);
+      } else {
+        completeCallback.apply(this);
+      }
+    }
   }
 
   function setErrorIconVisible(visible) {
     var errorSpan = document.getElementById('weatherError');
-    visible ? errorSpan.style.display = 'inline' : errorSpan.style.display = 'none';
+    if (visible) {
+      errorSpan.style.display = 'inline'
+      forecast.style.display = 'none';
+    } else {
+      errorSpan.style.display = 'none';
+      forecast.style.display = 'inline';
+    }
+
   }
 
   // Mappings of weather conditions to icons as defined by openweathermap
