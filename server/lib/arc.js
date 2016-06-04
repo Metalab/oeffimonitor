@@ -41,6 +41,7 @@ function Arc(options) {
     this.updating = false;
     this.bufferedResponse = null;
     this.contentType = null;
+    this.statusCode = null;
     this.on('apiResponseReceived',function onApiResponseReceived() {
       debug("#apiResponseReceived");
       this.apiResponseReceived()
@@ -95,8 +96,8 @@ function Arc(options) {
      * @param  {Response} responseHandle response handle to send result to
      */
     function sendResponse(responseHandle) {
-      responseHandle.type(this.contentType);
-  		responseHandle.status(200);
+      if (this.contentType) responseHandle.type(this.contentType);
+  		responseHandle.status(this.statusCode);
   		responseHandle.send(this.bufferedResponse); // TODO what happens if this timed out?
   		this.pending.delete(responseHandle);
     };
@@ -115,8 +116,17 @@ function Arc(options) {
         http.get(this.options.apiUrl, processResponse).on('error', onError);
 
         function onError(error) {
-          debug('api request to URL('+this.options.apiUrl+') failed: ' + error);
-          _this.updating = false; // TODO better handling? Response Handles will only be completed next time someone asks and a result is received
+          debug('api request to URL('+_this.options.apiUrl+') failed:');
+          debug(JSON.stringify(error));
+
+          _this.statusCode = 500;
+          _this.contentType = 'text/plain';
+          _this.bufferedResponse = new Buffer(JSON.stringify({
+            statusCode: _this.statusCode,
+            statusMessage: 'Internal Server Error',
+            text: 'Error while trying to receive a result from the web api. More details available in debug log for component server:lib:arc'
+          }));
+          _this.emit('apiResponseReceived');
         };
 
         function processResponse(response) {
@@ -127,14 +137,21 @@ function Arc(options) {
             .on('error', onError);
 
           function onChunkReceived(chunk) {
-            if (response.statusCode !== 200)
-              return response.emit('error');
-            _this.contentType = response.headers['content-type'];
             receivedChunks.push(chunk);
           }
 
           function onResponseCompletelyReceived(){
+            _this.statusCode = response.statusCode;
+            _this.contentType = response.headers['content-type'];
             _this.bufferedResponse = Buffer.concat(receivedChunks);
+            if (response.statusCode !== 200) {
+              _this.bufferedResponse = new Buffer(JSON.stringify({
+                statusCode: response.statusCode,
+                statusMessage: response.statusMessage,
+                text: 'Error while trying to receive a result from the web api'
+              }));
+            }
+
             _this.emit('apiResponseReceived');
           }
         };
