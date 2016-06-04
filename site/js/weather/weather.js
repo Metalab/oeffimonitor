@@ -6,7 +6,8 @@
 
   function onReady(){
     forecast = document.getElementById('forecast');
-    forecast.addEventListener("load", function(){
+    forecast.addEventListener("load", function(event){
+      console.log("Load event");
       weather = new WeatherWidget(document.getElementById('forecast').contentDocument);
       updateDisplay(); // start update loop
     });
@@ -82,10 +83,10 @@
     var errorSpan = document.getElementById('weatherError');
     if (visible) {
       errorSpan.style.display = 'inline'
-      forecast.style.display = 'none';
+      // forecast.style.display = 'none'; REMOVED - bug at least in Chrome will force a reload of the SVG, retriggering the load event
     } else {
       errorSpan.style.display = 'none';
-      forecast.style.display = 'inline';
+      // forecast.style.display = 'inline'; REMOVED - bug at least in Chrome will force a reload of the SVG, retriggering the load event
     }
 
   }
