@@ -80,6 +80,8 @@
   <text class="forecastTime" x="1140" y="280"></text>
 </g>
 
+<text id="lastUpdate" x="1240" y="380">Last Update:</text>
+
 <!--
 <path d="m199,447.35,0,321.5,3,0,0-321.5-3,0z"/>
 <path d="m398,447.35,0,321.5,3,0,0-321.5-3,0z"/>

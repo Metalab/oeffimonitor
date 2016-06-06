@@ -1,3 +1,4 @@
+var weatherUpdateFunction;
 (function () {
   var weather;
   var mapping = new WeatherConditionMapping();
@@ -10,7 +11,9 @@
       console.log("Load event");
       weather = new WeatherWidget(document.getElementById('forecast').contentDocument);
       updateDisplay();
-      window.setInterval(updateDisplay,10000); // schedule reload
+      weatherUpdateFunction = function() {
+        updateDisplay();
+      }
     });
   }
 

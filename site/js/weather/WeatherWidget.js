@@ -8,6 +8,7 @@ var WeatherWidget = (function () {
     var forecastIcons = svg.getElementsByClassName('weatherIcon');
     var forecastTimes = svg.getElementsByClassName('forecastTime');
     var forecastTemperatures = svg.getElementsByClassName('forecastTemperature');
+    var lastUpdate = svg.getElementById('lastUpdate');
     this.setCurrentTemperature = setCurrentTemperature;
     this.setCurrentIcon = setCurrentIcon;
     this.setForecasts = setForecasts;
@@ -48,6 +49,7 @@ var WeatherWidget = (function () {
      * @return {type}           description
      */
     function setForecasts(forecasts) {
+      refreshLastUpdate();
       forecasts.forEach(function processForecast(forecast, index){
         if (forecastIcons[index] && forecastTimes[index] && forecastTemperatures[index]) {
           setIcon(forecastIcons[index],this.icons[forecast.iconId]);
@@ -63,9 +65,9 @@ var WeatherWidget = (function () {
      * @param  {String} iconId id of the icon from the svg file (xlink:href syntax)
      */
     function setCurrentIcon(iconId) {
+      refreshLastUpdate();
       setIcon(weatherIcon,this.icons[iconId]);
     }
-
 
     /**
      * setCurrentTemperature - updates the current temperature in the graphic
@@ -73,6 +75,7 @@ var WeatherWidget = (function () {
      * @param  {Number} temperature temperature in degrees Celsius
      */
     function setCurrentTemperature(temperature) {
+      refreshLastUpdate();
       setText(currentTemperature, temperature.toFixed(0)+" °C");
     }
 
@@ -98,6 +101,20 @@ var WeatherWidget = (function () {
     function getIcon(node) {
       return node.getAttributeNS('http://www.w3.org/1999/xlink', 'href');
     }
+
+    function refreshLastUpdate() {
+      setText(lastUpdate,'Last Update ' + formatTime(new Date()) );
+    }
+
+    function formatTime(date) {
+    	var hours = "0" + date.getHours();
+    	var minutes = "0" + date.getMinutes();
+      var seconds = "0" + date.getSeconds();
+
+    	var formattedTime = hours.substr(-2) + ':' + minutes.substr(-2)+':'+seconds.substr(-2);
+    	return formattedTime;
+    }
+
   }
 
 })()

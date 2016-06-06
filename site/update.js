@@ -225,6 +225,12 @@ function formatLines(line)
 
 function update()
 {
+
+	// Also update weather if loaded
+	if (typeof weatherUpdateFunction === 'function') {
+		weatherUpdateFunction();
+	}
+
 	document.getElementById("error").style.display = "none";
 	document.getElementById("container").style.opacity = "1";
 
