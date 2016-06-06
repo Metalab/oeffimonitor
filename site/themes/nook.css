@@ -112,6 +112,10 @@ td {
     white-space: nowrap;
 }
 
+td:nth-of-type(3) {
+	display: none;
+}
+
 /* Weather forecast */
 #weather {
 	/*border-bottom: 1px solid black;*/
