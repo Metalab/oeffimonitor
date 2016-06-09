@@ -82,21 +82,25 @@ function Arc(options) {
     function add(response) {
       // cached API response not yet expired? Deliver it right away.
   		if (this.isExpired()) {
+
         debug("Add response handle to pending");
         this.pending.add(response);
         response.on('finish', removeFromPending);
-        function removeFromPending() {
-          // Using the event handler makes sure this will also be removed if e.g. an
-          // error in the code causes an error message to be sent before the API cache
-          // received any results to transmit
-          debug('Removing response object from pending');
-          _this.pending.delete(response);
-        }
+
     		this.update();
     		return;
   		}
       debug("Send cached response");
       this.sendResponse(response);
+
+      function removeFromPending() {
+        // Using the event handler makes sure this will also be removed if e.g. an
+        // error in the code causes an error message to be sent before the API cache
+        // received any results to transmit
+        debug('Removing response object from pending');
+        _this.pending.delete(response);
+      }
+
     }
 
     /**
