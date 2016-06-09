@@ -1,15 +1,16 @@
 "use strict";
 var http = require('http');
-var debug = require('debug')('server:lib:Arc');
+var debugFactory = require('debug');
 var events = require('events');
 var settings = require("../settings");
 var _ = require('lodash');
 var util = require("util");
-
+var arcInstanceCounter = 0;
 // TODO deprecated in node > v0.12.0, leave for now to be compatible with older versions on ARM
 // should be replaced by class ... extends ...
 util.inherits(Arc, events.EventEmitter);
 module.exports = Arc;
+
 
 /**
  * Arc - API Response Cache
@@ -25,9 +26,18 @@ module.exports = Arc;
 function Arc(options) {
     // Super Constructor
     events.EventEmitter.call(this);
+
+    // this-Ref for event handlers
+    var _this = this;
+
+    // Set up instance specific logger
+    var debug = debugFactory('server:lib:Arc:'+ arcInstanceCounter++ );
+    this.instanceNumber = arcInstanceCounter;
+
     // Set  default options - TODO might be better to remove settings dependency
     this.options = {
       maxAgeMilliSeconds: settings.api_cache_msec,
+      timeout: settings.api_cache_msec / 2,
       apiUrl: ''
     };
     // overwrite this.options-Properties with those that were explicitly set in options parameter of function
@@ -74,6 +84,14 @@ function Arc(options) {
   		if (this.isExpired()) {
         debug("Add response handle to pending");
         this.pending.add(response);
+        response.on('finish', removeFromPending);
+        function removeFromPending() {
+          // Using the event handler makes sure this will also be removed if e.g. an
+          // error in the code causes an error message to be sent before the API cache
+          // received any results to transmit
+          debug('Removing response object from pending');
+          _this.pending.delete(response);
+        }
     		this.update();
     		return;
   		}
@@ -102,7 +120,7 @@ function Arc(options) {
       if (this.contentType) responseHandle.type(this.contentType);
   		responseHandle.status(this.statusCode);
   		responseHandle.send(this.bufferedResponse); // TODO what happens if this timed out?
-  		this.pending.delete(responseHandle);
+  		// this.pending.delete(responseHandle); --> moved to finish-Event of response
     };
 
 
@@ -116,9 +134,16 @@ function Arc(options) {
         this.updating = true;
         var _this = this;
         debug("Send web api request");
-        http.get(this.options.apiUrl, processResponse).on('error', onError);
+        var request = http.get(this.options.apiUrl, processResponse);
+        request
+          .on('error', onError)
+          .setTimeout(this.options.timeout,onTimeout);
 
-        function onError(error) {
+        function onTimeout() {
+          request.abort();
+        }
+
+        function onError(error, reason) {
           debug('api request to URL('+_this.options.apiUrl+') failed:');
           debug(JSON.stringify(error));
 
@@ -127,7 +152,7 @@ function Arc(options) {
           _this.bufferedResponse = new Buffer(JSON.stringify({
             statusCode: _this.statusCode,
             statusMessage: 'Internal Server Error',
-            text: 'Error while trying to receive a result from the web api. More details available in debug log for component server:lib:arc'
+            text: (reason ? reason : 'Error while trying to receive a result from the web api. More details available in debug log for component server:lib:arc')
           }));
           _this.emit('apiResponseReceived');
         };
