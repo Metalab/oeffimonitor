@@ -82,11 +82,9 @@ function Arc(options) {
     function add(response) {
       // cached API response not yet expired? Deliver it right away.
   		if (this.isExpired()) {
-
         debug("Add response handle to pending");
         this.pending.add(response);
         response.on('finish', removeFromPending);
-
     		this.update();
     		return;
   		}
