@@ -140,6 +140,7 @@ function Arc(options) {
           .setTimeout(this.options.timeout,onTimeout);
 
         function onTimeout() {
+          debug("api request timed out, aborting request");
           request.abort();
         }
 
