@@ -143,3 +143,39 @@ td.soon:nth-child(1)::before {
 	20% { opacity: 1; }
 	100% { opacity: .2; }
 }
+
+
+/* SVG styles */
+svg {
+	fill:white;
+	font-family:"Roboto Condensed";
+}
+
+line {
+	stroke:white;
+}
+
+svg text#currentTemperature {
+	text-anchor:middle;
+	font-size:80px;
+}
+
+svg text.forecastTime {
+	text-anchor:middle;
+	font-size:60px;
+}
+
+svg text.forecastTemperature {
+	text-anchor:middle;
+	font-size:30px;
+}
+
+svg text#lastUpdate {
+	text-anchor:end;
+	font-size:30px;
+}
+
+
+line.separator {
+	 stroke-width:2;
+}

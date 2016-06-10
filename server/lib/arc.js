@@ -132,14 +132,14 @@ function Arc(options) {
 		}
 		this.updating = true;
 		debug("Send web api request");
-		var request = http.get(this.options.apiUrl, processResponse);
+		var request = http.get(this.options.apiUrl, processResponse.bind(this));
 		request
 			.on('error', onError.bind(this))
 			.setTimeout(this.options.timeout,onTimeout);
 
 		function onTimeout() {
-		debug("api request timed out, aborting request");
-		request.abort();
+			debug("api request timed out, aborting request");
+			request.abort();
 		}
 
 		function onError(error, reason) {
@@ -156,7 +156,7 @@ function Arc(options) {
 			this.emit('apiResponseReceived');
 		};
 
-			function processResponse(response) {
+		function processResponse(response) {
 			var receivedChunks = [];
 			response
 				.on('data', onChunkReceived)
@@ -168,6 +168,7 @@ function Arc(options) {
 			}
 
 			function onResponseCompletelyReceived(){
+				debug("Response completely received");
 				this.statusCode = response.statusCode;
 				this.contentType = response.headers['content-type'];
 				this.bufferedResponse = Buffer.concat(receivedChunks);
@@ -178,7 +179,7 @@ function Arc(options) {
 						text: 'Error while trying to receive a result from the web api'
 					}));
 				}
-				this.emit('apiResponseReceived');
+			this.emit('apiResponseReceived');
 			}
 		};
 	}
