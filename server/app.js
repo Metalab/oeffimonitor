@@ -19,17 +19,17 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(favicon(__dirname + '/../site/favicon.ico'));
 
 _.each(routes, function(controller, route) {
-  debug("Add route %s",route);
-  app.use(route,controller(app, route));
+	debug("Add route %s",route);
+	app.use(route,controller(app, route));
 });
 
 app.use(express.static(path.join(__dirname, '../site')));
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
-  var err = new Error('Not Found');
-  err.status = 404;
-  next(err);
+	var err = new Error('Not Found');
+	err.status = 404;
+	next(err);
 });
 
 module.exports = app;
