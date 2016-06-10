@@ -27,9 +27,6 @@ function Arc(options) {
 	// Super Constructor
 	events.EventEmitter.call(this);
 
-	// this-Ref for event handlers
-	var _this = this;
-
 	// Set up instance specific logger
 	var debug = debugFactory('server:lib:Arc:'+ arcInstanceCounter++ );
 	this.instanceNumber = arcInstanceCounter;
@@ -84,7 +81,7 @@ function Arc(options) {
 		if (this.isExpired()) {
 			debug("Add response handle to pending");
 			this.pending.add(response);
-			response.on('finish', removeFromPending);
+			response.on('finish', removeFromPending.bind(this));
 			this.update();
 			return;
 		}
@@ -96,7 +93,7 @@ function Arc(options) {
 			// error in the code causes an error message to be sent before the API cache
 			// received any results to transmit
 			debug('Removing response object from pending');
-			_this.pending.delete(response);
+			this.pending.delete(response);
 		}
 
 	}
@@ -134,11 +131,10 @@ function Arc(options) {
 			return; // Update already in progress
 		}
 		this.updating = true;
-		var _this = this;
 		debug("Send web api request");
 		var request = http.get(this.options.apiUrl, processResponse);
 		request
-			.on('error', onError)
+			.on('error', onError.bind(this))
 			.setTimeout(this.options.timeout,onTimeout);
 
 		function onTimeout() {
@@ -147,42 +143,42 @@ function Arc(options) {
 		}
 
 		function onError(error, reason) {
-			debug('api request to URL('+_this.options.apiUrl+') failed:');
+			debug('api request to URL('+this.options.apiUrl+') failed:');
 			debug(JSON.stringify(error));
 
-			_this.statusCode = 500;
-			_this.contentType = 'text/plain';
-			_this.bufferedResponse = new Buffer(JSON.stringify({
-				statusCode: _this.statusCode,
+			this.statusCode = 500;
+			this.contentType = 'text/plain';
+			this.bufferedResponse = new Buffer(JSON.stringify({
+				statusCode: this.statusCode,
 				statusMessage: 'Internal Server Error',
 				text: (reason ? reason : 'Error while trying to receive a result from the web api. More details available in debug log for component server:lib:arc')
 			}));
-			_this.emit('apiResponseReceived');
+			this.emit('apiResponseReceived');
 		};
 
 			function processResponse(response) {
 			var receivedChunks = [];
 			response
 				.on('data', onChunkReceived)
-				.on('end', onResponseCompletelyReceived)
-				.on('error', onError);
+				.on('end', onResponseCompletelyReceived.bind(this))
+				.on('error', onError.bind(this));
 
 			function onChunkReceived(chunk) {
 				receivedChunks.push(chunk);
 			}
 
 			function onResponseCompletelyReceived(){
-				_this.statusCode = response.statusCode;
-				_this.contentType = response.headers['content-type'];
-				_this.bufferedResponse = Buffer.concat(receivedChunks);
+				this.statusCode = response.statusCode;
+				this.contentType = response.headers['content-type'];
+				this.bufferedResponse = Buffer.concat(receivedChunks);
 				if (response.statusCode !== 200) {
-					_this.bufferedResponse = new Buffer(JSON.stringify({
+					this.bufferedResponse = new Buffer(JSON.stringify({
 						statusCode: response.statusCode,
 						statusMessage: response.statusMessage,
 						text: 'Error while trying to receive a result from the web api'
 					}));
 				}
-				_this.emit('apiResponseReceived');
+				this.emit('apiResponseReceived');
 			}
 		};
 	}
