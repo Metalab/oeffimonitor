@@ -17,6 +17,13 @@ body {
 
 h1 { margin: 20px; }
 
+/* Hide Unicode-Warning Symbol in front of headings by default, made visible by Javascript */
+span.error {
+	color:red;
+	font-family:sans-serif;
+	display:none;
+}
+
 #error {
 	background-color: #F2DEDE;
 	color: black;
