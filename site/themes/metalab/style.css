@@ -145,6 +145,16 @@ td.soon:nth-child(1)::before {
 }
 
 
+/* Weather forecast */
+#weather {
+}
+
+#forecast {
+	margin-left:1em;
+	height:10em;
+	/*width:90%;*/
+}
+
 /* SVG styles */
 svg {
 	fill:white;

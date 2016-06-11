@@ -15,12 +15,24 @@ Written in Javascript for use on a Raspberry Pi in a CSS3 capable browser in Kio
 
 Happy hacking!
 
+### Weather forecast
+
+See settings.example.js and add weather and forecast api_urls:
+    weather: 'http://api.openweathermap.org/data/2.5/weather?id=CITY_ID&appid=API_KEY&units=metric',
+    forecast: 'http://api.openweathermap.org/data/2.5/forecast?id=CITY_ID&appid=API_KEY&units=metric'
+
+**API_KEY**: register at www.openweathermap.org for a free API key and enter this in settings.js
+**CITY_ID**: Go to www.openweathermap.org and search for your city, you will be redirected to a URL containing the City ID, e.g. http://openweathermap.org/city/2761369 for Vienna, use 2761369 as CITY_ID in your api_urls
+
+**If either of the two URLs is missing, weather forecast will be disabled.**
+TODO: Weather forecast is currently styled using a hardcoded css link, if the graphic seems to be not visible check the referenced .css in weather.svg
+
 ### Theme support
 
-Enter the name of the appropriate css file in the ```server/settings.js``` file. It should be located under ````site/themes```.
+Enter the name of the appropriate folder for the css and assets in the ```server/settings.js``` file. It should be located under ````site/themes```.
 Contained in the repository are two themes:
-- ```metalab.css```: Design as used by metalab
-- ```nook.css```: Simplified design for use on a nook simple touch eInk Reader, black and white only
+- ```metalab```: Design as used by metalab
+- ```nook```: Simplified design for use on a nook simple touch eInk Reader, black and white only
 
 ### Debugging
 
@@ -47,5 +59,3 @@ Then the Öffimonitor can be started using the systemd:
 ```
 
 Systemd will monitor the node process and restart the server as appropriate
-
-
