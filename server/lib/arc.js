@@ -20,7 +20,7 @@ class Arc extends EventEmitter {
 	constructor(options) {
 		super();
 		// Set up instance specific logger
-		var debug = debugFactory('server:lib:Arc:'+ arcInstanceCounter++ );
+		this.log = debugFactory('server:lib:Arc:'+ arcInstanceCounter++ );
 		this.instanceNumber = arcInstanceCounter;
 
 		// Set  default options - TODO might be better to remove settings dependency
@@ -33,8 +33,8 @@ class Arc extends EventEmitter {
 		if (options) {
 			this.options = _.defaults(options, this.options);
 		}
-		debug("Creating new API Response Cache");
-		debug(this.options);
+		this.log("Creating new API Response Cache");
+		this.log(this.options);
 
 		this.pending = new Set();
 		this.lastUpdate = 0;
@@ -43,7 +43,7 @@ class Arc extends EventEmitter {
 		this.contentType = null;
 		this.statusCode = null;
 		this.on('apiResponseReceived',() =>{
-			debug("#apiResponseReceived");
+			this.log("#apiResponseReceived");
 			this.apiResponseReceived();
 		});
 	}
@@ -60,7 +60,7 @@ class Arc extends EventEmitter {
 		*/
 		isExpired() {
 			var isExpired = Date.now() - this.lastUpdate > this.options.maxAgeMilliSeconds;
-			debug("Response expired: %s",isExpired);
+			this.log("Response expired: %s",isExpired);
 			return isExpired;
 		}
 
@@ -71,19 +71,19 @@ class Arc extends EventEmitter {
 		*/
 		add(response) {
 			let removeFromPending = () => {
-				debug('Removing response object from pending');
+				this.log('Removing response object from pending');
 				this.pending.delete(response);
 			}
 
 			// cached API response not yet expired? Deliver it right away.
 			if (this.isExpired()) {
-				debug("Add response handle to pending");
+				this.log("Add response handle to pending");
 				this.pending.add(response);
 				response.on('finish', removeFromPending);
 				this.update();
 				return;
 			}
-			debug("Send cached response");
+			this.log("Send cached response");
 			this.sendResponse(response);
 		}
 
@@ -126,13 +126,11 @@ class Arc extends EventEmitter {
 			};
 
 			var onResponseCompletelyReceived = () => {
-				debug("Response completely received");
-				this.statusCode = response.statusCode;
-				this.contentType = response.headers['content-type'];
-				if (response.statusCode !== 200) {
+				this.log({ event: 'end' });
+				if (this.statusCode !== 200) {
 					this.bufferedResponse = new Buffer(JSON.stringify({
-						statusCode: response.statusCode,
-						statusMessage: response.statusMessage,
+						statusCode: this.statusCode,
+						statusMessage: this.statusMessage,
 						text: 'Error while trying to receive a result from the web api'
 					}));
 				} else {
@@ -142,24 +140,28 @@ class Arc extends EventEmitter {
 			};
 
 			var onError = (error, reason) => {
-				debug('api request to URL('+this.options.apiUrl+') failed:');
-				debug(error);
+				this.log({ event: 'error', error: error, reason: reason});
 				this.statusCode = 500;
 				this.contentType = 'text/plain';
 				this.bufferedResponse = new Buffer(JSON.stringify({
 					statusCode: this.statusCode,
 					statusMessage: 'Internal Server Error',
-					text: (reason ? reason : 'Error while trying to receive a result from the web api. More details available in debug log for component server:lib:arc')
+					text: (reason ? reason : 'Error while trying to receive a result from the web api. More details available in this.log log for component server:lib:arc')
 				}));
 				this.emit('apiResponseReceived');
 			};
 
 			var onTimeout = () => {
-				debug("api request timed out, aborting request");
+				this.log("api request timed out, aborting request");
 				request.abort();
 			}
 
-			var attachResponseEventHandlers = (response) => {
+			var processResponse = (response) => {
+				// Headers and Status Code are already known here
+				this.log({ event: 'response', status: response.statusCode, message: response.statusMessage});
+				this.statusCode = response.statusCode;
+				this.statusMessage = response.statusMessage;
+				this.contentType = response.headers['content-type'];
 				response
 					.on('data', onChunkReceived)
 					.on('end', onResponseCompletelyReceived)
@@ -167,8 +169,8 @@ class Arc extends EventEmitter {
 			};
 
 			this.updating = true;
-			debug("Send web api request");
-			var request = http.get(this.options.apiUrl, attachResponseEventHandlers);
+			this.log("Send web api request");
+			var request = http.get(this.options.apiUrl, processResponse);
 			request
 				.on('error', onError)
 				.setTimeout(this.options.timeout,onTimeout);
