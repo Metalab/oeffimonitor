@@ -10,6 +10,7 @@ StandardError=syslog
 SyslogIdentifier=oeffimonitor
 Restart=always
 Environment=PATH=/usr/bin:/usr/sbin:/home/node/node/bin
+Environment=DEBUG=server:*
 
 [Install]
 WantedBy=multi-user.target
