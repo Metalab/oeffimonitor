@@ -1,16 +1,17 @@
 @font-face {
-	font-family: 'Roboto Condensed';
+	font-family:roboto;
 	src: url('assets/RobotoCondensed-Regular.ttf');
 }
+
 @font-face {
-	font-family: 'Roboto Condensed';
-	src: url('assets/RobotoCondensed-Bold.ttf');
+	font-family:roboto;
 	font-weight: bold;
+	src: url('assets/RobotoCondensed-Bold.ttf');
 }
 
 body {
 	margin:0 0.5em 0 0.5em;
-	font-family: 'Roboto Condensed', Helvetica, Arial, sans-serif;
+	font-family: roboto, Helvetica, Arial, sans-serif;
 	background-color: white;
 	color: black;
 	font-size:45px;
@@ -18,7 +19,6 @@ body {
 
 span.error {
 	color:red;
-	font-family:sans-serif;
 	display:none;
 }
 
@@ -134,39 +134,4 @@ td {
 	/*height:6em;*/
 	width:90%;
 	/*border:1px dotted black;*/
-}
-
-/* SVG styles */
-svg {
-	fill:black;
-	font-family:"Roboto Condensed";
-}
-
-line {
-	stroke:black;
-}
-
-svg text#currentTemperature {
-	text-anchor:middle;
-	font-size:80px;
-}
-
-svg text.forecastTime {
-	text-anchor:middle;
-	font-size:60px;
-}
-
-svg text.forecastTemperature {
-	text-anchor:middle;
-	font-size:30px;
-}
-
-svg text#lastUpdate {
-	text-anchor:end;
-	font-size:30px;
-}
-
-
-line.separator {
-	 stroke-width:2;
 }

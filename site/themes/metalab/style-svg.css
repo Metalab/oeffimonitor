@@ -1,12 +1,8 @@
-@font-face {
-	font-family: 'Roboto Condensed';
-	src: url('assets/RobotoCondensed-Regular.ttf');
-}
-@font-face {
-	font-family: 'Roboto Condensed';
-  src: url('assets/RobotoCondensed-Bold.ttf');
-  font-weight: bold;
-}
+/*
+	This depends on the main stylesheet to have been already loaded so that the fonts are available
+	if the font declaration is put in here too, they will be loaded twice, once for the HTML document
+	and once for the SVG. This creates interesting problems with fonts disappearing at least in chrome
+*/
 
 body {
 	margin:0;
@@ -160,4 +156,39 @@ td.soon:nth-child(1)::before {
 	margin-left:1em;
 	height:10em;
 	/*width:90%;*/
+}
+
+/* SVG styles */
+svg {
+	fill:white;
+	font-family:"Roboto Condensed";
+}
+
+line {
+	stroke:white;
+}
+
+svg text#currentTemperature {
+	text-anchor:middle;
+	font-size:80px;
+}
+
+svg text.forecastTime {
+	text-anchor:middle;
+	font-size:60px;
+}
+
+svg text.forecastTemperature {
+	text-anchor:middle;
+	font-size:30px;
+}
+
+svg text#lastUpdate {
+	text-anchor:end;
+	font-size:30px;
+}
+
+
+line.separator {
+	 stroke-width:2;
 }

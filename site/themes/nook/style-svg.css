@@ -1,0 +1,40 @@
+/*
+	This depends on the main stylesheet to have been already loaded so that the fonts are available
+	if the font declaration is put in here too, they will be loaded twice, once for the HTML document
+	and once for the SVG. This creates interesting problems with fonts disappearing at least in chrome
+*/
+
+/* SVG styles */
+svg {
+	fill:black;
+	font-family:roboto, Helvetica, Arial, sans-serif;
+}
+
+line {
+	stroke:black;
+}
+
+svg text#currentTemperature {
+	text-anchor:middle;
+	font-size:80px;
+}
+
+svg text.forecastTime {
+	text-anchor:middle;
+	font-size:60px;
+}
+
+svg text.forecastTemperature {
+	text-anchor:middle;
+	font-size:30px;
+}
+
+svg text#lastUpdate {
+	text-anchor:end;
+	font-size:30px;
+}
+
+
+line.separator {
+	 stroke-width:2;
+}
