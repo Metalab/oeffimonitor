@@ -26,7 +26,7 @@ var api_urls = {
 
 module.exports = {
 	'title':					'Next public transport connections from Metalab',
-	'theme':					'metalab.css',
+	'theme':					'metalab',
   'api_urls'        :   api_urls,
 	'api_key'         :   api_key,
 	'api_ids'         :   api_ids,
