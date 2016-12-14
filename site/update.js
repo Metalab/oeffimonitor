@@ -227,8 +227,6 @@ function update()
 	document.getElementById("error").style.display = "none";
 	document.getElementById("container").style.opacity = "1";
 
-	var currentTime = new Date();
-	document.getElementById('currentTime').innerHTML = (currentTime.getHours() < 10 ? '0' : '') + currentTime.getHours() + ":" + (currentTime.getMinutes() < 10 ? '0' : '') + currentTime.getMinutes();
 	var req = new XMLHttpRequest();
 	req.open('GET', api_url);
 	req.onreadystatechange = function () {
@@ -256,7 +254,17 @@ function update()
 	req.send();
 }
 
+function clock() {
+	var currentTime = new Date();
+	document.getElementById('currentTime').innerHTML =
+		(currentTime.getHours() < 10 ? '0' : '') + currentTime.getHours() + ":"
+		+ (currentTime.getMinutes() < 10 ? '0' : '') + currentTime.getMinutes() + ":"
+		+ (currentTime.getSeconds() < 10 ? '0' : '') + currentTime.getSeconds();
+}
+
 window.onload = function () {
+	clock();
 	update();
+	window.setInterval(clock, 1000);
 	window.setInterval(update, 10000);
 };
