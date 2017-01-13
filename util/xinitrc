@@ -1,0 +1,14 @@
+#!/bin/sh
+
+# start a very simple window manager
+matchbox-window-manager &
+
+# hide mouse
+unclutter -idle 1 &
+xdotool mousemove 1280 1024 &
+
+# force the screen to never blank
+while :; do xset -dpms s off; sleep 20; done &
+
+# launch browser, restart X if it crashes
+midori -e Fullscreen -a 'http://localhost:8080/'

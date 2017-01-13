@@ -1,0 +1,17 @@
+[Unit]
+Description=nodejs httpd for oeffimonitor
+After=network.target
+
+[Service]
+Type=simple
+ExecStart=/usr/local/bin/node httpd.js
+User=oeffimonitor
+Group=oeffimonitor
+WorkingDirectory=/srv/oeffimonitor/server
+StandardOutput=syslog
+StandardError=syslog
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

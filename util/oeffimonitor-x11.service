@@ -1,0 +1,17 @@
+# systemd unit file for starting the X11 part of the oeffimonitor setup after the nodejs httpd is up
+[Unit]
+Description=oeffimonitor startx
+After=syslog.target network.target nodejs-httpd.service
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/startx
+User=oeffimonitor
+Group=oeffimonitor
+StandardOutput=syslog
+StandardError=syslog
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
