@@ -68,6 +68,7 @@ var arc = { //api response cache
 				arc.data.push(chunk);
 			}).on('end', function() {
 				arc.bufferedResponse = Buffer.concat(arc.data);
+				arc.decrapify();
 				arc.flush();
 				arc.data = null;
 				arc.lastUpdate = Date.now();
@@ -82,12 +83,40 @@ var arc = { //api response cache
 			arc.updating = false;
 		});
 	},
+
+	decrapify : function ()
+	{
+		let data = [];
+		JSON.parse(arc.bufferedResponse)
+			.data
+			.monitors
+			.map(monitor => {
+				monitor.lines.map(line => {
+					line.departures.departure.map(departure => {
+						data.push({
+							'stop': monitor.locationStop.properties.title,
+							'line': line.name,
+							'towards': departure.vehicle ? departure.vehicle.towards : line.towards,
+							'barrierFree': line.barrierFree,
+							'timePlanned': departure.departureTime.timePlanned,
+							'timeReal': departure.departureTime.timeReal ? departure.departureTime.timeReal : departure.departureTime.timePlanned,
+							'countdown': departure.departureTime.countdown,
+						});
+					})
+				})
+			})
+
+		data.sort((a, b) => {
+			return (a.timeReal < b.timeReal) ? -1 : ((a.timeReal > b.timeReal) ? 1 : 0);
+		})
+		arc.bufferedResponse = JSON.stringify(data);
+	},
 };
 
 function sendResponse(response, body, contentType, statusCode)
 {
 	response.writeHead(statusCode, {
-		'Content-Length': body.length,
+		'Content-Length': Buffer.byteLength(body, 'utf8'),
 		'Content-Type': contentType
 	});
 	response.end(body);
