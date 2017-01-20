@@ -1,15 +1,13 @@
 {
   "name": "oeffimonitor",
-  "version": "0.0.1",
-  "description": "Oeffimonitor for the metalab.",
-  "main": "index.js",
+  "version": "0.1.0",
+  "description": "Display the Wiener Linien timetable for nearby bus/tram/subway lines on a screen in the Metalab Hauptraum (and possibly in other places).",
+  "main": "server/httpd.js",
   "directories": {
     "test": "test"
   },
   "scripts": {
-    "start": "npm run build && NODE_ENV='production' node server.js",
-    "build": "babel site/server/index.js -o ./server.js",
-    "dev": "babel-node site/server/index.js"
+    "start": "NODE_ENV='production' node server/httpd.js"
   },
   "repository": {
     "type": "git",

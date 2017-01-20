@@ -81,11 +81,8 @@ function printData(json) {
 
 		var line = departure.line;
 
-		if (line === "U2") {
-			line = '<img src="assets/u2.svg" width="40" height="40" />';
-		} else if (line === "U3") {
-			var img = document.createElement("img");
-			line = '<img src="assets/u3.svg" width="40" height="40" />';
+		if (line.indexOf("U") > -1) {
+			line = '<img src="assets/u' + line.charAt(1)+ '.svg" width="40" height="40" />';
 		} else if (line.indexOf("D") > -1 || line.match(/^[0-9]+$/) != null) {
 			line = '<span class="tram">' + line + '</span>';
 		} else if (line.indexOf("A") > -1) {

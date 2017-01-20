@@ -8,8 +8,28 @@ Written in Javascript for use on a Raspberry Pi in a CSS3 capable browser in Kio
 ## Usage
 
 1.  Move ```server/settings.example.js``` to ```server/settings.js``` and add your API key and change the listen port and other settings.
-2.  Change the walktimes in ```site/settings.js``` according to your needs (you can also choose to use a local JSON file as input here for client side testing)
-3.  Run ```node server/httpd.js```
-4.  Open Öffimonitor in a browser of your choice.
+2.  Run ```npm start```
+3.  Open Öffimonitor in a browser of your choice.
+
+## API
+
+Besides the HTML frontend you can find a JSON API at ```/api```. It returns an array of objects, each object represents one departure, e.g.:
+
+    {
+      "stop":"Volkstheater",
+      "line":"U3",
+      "towards":"SIMMERING",
+      "barrierFree":true,
+      "timePlanned":"2017-01-20T23:37:54.000+0100",
+      "timeReal":"2017-01-20T23:37:54.000+0100",
+      "countdown":0,
+      "walkDuration":0,                                 // to be added
+      "walkStatus":"too late"                           // to be added
+      "coordinates":[16.3591657401836,48.205583461748]  // to be added
+    }
+
+## License
+
+This project is licensed under AGPL-3. It includes several external assets in the folder ```site/assets```, which are licensed under [Creative Commons Namensnennung 3.0 Österreich](https://creativecommons.org/licenses/by/3.0/at/deed.de) by Stadt Wien – Wiener Linien (all SVG files) as well as the Roboto font by Google licensed under [Apache 2.0](http://www.apache.org/licenses/LICENSE-2.0) (all TTF files).
 
 Happy hacking!
