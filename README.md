@@ -7,9 +7,10 @@ Written in Javascript for use on a Raspberry Pi in a CSS3 capable browser in Kio
 
 ## Usage
 
-1.  Move ```server/settings.example.js``` to ```server/settings.js``` and add your API key and change the listen port and other settings.
-2.  Run ```npm start```
-3.  Open Öffimonitor in a browser of your choice.
+1.  Run ```npm install``` to fetch dependencies.
+2.  Move ```server/settings.example.js``` to ```server/settings.js``` and add your API key and change the listen port and other settings.
+3.  Run ```npm start```
+4.  Open Öffimonitor in a browser of your choice.
 
 ## API
 
@@ -17,15 +18,15 @@ Besides the HTML frontend you can find a JSON API at ```/api```. It returns an a
 
     {
       "stop":"Volkstheater",
+      "coordinates":[16.3591657401836,48.205583461748],
       "line":"U3",
       "towards":"SIMMERING",
       "barrierFree":true,
       "timePlanned":"2017-01-20T23:37:54.000+0100",
       "timeReal":"2017-01-20T23:37:54.000+0100",
       "countdown":0,
-      "walkDuration":0,                                 // to be added
-      "walkStatus":"too late"                           // to be added
-      "coordinates":[16.3591657401836,48.205583461748]  // to be added
+      "walkDuration":0,               // walking duration to station in seconds
+      "walkStatus":"too late"         // 'too late', 'hurry' or 'soon'
     }
 
 ## License
