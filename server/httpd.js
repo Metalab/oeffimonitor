@@ -15,7 +15,7 @@ app.get('/api', cache(settings.api_cache_msec), (req, res) => {
 })
 
 app.listen(settings.listen_port, () => {
-  console.log('Server up on: ', settings.listen_port);
+  console.log('Server up on port', settings.listen_port);
 });
 
 const getData = (cb) => {
@@ -37,13 +37,11 @@ const getOSRM	= (coordinates) => {
 	}
 
 	if (walkcache.find(findCoordinates)) {
-		console.log('OSRM: cached')
+		console.log('OSRM: cached', coordinates)
 		return walkcache.find(findCoordinates).duration
 	}
 
-	console.log('OSRM: new request for ' +
-		coordinates[0] + ',' +
-		coordinates[1])
+	console.log('OSRM: new request for', coordinates)
 	const url = settings.osrm_api_url +
 		coordinates[0] + ',' +
 		coordinates[1] + '?overview=false';
@@ -56,8 +54,6 @@ const getOSRM	= (coordinates) => {
 			duration = JSON.parse(data).routes[0].duration;
 			if (!walkcache.find(findCoordinates)) {
 				walkcache.push({ coordinates: coordinates, duration: duration })
-				console.log({ coordinates: coordinates, duration: duration })
-				console.log(walkcache);
 			}
 		});
 		response.on('error', (err) => console.log(err));
@@ -99,6 +95,5 @@ const flatten = (json, cb) => {
 	data.sort((a, b) => {
 		return (a.timeReal < b.timeReal) ? -1 : ((a.timeReal > b.timeReal) ? 1 : 0);
 	})
-	console.log(walkcache);
 	cb(data);
 }
