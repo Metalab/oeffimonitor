@@ -71,7 +71,7 @@ td.time:nth-child(1)::before {
 	content: "⚫\00a0";
 	opacity:0;
 }
-td.supersoon:nth-child(1)::before {
+td.hurry:nth-child(1)::before {
 	animation-name: blink;
 	animation-duration: 1.4s;
 	animation-iteration-count: infinite;

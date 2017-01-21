@@ -74,6 +74,9 @@ function printData(json) {
 
 	json.forEach(function (departure) {
 		console.log(departure)
+		if (departure.walkStatus === 'too late') {
+			return false;
+		}
 		var departureRow = document.createElement('tr');
 		var now = new Date();
 		var departureTime = new Date(departure.timeReal);
@@ -93,10 +96,19 @@ function printData(json) {
 
 		var timeString = '<b>' + addZeroBefore(departureTime.getHours()) +
 			':' + addZeroBefore(departureTime.getMinutes()) +
-			'</b>&nbsp;+' + addZeroBefore(difference.getMinutes()) +
-			'm' + addZeroBefore(difference.getSeconds()) + 's';
-		departureRow.innerHTML = '<tr><td class="time ' + departure.timeClass +
-			'">' + timeString + '</td>' +
+			'</b>&nbsp;';
+
+		if (difference.getHours() > 1) {
+			var differenceString = '+' + addZeroBefore(difference.getHours() - 1) +
+				'h' + addZeroBefore(difference.getMinutes()) +
+				'm' + addZeroBefore(difference.getSeconds()) + 's';
+		} else {
+			var differenceString = '+' + addZeroBefore(difference.getMinutes()) +
+				'm' + addZeroBefore(difference.getSeconds()) + 's';
+		}
+
+		departureRow.innerHTML = '<tr><td class="time ' + departure.walkStatus +
+			'">' + timeString + differenceString + '</td>' +
 			'<td>' + line + '</td><td>' + departure.stop +
 			'</td><td>' + capitalizeFirstLetter(departure.towards) +
 			'</td>';
@@ -109,5 +121,5 @@ window.onload = function () {
 	update();
 	clock();
 	window.setInterval(clock, 1000);
-	//window.setInterval(update, 10000);
+	window.setInterval(update, 10000);
 };
