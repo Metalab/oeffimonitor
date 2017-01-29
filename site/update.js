@@ -44,7 +44,7 @@ function update()
 	document.getElementById("container").style.opacity = "1";
 
 	var req = new XMLHttpRequest();
-	req.open('GET', api_url);
+	req.open('GET', '/api');
 	req.onreadystatechange = function () {
 
 		if (req.readyState !== 4)
