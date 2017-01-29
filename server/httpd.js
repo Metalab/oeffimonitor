@@ -15,7 +15,7 @@ app.get('/api', cache(settings.api_cache_msec), (req, res) => {
 })
 
 app.listen(settings.listen_port, () => {
-  console.log('Server up on port', settings.listen_port);
+	console.log('Server up on port', settings.listen_port);
 });
 
 const getData = (cb) => {
@@ -64,18 +64,23 @@ const getOSRM	= (coordinates) => {
 
 const flatten = (json, cb) => {
 	let data = [];
+	let now = new Date();
 	json.data.monitors.map((monitor, i) => {
 		monitor.lines.map(line => {
 			line.departures.departure.map(departure => {
 				let walkDuration = getOSRM(monitor.locationStop.geometry.coordinates);
 				let walkStatus = '';
-				if (walkDuration * 0.9 > departure.departureTime.countdown * 60) {
+				let departureTime = new Date(departure.departureTime.timeReal ? departure.departureTime.timeReal : departure.departureTime.timePlanned);
+				let differenceToNow = (departureTime.getTime() - now.getTime()) / 1000;
+
+				if (walkDuration * 0.9 > differenceToNow) {
 					walkStatus = 'too late';
-				} else if (walkDuration + 2 * 60 > departure.departureTime.countdown * 60) {
+				} else if (walkDuration + 2 * 60 > differenceToNow) {
 					walkStatus = 'hurry';
-				} else if (walkDuration + 5 * 60 > departure.departureTime.countdown * 60) {
+				} else if (walkDuration + 5 * 60 > differenceToNow) {
 					walkStatus = 'soon';
 				}
+
 				data.push({
 					'stop': monitor.locationStop.properties.title,
 					'coordinates': monitor.locationStop.geometry.coordinates,
