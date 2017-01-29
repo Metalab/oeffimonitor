@@ -22,104 +22,101 @@
 // vim: set ts=8 noet: Use tabs, not spaces!
 "use strict";
 
-function capitalizeFirstLetter(str)
-{
-    return str.replace(/\w[^- ]*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});
+function capitalizeFirstLetter(str) {
+  return str.replace(/\w[^- ]*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});
 }
 
 function addZeroBefore(n) {
   return (n < 10 ? '0' : '') + n;
 }
 
+function showError(error) {
+  document.getElementById("error").style.display = "block";
+  document.getElementById("container").style.opacity = "0.2";
+  console.log(error);
+}
+
 function clock() {
-	var currentTime = new Date();
-	document.getElementById('currentTime').innerHTML = addZeroBefore(currentTime.getHours()) + ":"
-		+ addZeroBefore(currentTime.getMinutes()) + ":"
-		+ addZeroBefore(currentTime.getSeconds());
+  var currentTime = new Date();
+  document.getElementById('currentTime').innerHTML = addZeroBefore(currentTime.getHours()) + ":"
+    + addZeroBefore(currentTime.getMinutes()) + ":"
+    + addZeroBefore(currentTime.getSeconds());
 }
 
-function update()
-{
-	document.getElementById("error").style.display = "none";
-	document.getElementById("container").style.opacity = "1";
+function update() {
+  document.getElementById("error").style.display = "none";
+  document.getElementById("container").style.opacity = "1";
 
-	var req = new XMLHttpRequest();
-	req.open('GET', '/api');
-	req.onreadystatechange = function () {
+  var req = new XMLHttpRequest();
+  req.open('GET', '/api');
+  req.onreadystatechange = function () {
+    if (req.readyState !== 4) {	return }
 
-		if (req.readyState !== 4)
-			return;
+    if (req.status !== 200) {
+      showError('no connection to api');
+      return;
+    }
 
-		// req.status == 0 in case of a local file (e.g. json file saved for testing)
-		if (req.status !== 200 && req.status !== 0) {
-			console.log('no connection to api');
-			return;
-		}
-
-		try {
-			var json = JSON.parse(req.responseText);
-			printData(json);
-		} catch (e) {
-			if (e instanceof SyntaxError) // invalid json document received
-				document.getElementById("error").style.display = "block";
-				document.getElementById("container").style.opacity = "0.2";
-				console.log('api returned invalid json')/*TODO*/;
-			throw e;
-		}
-	};
-	req.send();
+    try {
+      var json = JSON.parse(req.responseText);
+      document.querySelector('tbody').innerHTML = '';
+      json.forEach(function (departure) {
+        addDeparture(departure);
+      });
+    } catch (e) {
+      if (e instanceof SyntaxError) { showError('api returned invalid json') }
+      throw e;
+    }
+  };
+  req.send();
 }
 
-function printData(json) {
+function addDeparture(departure) {
+  console.log(departure)
+  if (departure.walkStatus === 'too late') {
+    return false;
+  }
+  var departureRow = document.createElement('tr');
+  var now = new Date();
+  var departureTime = new Date(departure.timeReal);
+  var difference = new Date(departureTime - now);
 
-	json.forEach(function (departure) {
-		console.log(departure)
-		if (departure.walkStatus === 'too late') {
-			return false;
-		}
-		var departureRow = document.createElement('tr');
-		var now = new Date();
-		var departureTime = new Date(departure.timeReal);
-		var difference = new Date(departureTime - now);
+  var line = departure.line;
 
-		var line = departure.line;
+  if (line.indexOf("U") > -1) {
+    line = '<img src="assets/u' + line.charAt(1)+ '.svg" width="40" height="40" />';
+  } else if (line.indexOf("D") > -1 || line.match(/^[0-9]+$/) != null) {
+    line = '<span class="tram">' + line + '</span>';
+  } else if (line.indexOf("A") > -1) {
+    line = '<span class="bus">' + line + '</span>';
+  } else if (line.indexOf("N") > -1) {
+    line = '<span class="nightline">' + line + '</span>';
+  }
 
-		if (line.indexOf("U") > -1) {
-			line = '<img src="assets/u' + line.charAt(1)+ '.svg" width="40" height="40" />';
-		} else if (line.indexOf("D") > -1 || line.match(/^[0-9]+$/) != null) {
-			line = '<span class="tram">' + line + '</span>';
-		} else if (line.indexOf("A") > -1) {
-			line = '<span class="bus">' + line + '</span>';
-		} else if (line.indexOf("N") > -1) {
-			line = '<span class="nightline">' + line + '</span>';
-		}
+  var timeString = '<b>' + addZeroBefore(departureTime.getHours()) +
+    ':' + addZeroBefore(departureTime.getMinutes()) +
+    '</b>&nbsp;';
 
-		var timeString = '<b>' + addZeroBefore(departureTime.getHours()) +
-			':' + addZeroBefore(departureTime.getMinutes()) +
-			'</b>&nbsp;';
+  if (difference.getHours() > 1) {
+    var differenceString = '+' + (difference.getHours() - 1) +
+      'h' + addZeroBefore(difference.getMinutes()) +
+      'm' + parseInt(difference.getSeconds() / 10) + '0s';
+  } else {
+    var differenceString = '+' + addZeroBefore(difference.getMinutes()) +
+      'm' + parseInt(difference.getSeconds() / 10) + '0s';
+  }
 
-		if (difference.getHours() > 1) {
-			var differenceString = '+' + addZeroBefore(difference.getHours() - 1) +
-				'h' + addZeroBefore(difference.getMinutes()) +
-				'm' + addZeroBefore(difference.getSeconds()) + 's';
-		} else {
-			var differenceString = '+' + addZeroBefore(difference.getMinutes()) +
-				'm' + addZeroBefore(difference.getSeconds()) + 's';
-		}
-
-		departureRow.innerHTML = '<tr><td class="time ' + departure.walkStatus +
-			'">' + timeString + differenceString + '</td>' +
-			'<td>' + line + '</td><td>' + departure.stop +
-			'</td><td>' + capitalizeFirstLetter(departure.towards) +
-			'</td>';
-		document.querySelector('tbody').appendChild(departureRow);
-	})
-
+  departureRow.innerHTML = '<tr><td class="time ' + departure.walkStatus +
+    '">' + timeString + differenceString + '</td>' +
+    '<td>' + line + '</td><td>' + departure.stop +
+    '</td><td>' + capitalizeFirstLetter(departure.towards) +
+    '</td>';
+  document.querySelector('tbody').appendChild(departureRow);
 }
 
 window.onload = function () {
-	update();
-	clock();
-	window.setInterval(clock, 1000);
-	window.setInterval(update, 10000);
+  clock();
+  update();
+  window.setInterval(clock, 1000);
+  window.setInterval(update, 10000);
 };
