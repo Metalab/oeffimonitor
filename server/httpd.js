@@ -85,6 +85,7 @@ const flatten = (json, cb) => {
 					'stop': monitor.locationStop.properties.title,
 					'coordinates': monitor.locationStop.geometry.coordinates,
 					'line': line.name,
+					'type': departure.vehicle ? departure.vehicle.type : line.type,
 					'towards': departure.vehicle ? departure.vehicle.towards : line.towards,
 					'barrierFree': line.barrierFree,
 					'timePlanned': departure.departureTime.timePlanned,

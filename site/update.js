@@ -82,14 +82,15 @@ function addDeparture(departure) {
   var difference = new Date(departureTime - now);
 
   var line = departure.line;
+  var type = departure.type;
 
-  if (line.indexOf("U") > -1) {
-    line = '<img src="assets/u' + line.charAt(1)+ '.svg" width="40" height="40" />';
-  } else if (line.indexOf("D") > -1 || line.match(/^[0-9]+$/) != null) {
+  if (type === 'ptMetro') {
+    line = '<img src="assets/u' + line.charAt(1) + '.svg" width="40" height="40" />';
+  } else if (type === 'ptTram') {
     line = '<span class="tram">' + line + '</span>';
-  } else if (line.indexOf("A") > -1) {
+  } else if (type === 'ptBusCity') {
     line = '<span class="bus">' + line + '</span>';
-  } else if (line.indexOf("N") > -1) {
+  } else if (type === 'ptBusNight') {
     line = '<span class="nightline">' + line + '</span>';
   }
 

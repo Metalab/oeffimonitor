@@ -22,6 +22,7 @@ Besides the HTML frontend you can find a JSON API at ```/api```. It returns an a
       "stop":"Volkstheater",
       "coordinates":[16.3591657401836,48.205583461748],
       "line":"U3",
+      "type":"ptMetro",
       "towards":"SIMMERING",
       "barrierFree":true,
       "timePlanned":"2017-01-20T23:37:54.000+0100",
