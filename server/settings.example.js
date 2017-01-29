@@ -21,10 +21,10 @@ const location_coordinate = '16.3509389,48.2103151'
 const osrm_api_url = 'http://router.project-osrm.org/route/v1/foot/' + location_coordinate + ';'
 
 module.exports = {
-	'api_url'         :   api_url,
-	'api_key'         :   api_key,
-	'api_ids'         :   api_ids,
-	'api_cache_msec'  :   6000,     // cache API responses for this many milliseconds; default: 6s
-	'listen_port'     :   8080,	// port to listen on
+  'api_url'         :   api_url,
+  'api_key'         :   api_key,
+  'api_ids'         :   api_ids,
+  'api_cache_msec'  :   6000,     // cache API responses for this many milliseconds; default: 6s
+  'listen_port'     :   8080,	// port to listen on
   'osrm_api_url'    :   osrm_api_url
 };
