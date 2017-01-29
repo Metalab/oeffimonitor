@@ -69,11 +69,11 @@ const flatten = (json, cb) => {
 			line.departures.departure.map(departure => {
 				let walkDuration = getOSRM(monitor.locationStop.geometry.coordinates);
 				let walkStatus = '';
-				if (walkDuration * 0.7 > departure.departureTime.countdown * 60) {
+				if (walkDuration * 0.9 > departure.departureTime.countdown * 60) {
 					walkStatus = 'too late';
-				} else if (walkDuration > departure.departureTime.countdown * 60) {
+				} else if (walkDuration + 2 * 60 > departure.departureTime.countdown * 60) {
 					walkStatus = 'hurry';
-				} else if (walkDuration + 3 * 60 > departure.departureTime.countdown * 60) {
+				} else if (walkDuration + 5 * 60 > departure.departureTime.countdown * 60) {
 					walkStatus = 'soon';
 				}
 				data.push({
