@@ -37,7 +37,6 @@ const getOSRM	= (coordinates) => {
 	}
 
 	if (walkcache.find(findCoordinates)) {
-		console.log('OSRM: cached', coordinates)
 		return walkcache.find(findCoordinates).duration
 	}
 
