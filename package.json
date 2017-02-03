@@ -1,7 +1,7 @@
 {
   "name": "oeffimonitor",
   "version": "0.1.0",
-  "description": "Display the Wiener Linien timetable for nearby bus/tram/subway lines on a screen in the Metalab Hauptraum (and possibly in other places).",
+  "description": "Displays an info screen with the next Wiener Linien public transport connections nearby.",
   "main": "server/httpd.js",
   "directories": {
     "test": "test"

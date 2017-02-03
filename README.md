@@ -1,6 +1,6 @@
 # Öffimonitor
 
-Display the timetable for nearby public transport lines in Vienna, Austria on an info screen. It was developed and is currently in use at [Metalab](https://metalab.at).
+Displays an info screen with the next Wiener Linien public transport connections nearby. It was developed and is currently in use at [Metalab](https://metalab.at).
 
 It includes a small server written in Node.js that pulls the needed data from the [Wiener Linien API](https://www.data.gv.at/katalog/dataset/add66f20-d033-4eee-b9a0-47019828e698), caches it and serves it together with an HTML5 frontend. At Metalab, [all of this runs](https://metalab.at/wiki/%C3%96ffimonitor) on a Raspberry Pi, which also displays the frontend on a spare monitor (check out ```utils``` for reproduction).
 
