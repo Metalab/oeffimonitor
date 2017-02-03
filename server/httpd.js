@@ -66,6 +66,9 @@ const flatten = (json, cb) => {
 	let now = new Date();
 	json.data.monitors.map((monitor, i) => {
 		monitor.lines.map(line => {
+			if (settings.exclude_lines.indexOf(line.name) > -1) {
+				return;
+			}
 			line.departures.departure.map(departure => {
 				let walkDuration = getOSRM(monitor.locationStop.geometry.coordinates);
 				let walkStatus = '';
