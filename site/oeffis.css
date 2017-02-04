@@ -20,15 +20,14 @@ h1 { margin: 20px; }
 #error {
 	background-color: #F2DEDE;
 	color: black;
-	position:absolute;
-	padding: 10px 20px;
-	border-left: 8px solid #A94442;
-	top: 50%;
-	left: 50%;
-	-webkit-transform: translate(-50%, -50%);
-	transform: translate(-50%, -50%);
+	position: fixed;
+	border-top: 4px solid #A94442;
+	bottom: 0%;
+	left: 0%;
 	z-index: 100;
-	margin:0;
+	margin: 0;
+	padding: 0 1em;
+	width: 100%;
 }
 #currentTime{
 	float:right;
@@ -118,8 +117,8 @@ td.soon:nth-child(1)::before {
 	h1 { font-size: 50px; }
 
 	#error {
-		font-size:20px;
-		line-height:20px;
+		font-size:30px;
+		line-height:30px;
 	}
 	td {
 		height: 60px;

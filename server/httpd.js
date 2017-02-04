@@ -18,19 +18,31 @@ app.listen(settings.listen_port, () => {
 	console.log('Server up on port', settings.listen_port);
 });
 
+const errorHandler = (error, cb) => {
+	console.log(error);
+	cb({
+		status: 'error',
+		error: error
+	});
+}
+
 const getData = (cb) => {
 	return http.get(settings.api_url, (response) => {
 		let data = '';
 		response.on('data', (chunk) => data += chunk);
 		response.on('end', () => {
-			const json = JSON.parse(data);
-			flatten(json, cb);
+			try {
+				const json = JSON.parse(data);
+				flatten(json, cb);
+			} catch (e) {
+				errorHandler('API response invalid JSON', cb);
+			}
 		});
-		response.on('error', (err) => console.log(err));
-	}).on('error', (err) => console.log(err));
+		response.on('error', (err) => errorHandler('API response failed', cb));
+	}).on('error', (err) => errorHandler('API request failed', cb));
 }
 
-const getOSRM	= (coordinates) => {
+const getOSRM = (coordinates) => {
 	const findCoordinates = (element) => {
 		return element.coordinates[0] === coordinates[0] &&
 			element.coordinates[1] === coordinates[1];
