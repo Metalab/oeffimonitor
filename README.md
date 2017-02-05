@@ -19,18 +19,21 @@ It includes a small server written in Node.js that pulls the needed data from th
 Besides the HTML frontend you can find a JSON API at ```/api```. It returns an array of objects, each object represents one departure, e.g.:
 
     {
-      "stop":"Volkstheater",
-      "coordinates":[16.3591657401836,48.205583461748],
-      "line":"U3",
+      "stop":"Rathaus",
+      "coordinates":[16.3553748496846,48.2098639238269],
+      "line":"U2",
       "type":"ptMetro",
-      "towards":"SIMMERING",
+      "towards":"SEESTADT",
       "barrierFree":true,
-      "timePlanned":"2017-01-20T23:37:54.000+0100",
-      "timeReal":"2017-01-20T23:37:54.000+0100",
-      "countdown":4,
-      "walkDuration":255,   // walking duration to station in seconds
-      "walkStatus":"hurry"  // 'too late', 'hurry' or 'soon'
+      "time":"2017-02-05T14:21:09.000Z",  // calculated most accurate departure time <- always exists
+      "timePlanned":"2017-02-05T15:21:09.000+0100",
+      "timeReal":"2017-02-05T15:21:09.000+0100",
+      "countdown":7,
+      "walkDuration":211.9,               // walking duration to station in seconds
+      "walkStatus":"soon"                 // 'too late', 'hurry' or 'soon'
     }
+
+All values without comments are directly taken from the Wiener Linien API. **Attention!** ```timeReal``` does not exist in case there is no real time information available and even ```timePlanned``` might not exist if the departure time is written into the ```towards``` string (e.g. 'KARLSPLATZ NÄCHSTER ZUG   9 MIN').
 
 ## License
 

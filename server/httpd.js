@@ -78,13 +78,41 @@ const flatten = (json, cb) => {
 	let now = new Date();
 	json.data.monitors.map((monitor, i) => {
 		monitor.lines.map(line => {
+
+			// don't add departures on excluded lines
 			if (settings.exclude_lines.indexOf(line.name) > -1) {
 				return;
 			}
 			line.departures.departure.map(departure => {
+				// calculate most accurate known departure time
+				let time;
+
+				if (departure.departureTime.timeReal) {
+					// if realtime data is available, use that
+					time = new Date(departure.departureTime.timeReal);
+				} else if (departure.departureTime.timePlanned) {
+					// if not, use scheduled data
+					time = new Date(departure.departureTime.timePlanned);
+				} else if (line.towards.indexOf('NÄCHSTER ZUG') > -1 &&
+						line.towards.indexOf(' MIN') > -1) {
+					// if that's not available, try to find departure time elsewhere
+					let countdown = line.towards.split(' MIN')[0].substr(-2, 2); // grab last two chars before ' MIN'
+					time = new Date();
+					time.setMinutes(time.getMinutes() + parseInt(countdown));
+				} else {
+					console.log({
+						'stop': monitor.locationStop.properties.title,
+						'line': line.name,
+						'towards': departure.vehicle ? departure.vehicle.towards : line.towards,
+					});
+					return; // connection does not have any time information -> log & skip
+				}
+
+				time = time.toISOString();
+
 				let walkDuration = getOSRM(monitor.locationStop.geometry.coordinates);
 				let walkStatus = '';
-				let departureTime = new Date(departure.departureTime.timeReal ? departure.departureTime.timeReal : departure.departureTime.timePlanned);
+				let departureTime = new Date(time);
 				let differenceToNow = (departureTime.getTime() - now.getTime()) / 1000;
 
 				if (walkDuration * 0.9 > differenceToNow) {
@@ -102,8 +130,9 @@ const flatten = (json, cb) => {
 					'type': departure.vehicle ? departure.vehicle.type : line.type,
 					'towards': departure.vehicle ? departure.vehicle.towards : line.towards,
 					'barrierFree': line.barrierFree,
+					'time': time,
 					'timePlanned': departure.departureTime.timePlanned,
-					'timeReal': departure.departureTime.timeReal ? departure.departureTime.timeReal : departure.departureTime.timePlanned,
+					'timeReal': departure.departureTime.timeReal,
 					'countdown': departure.departureTime.countdown,
 					'walkDuration': walkDuration,
 					'walkStatus': walkStatus
@@ -113,7 +142,7 @@ const flatten = (json, cb) => {
 	})
 
 	data.sort((a, b) => {
-		return (a.timeReal < b.timeReal) ? -1 : ((a.timeReal > b.timeReal) ? 1 : 0);
+		return (a.time < b.time) ? -1 : ((a.time > b.time) ? 1 : 0);
 	})
 	cb(data);
 }

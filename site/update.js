@@ -90,7 +90,7 @@ function update() {
 function addDeparture(departure) {
   var departureRow = document.createElement('tr');
   var now = new Date();
-  var departureTime = new Date(departure.timeReal);
+  var departureTime = new Date(departure.time);
   var difference = new Date(departureTime - now);
   var differenceToNow = (departureTime.getTime() - now.getTime()) / 1000;
   var walkDuration = departure.walkDuration;
