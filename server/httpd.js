@@ -68,7 +68,7 @@ const getOSRM = (coordinates) => {
 					walkcache.push({ coordinates: coordinates, duration: duration })
 				}
 			} catch (e) {
-				console.log('OSRM API response invalid JSON', e);
+				console.log('OSRM API response invalid JSON', data);
 			}
 		});
 		response.on('error', (err) => console.log(err));
