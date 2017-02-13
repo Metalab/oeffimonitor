@@ -62,9 +62,13 @@ const getOSRM = (coordinates) => {
 		let data = '';
 		response.on('data', (chunk) => data += chunk);
 		response.on('end', () => {
-			duration = JSON.parse(data).routes[0].duration;
-			if (!walkcache.find(findCoordinates)) {
-				walkcache.push({ coordinates: coordinates, duration: duration })
+			try {
+				duration = JSON.parse(data).routes[0].duration;
+				if (!walkcache.find(findCoordinates)) {
+					walkcache.push({ coordinates: coordinates, duration: duration })
+				}
+			} catch (e) {
+				console.log('OSRM API response invalid JSON', e);
 			}
 		});
 		response.on('error', (err) => console.log(err));
@@ -80,7 +84,7 @@ const flatten = (json, cb) => {
 		monitor.lines.map(line => {
 
 			// don't add departures on excluded lines
-			if (settings.exclude_lines.indexOf(line.name) > -1) {
+			if (settings.exclude_lines && settings.exclude_lines.indexOf(line.name) > -1) {
 				return;
 			}
 			line.departures.departure.map(departure => {
