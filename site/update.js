@@ -91,21 +91,17 @@ function addDeparture(departure) {
   var departureRow = document.createElement('tr');
   var now = new Date();
   var departureTime = new Date(departure.time);
-  var difference = new Date(departureTime - now);
-  var differenceToNow = (departureTime.getTime() - now.getTime()) / 1000;
+  var difference = (departureTime.getTime() - now.getTime()) / 1000;
   var walkDuration = departure.walkDuration;
   var walkStatus = departure.walkStatus;
 
-  if (walkDuration * 0.9 > differenceToNow) {
+  if (difference < 0 || walkDuration * 0.9 > difference) {
     walkStatus = 'too late';
-  } else if (walkDuration + 2 * 60 > differenceToNow) {
-    walkStatus = 'hurry';
-  } else if (walkDuration + 5 * 60 > differenceToNow) {
-    walkStatus = 'soon';
-  }
-
-  if (walkStatus === 'too late') {
     return false;
+  } else if (walkDuration + 2 * 60 > difference) {
+    walkStatus = 'hurry';
+  } else if (walkDuration + 5 * 60 > difference) {
+    walkStatus = 'soon';
   }
 
   var line = departure.line;
@@ -125,14 +121,17 @@ function addDeparture(departure) {
     ':' + addZeroBefore(departureTime.getMinutes()) +
     '</b>&nbsp;';
 
-  if (difference.getHours() > 1) {
-    var differenceString = '+' + (difference.getHours() - 1) +
-      'h' + addZeroBefore(difference.getMinutes()) +
-      'm' + parseInt(difference.getSeconds() / 10) + '0s';
-  } else {
-    var differenceString = '+' + addZeroBefore(difference.getMinutes()) +
-      'm' + parseInt(difference.getSeconds() / 10) + '0s';
+  var differenceString = '+';
+
+  if (difference > 3600) {
+    differenceString += Math.floor(difference / 3600) + 'h';
+    difference = difference % 3600;
   }
+
+  differenceString += addZeroBefore(Math.floor(difference / 60)) + 'm';
+  difference = difference % 60;
+
+  differenceString += parseInt(difference / 10) + '0s';
 
   departureRow.innerHTML = '<tr><td class="time ' + walkStatus +
     '">' + timeString + differenceString + '</td>' +
