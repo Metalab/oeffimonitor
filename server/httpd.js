@@ -19,7 +19,7 @@ app.listen(settings.listen_port, () => {
 });
 
 const errorHandler = (error, cb) => {
-	console.log(error);
+	console.error(error);
 	cb({
 		status: 'error',
 		error: error
@@ -73,11 +73,11 @@ const getOSRM = (coordinates) => {
 					walkcache.push({ coordinates: coordinates, duration: duration })
 				}
 			} catch (e) {
-				console.log('OSRM API response invalid JSON', data);
+				console.error('OSRM API response invalid JSON', data);
 			}
 		});
-		response.on('error', (err) => console.log(err));
-	}).on('error', (err) => console.log(err));
+		response.on('error', (err) => console.error(err));
+	}).on('error', (err) => console.error(err));
 
 	return duration;
 }
@@ -109,7 +109,7 @@ const flatten = (json, cb) => {
 					time = new Date();
 					time.setMinutes(time.getMinutes() + parseInt(countdown));
 				} else {
-					console.log({
+					console.warn({
 						'stop': monitor.locationStop.properties.title,
 						'line': line.name,
 						'towards': departure.vehicle ? departure.vehicle.towards : line.towards,
