@@ -1,7 +1,9 @@
 const express = require('express')
 const http = require('http')
+const url = require('url')
 const apicache = require('apicache')
 const settings = require(__dirname + '/settings.js');
+const package = require(__dirname + '/../package.json');
 
 let app = express()
 let cache = apicache.middleware
@@ -58,12 +60,20 @@ const getOSRM = (coordinates) => {
 	}
 
 	console.log('OSRM: new request for', coordinates)
-	const url = settings.osrm_api_url +
+	const osrm_url = url.parse(settings.osrm_api_url +
 		coordinates[0] + ',' +
-		coordinates[1] + '?overview=false';
+		coordinates[1] + '?overview=false');
 
 	let duration;
-	const request = http.get(url, (response) => {
+
+	http.get({
+		protocol: osrm_url.protocol,
+		host: osrm_url.host,
+		path: osrm_url.path,
+		headers: {
+			'User-Agent': 'Öffimonitor/' + package.version + ' <https://github.com/metalab/oeffimonitor>',
+		}
+	}, (response) => {
 		let data = '';
 		response.on('data', (chunk) => data += chunk);
 		response.on('end', () => {
