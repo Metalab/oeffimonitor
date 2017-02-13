@@ -43,6 +43,11 @@ const getData = (cb) => {
 }
 
 const getOSRM = (coordinates) => {
+	if (!settings.osrm_api_url) {
+		// no OSRM server defined
+		return;
+	}
+
 	const findCoordinates = (element) => {
 		return element.coordinates[0] === coordinates[0] &&
 			element.coordinates[1] === coordinates[1];
@@ -57,7 +62,7 @@ const getOSRM = (coordinates) => {
 		coordinates[0] + ',' +
 		coordinates[1] + '?overview=false';
 
-	let duration = 0;
+	let duration;
 	const request = http.get(url, (response) => {
 		let data = '';
 		response.on('data', (chunk) => data += chunk);
@@ -112,20 +117,21 @@ const flatten = (json, cb) => {
 					return; // connection does not have any time information -> log & skip
 				}
 
-				time = time.toISOString();
-
 				let walkDuration = getOSRM(monitor.locationStop.geometry.coordinates);
-				let walkStatus = '';
-				let departureTime = new Date(time);
-				let differenceToNow = (departureTime.getTime() - now.getTime()) / 1000;
+				let differenceToNow = (time.getTime() - now.getTime()) / 1000;
+				let walkStatus;
 
-				if (walkDuration * 0.9 > differenceToNow) {
+				if (typeof walkDuration === 'undefined') {
+					// no walkDuration, no walkStatus
+				} else if (walkDuration * 0.9 > differenceToNow) {
 					walkStatus = 'too late';
 				} else if (walkDuration + 2 * 60 > differenceToNow) {
 					walkStatus = 'hurry';
 				} else if (walkDuration + 5 * 60 > differenceToNow) {
 					walkStatus = 'soon';
 				}
+
+				time = time.toISOString();
 
 				data.push({
 					'stop': monitor.locationStop.properties.title,
