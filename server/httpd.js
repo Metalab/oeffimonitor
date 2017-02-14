@@ -29,7 +29,7 @@ const errorHandler = (error, cb) => {
 }
 
 const getData = (cb) => {
-	return http.get(settings.api_url, (response) => {
+	http.get(settings.api_url, (response) => {
 		let data = '';
 		response.on('data', (chunk) => data += chunk);
 		response.on('end', () => {
@@ -94,8 +94,9 @@ const getOSRM = (coordinates) => {
 
 const flatten = (json, cb) => {
 	let data = [];
+	let warnings = [];
 	let now = new Date();
-	json.data.monitors.map((monitor, i) => {
+	json.data.monitors.map(monitor => {
 		monitor.lines.map(line => {
 
 			// don't add departures on excluded lines
@@ -121,8 +122,7 @@ const flatten = (json, cb) => {
 				} else {
 					console.warn({
 						'stop': monitor.locationStop.properties.title,
-						'line': line.name,
-						'towards': departure.vehicle ? departure.vehicle.towards : line.towards,
+						'departure': departure
 					});
 					return; // connection does not have any time information -> log & skip
 				}
@@ -146,10 +146,10 @@ const flatten = (json, cb) => {
 				data.push({
 					'stop': monitor.locationStop.properties.title,
 					'coordinates': monitor.locationStop.geometry.coordinates,
-					'line': line.name,
-					'type': departure.vehicle ? departure.vehicle.type : line.type,
-					'towards': departure.vehicle ? departure.vehicle.towards : line.towards,
-					'barrierFree': line.barrierFree,
+					'line': departure.vehicle && departure.vehicle.name ? departure.vehicle.name : line.name,
+					'type': departure.vehicle && departure.vehicle.type ? departure.vehicle.type : line.type,
+					'towards': departure.vehicle && departure.vehicle.towards ? departure.vehicle.towards : line.towards,
+					'barrierFree': departure.vehicle && departure.vehicle.barrierFree ? departure.vehicle.barrierFree : line.barrierFree,
 					'time': time,
 					'timePlanned': departure.departureTime.timePlanned,
 					'timeReal': departure.departureTime.timeReal,
@@ -164,5 +164,12 @@ const flatten = (json, cb) => {
 	data.sort((a, b) => {
 		return (a.time < b.time) ? -1 : ((a.time > b.time) ? 1 : 0);
 	})
-	cb(data);
+
+	if (json.data.trafficInfos) {
+		warnings = json.data.trafficInfos.map(trafficInfo => {
+			return { title: trafficInfo.title, description: trafficInfo.description };
+		})
+	}
+
+	cb({ status: 'ok', departures: data, warnings: warnings });
 }

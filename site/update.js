@@ -35,8 +35,8 @@ function addZeroBefore(n) {
 function showError(error) {
   document.querySelector('tbody').innerHTML = '';
   var last_update_string = '–';
-  if (cached_json.data) {
-    cached_json.data.forEach(function (departure) {
+  if (cached_json.departures) {
+    cached_json.departures.forEach(function (departure) {
       addDeparture(departure);
     });
     last_update_string = new Date(cached_json.last_update).toTimeString();
@@ -45,7 +45,32 @@ function showError(error) {
   document.getElementById("error").style.display = "block";
   document.getElementById("error_msg").innerHTML = error;
   document.getElementById("error_last_update").innerHTML = last_update_string;
+
+  if(document.getElementById("warning").style.display === "block") {
+    document.getElementById("warning").style.bottom = document.getElementById("error").offsetHeight + 'px';
+  }
   console.log(error);
+}
+
+function warning() {
+  if (!cached_json.warnings) {
+    document.getElementById("warning").style.display = "none";
+    return;
+  }
+  if (!cached_json.currentWarning) {
+    cached_json.currentWarning = 0;
+  }
+
+  var currentWarning = cached_json.warnings[cached_json.currentWarning];
+  document.getElementById("warning").style.display = "block";
+  document.getElementById("warning_counter").innerHTML = (cached_json.currentWarning + 1) + '/' + cached_json.warnings.length;
+  document.getElementById("warning_text").innerHTML = '<b>' + currentWarning.title + '</b> ' + currentWarning.description;
+
+  if (cached_json.warnings.length - 1 > cached_json.currentWarning) {
+    cached_json.currentWarning++;
+  } else {
+    cached_json.currentWarning = 0;
+  }
 }
 
 function clock() {
@@ -57,6 +82,9 @@ function clock() {
 
 function update() {
   document.getElementById("error").style.display = "none";
+  if(document.getElementById("warning").style.display === "block") {
+    document.getElementById("warning").style.bottom = '0%';
+  }
 
   var req = new XMLHttpRequest();
   req.open('GET', '/api');
@@ -72,13 +100,16 @@ function update() {
       var json = JSON.parse(req.responseText);
       if (json.status && json.status === 'error') {
         throw(json.error);
+      } else if (json.status && json.status !== 'ok') {
+        throw('Server response unvalid')
       }
 
       document.querySelector('tbody').innerHTML = '';
-      json.forEach(function (departure) {
+      json.departures.forEach(function (departure) {
         addDeparture(departure);
       });
-      cached_json.data = json;
+      cached_json.departures = json.departures;
+      cached_json.warnings = json.warnings;
       cached_json.last_update = new Date().toString();
     } catch (e) {
       showError(e);
@@ -144,6 +175,8 @@ function addDeparture(departure) {
 window.onload = function () {
   clock();
   update();
+  warning();
   window.setInterval(clock, 1000);
   window.setInterval(update, 10000);
+  window.setInterval(warning, 5000);
 };

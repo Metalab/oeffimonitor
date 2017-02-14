@@ -16,24 +16,40 @@ It includes a small server written in Node.js that pulls the needed data from th
 
 ## API
 
-Besides the HTML frontend you can find a JSON API at ```/api```. It returns an array of objects, each object represents one departure, e.g.:
+Besides the HTML frontend you can find a JSON API at ```/api```. It returns a status message, an array of departures and an array of warnings, which include all traffic infos of the type ```stoerungkurz``` from the Wiener Linien API.
+
+### Example response
 
     {
-      "stop":"Rathaus",
-      "coordinates":[16.3553748496846,48.2098639238269],
-      "line":"U2",
-      "type":"ptMetro",
-      "towards":"SEESTADT",
-      "barrierFree":true,
-      "time":"2017-02-05T14:21:09.000Z",  // calculated most accurate departure time <- always exists
-      "timePlanned":"2017-02-05T15:21:09.000+0100",
-      "timeReal":"2017-02-05T15:21:09.000+0100",
-      "countdown":7,
-      "walkDuration":211.9,               // walking duration to stop in seconds
-      "walkStatus":"soon"                 // 'too late', 'hurry' or 'soon'
+      "status": "ok",                       // 'ok' or 'error'
+      "departures":[{
+        "stop": "Landesgerichtsstraße",
+        "coordinates": [16.3568570699034,48.2145510683941],
+        "line": "43",
+        "type": "ptTram",
+        "towards": "Neuwaldegg",
+        "barrierFree": true,
+        "time": "2017-02-14T18:54:14.000Z", // calculated most accurate departure time
+        "timePlanned": "2017-02-14T19:52:00.000+0100",
+        "timeReal": "2017-02-14T19:54:14.000+0100",
+        "countdown": 6,
+        "walkDuration": 197.9,              // walking duration to stop in seconds
+        "walkStatus":"soon"                 // 'too late', 'hurry' or 'soon'
+      }],
+      "warnings": [{
+        "title": "43 : Fremder Verkehrsunfall",
+        "description": "Nach einer Fahrtbehinderung kommt es auf der Linie 43 zu unterschiedlichen Intervallen."
+      }]
     }
 
 All values without comments are directly taken from the Wiener Linien API. **Attention!** ```timeReal``` does not exist in case there is no real time information available and even ```timePlanned``` might be undefined if the departure time is written into the ```towards``` string (e.g. 'KARLSPLATZ NÄCHSTER ZUG   9 MIN'). In case you need a returned timestamp, rely on ```time```, which always contains the most accurate departure time available.
+
+### Example error response
+
+    {
+      "status": "error",
+      "error": "API request failed"
+    }
 
 ## License
 

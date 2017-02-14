@@ -29,6 +29,27 @@ h1 { margin: 20px; }
 	padding: 0 1em;
 	width: 100%;
 }
+#warning {
+	display: none;
+	background-color: #fcf8e3;
+	color: black;
+	position: fixed;
+	border-top: 4px solid #f0ad4e;
+	bottom: 0%;
+	left: 0%;
+	z-index: 100;
+	margin: 0;
+	padding: 0;
+	width: 100%;
+}
+#warning p {
+	padding: 0 1em;
+}
+#warning_counter {
+	color: #f0ad4e;
+	float: right;
+}
+
 #currentTime{
 	float:right;
 	font-weight:bold;
@@ -108,6 +129,10 @@ td.soon:nth-child(1)::before {
 		font-size:30px;
 		line-height:30px;
 	}
+	#warning {
+		font-size:30px;
+		line-height:30px;
+	}
 	td {
 		height: 60px;
 		font-size: 48px !important;
@@ -126,7 +151,5 @@ td.soon:nth-child(1)::before {
 }
 
 @keyframes blink {
-	to {
-    visibility: hidden;
-  }
+	to { visibility: hidden; }
 }
