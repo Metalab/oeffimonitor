@@ -71,26 +71,14 @@ td.time:nth-child(1)::before {
 	opacity:0;
 }
 td.hurry:nth-child(1)::before {
-	animation-name: blink;
-	animation-duration: 1.4s;
-	animation-iteration-count: infinite;
-	animation-fill-mode: both;
-	-webkit-animation-name: blink;
-	-webkit-animation-duration: 1.4s;
-	-webkit-animation-iteration-count: infinite;
-	-webkit-animation-fill-mode: both;
+	animation: blink 1s steps(5, start) infinite;
+	-webkit-animation: blink 1s steps(5, start) infinite;
 	color: #c0392b;
 	opacity:1;
 }
 td.soon:nth-child(1)::before {
-	animation-name: blink;
-	animation-duration: 1.4s;
-	animation-iteration-count: infinite;
-	animation-fill-mode: both;
-	-webkit-animation-name: blink;
-	-webkit-animation-duration: 1.4s;
-	-webkit-animation-iteration-count: infinite;
-	-webkit-animation-fill-mode: both;
+	animation: blink 1s steps(5, start) infinite;
+	-webkit-animation: blink 1s steps(5, start) infinite;
 	color: #27ae60;
 	opacity:1;
 }
@@ -138,7 +126,7 @@ td.soon:nth-child(1)::before {
 }
 
 @keyframes blink {
-	0% { opacity: .2; }
-	20% { opacity: 1; }
-	100% { opacity: .2; }
+	to {
+    visibility: hidden;
+  }
 }
