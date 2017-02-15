@@ -53,7 +53,7 @@ function showError(error) {
 }
 
 function warning() {
-  if (!cached_json.warnings) {
+  if (!cached_json.warnings || cached_json.warnings.length === 0) {
     document.getElementById("warning").style.display = "none";
     return;
   }
