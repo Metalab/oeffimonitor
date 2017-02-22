@@ -4,8 +4,8 @@
 }
 @font-face {
 	font-family: 'Roboto Condensed';
-  src: url('assets/RobotoCondensed-Bold.ttf');
-  font-weight: bold;
+	src: url('assets/RobotoCondensed-Bold.ttf');
+	font-weight: bold;
 }
 
 body {
@@ -20,16 +20,36 @@ h1 { margin: 20px; }
 #error {
 	background-color: #F2DEDE;
 	color: black;
-	position:absolute;
-	padding: 10px 20px;
-	border-left: 8px solid #A94442;
-	top: 50%;
-	left: 50%;
-	-webkit-transform: translate(-50%, -50%);
-	transform: translate(-50%, -50%);
+	position: fixed;
+	border-top: 4px solid #A94442;
+	bottom: 0%;
+	left: 0%;
 	z-index: 100;
-	margin:0;
+	margin: 0;
+	padding: 0 1em;
+	width: 100%;
 }
+#warning {
+	display: none;
+	background-color: #fcf8e3;
+	color: black;
+	position: fixed;
+	border-top: 4px solid #f0ad4e;
+	bottom: 0%;
+	left: 0%;
+	z-index: 100;
+	margin: 0;
+	padding: 0;
+	width: 100%;
+}
+#warning p {
+	padding: 0 1em;
+}
+#warning_counter {
+	color: #f0ad4e;
+	float: right;
+}
+
 #currentTime{
 	float:right;
 	font-weight:bold;
@@ -71,27 +91,15 @@ td.time:nth-child(1)::before {
 	content: "⚫\00a0";
 	opacity:0;
 }
-td.supersoon:nth-child(1)::before {
-	animation-name: blink;
-	animation-duration: 1.4s;
-	animation-iteration-count: infinite;
-	animation-fill-mode: both;
-	-webkit-animation-name: blink;
-	-webkit-animation-duration: 1.4s;
-	-webkit-animation-iteration-count: infinite;
-	-webkit-animation-fill-mode: both;
+td.hurry:nth-child(1)::before {
+	animation: blink 1s steps(5, start) infinite;
+	-webkit-animation: blink 1s steps(5, start) infinite;
 	color: #c0392b;
 	opacity:1;
 }
 td.soon:nth-child(1)::before {
-	animation-name: blink;
-	animation-duration: 1.4s;
-	animation-iteration-count: infinite;
-	animation-fill-mode: both;
-	-webkit-animation-name: blink;
-	-webkit-animation-duration: 1.4s;
-	-webkit-animation-iteration-count: infinite;
-	-webkit-animation-fill-mode: both;
+	animation: blink 1s steps(5, start) infinite;
+	-webkit-animation: blink 1s steps(5, start) infinite;
 	color: #27ae60;
 	opacity:1;
 }
@@ -118,8 +126,12 @@ td.soon:nth-child(1)::before {
 	h1 { font-size: 50px; }
 
 	#error {
-		font-size:20px;
-		line-height:20px;
+		font-size:30px;
+		line-height:30px;
+	}
+	#warning {
+		font-size:30px;
+		line-height:30px;
 	}
 	td {
 		height: 60px;
@@ -139,7 +151,5 @@ td.soon:nth-child(1)::before {
 }
 
 @keyframes blink {
-	0% { opacity: .2; }
-	20% { opacity: 1; }
-	100% { opacity: .2; }
+	to { visibility: hidden; }
 }

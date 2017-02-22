@@ -3,17 +3,38 @@
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 		<script src="update.js"></script>
-		<script src="settings.js"></script>
 		<link href="oeffis.css" type="text/css" rel="stylesheet">
-		<title>&Ouml;ffi-Fahrplan</title>
+		<title>&Ouml;ffimonitor</title>
 	</head>
 	<body>
 		<div id="container">
 			<h1>Next public transport connections from Metalab <span id="currentTime"></span></h1>
+			<table id="overview">
+				<thead>
+					<tr>
+						<td>Departure</td>
+						<td>Line</td>
+						<td>Closest Station</td>
+						<td>Destination</td>
+					</tr>
+				</thead>
+				<tbody>
+				</tbody>
+			</table>
+		</div>
+		<div id="warning">
+			<p>
+				<span id="warning_counter"></span>
+				<span id="warning_text"></span>
+			</p>
 		</div>
 		<div id="error">
-			<h2>Oh noes, something broke!</h2>
-			<p>Sorry, but Öffimonitor will be back soon.</p>
+			<p>
+				<b>Oh noes, something broke!</b>
+				<span id="error_msg"></span>
+				&bull; Last data update:
+				<span id="error_last_update"></span>
+			</p>
 		</div>
 	</body>
 </html>
