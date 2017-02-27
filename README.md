@@ -4,6 +4,8 @@ Displays an info screen with the next Wiener Linien public transport connections
 
 It includes a small server written in Node.js that pulls the needed data from the [Wiener Linien API](https://www.data.gv.at/katalog/dataset/add66f20-d033-4eee-b9a0-47019828e698), caches it and serves it together with an HTML5 frontend. At Metalab, [all of this runs](https://metalab.at/wiki/%C3%96ffimonitor) on a Raspberry Pi, which also displays the frontend on a spare monitor (check out ```util``` for reproduction).
 
+![Screenshot of Öffimonitor running at Metalab](https://metalab.at/wiki/images/b/b0/Oeffimonitor_screenshot.png)
+
 ## Usage
 
 1.  Run ```npm install``` to fetch dependencies.
