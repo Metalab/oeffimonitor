@@ -13,7 +13,12 @@
     "type": "git",
     "url": "https://github.com/metalab/oeffimonitor"
   },
-  "author": "Metalab",
+  "author": "Metalab (https://metalab.at)",
+  "contributors": [
+    "Bernhard Hayden <hello@nini.su> (https://github.com/burnoutberni)",
+    "Moritz Wilhelmy (http://barfooze.de)",
+    "Jascha Ehrenreich <jascha@jaeh.at> (https://jaeh.at)"
+  ],
   "license": "AGPL-3.0",
   "bugs": {
     "url": "https://github.com/metalab/oeffimonitor/issues"
