@@ -18,7 +18,7 @@ It includes a small server written in Node.js that pulls the needed data from th
 
 ## API
 
-Besides the HTML frontend you can find a JSON API at ```/api```. It returns a status message, an array of departures and an array of warnings, which include all traffic infos of the type ```stoerungkurz``` from the Wiener Linien API.
+Besides the HTML frontend you can find a JSON API at ```/api```. It returns a status message, an array of departures and an array of warnings, which include all traffic infos of the type ```stoerunglang``` from the Wiener Linien API.
 
 ### Example response
 

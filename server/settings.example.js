@@ -15,7 +15,12 @@ const api_ids = [
   "1376", // Auerspergstraße 46er (nur stadtauswärts)
   "5691" // Auerspergstraße N46
 ];
-const api_url = 'http://www.wienerlinien.at/ogd_realtime/monitor?sender='+api_key+'&rbl='+api_ids.join("&rbl=");
+
+const api_url = 'http://www.wienerlinien.at/ogd_realtime/monitor' +
+  '?activateTrafficInfo=stoerunglang' +
+  `&sender=${api_key}`+
+  '&rbl=' + api_ids.join("&rbl=");
+
 const exclude_lines = [
   'VRT',
 ];
