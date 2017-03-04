@@ -8,7 +8,7 @@ const api_ids = [
   "1303", // Schottentor 40A
   "3701", // Schottentor N36
   "5568", // Schottentor N41
-  "17", // Burgtheater/Rathausplatz N66
+  "17", // Burgtheater/Rathausplatz N60, N66
   "1401", // Volkstheater 48A
   "1440", // Volkstheater 49er (nur stadtauswärts)
   "4909","4908", // Volkstheater U3
