@@ -99,10 +99,21 @@ const flatten = (json, cb) => {
 	json.data.monitors.map(monitor => {
 		monitor.lines.map(line => {
 
-			// don't add departures on excluded lines
-			if (settings.exclude_lines && settings.exclude_lines.indexOf(line.name) > -1) {
+			// filter stuff as defined in settings.filters
+			if (settings.filters && !!settings.filters.find(filter => {
+				const keys = Object.keys(filter);
+				// check if there is a filter with only stop and line defined
+				if (keys.length === 2 && !!filter.stop && !!filter.line) {
+					// filter if both stop and line match
+					return filter.stop.indexOf(monitor.locationStop.properties.title) > -1
+						&& filter.line.indexOf(line.name) > -1;
+				}
+				// else check if there is a filter for the whole line
+				return keys.length === 1 && keys[0] === 'line' && filter.line.indexOf(line.name) > -1
+			})) {
 				return;
 			}
+
 			line.departures.departure.map(departure => {
 				// calculate most accurate known departure time
 				let time;
