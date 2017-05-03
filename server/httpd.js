@@ -9,7 +9,7 @@ let app = express()
 let cache = apicache.middleware
 let walkcache = []
 
-app.use(express.static('site'));
+app.use(express.static(__dirname + '/../site'));
 
 app.get('/api', cache(settings.api_cache_msec), (req, res) => {
 	console.log('API: new request')
