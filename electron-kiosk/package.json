@@ -1,0 +1,16 @@
+{
+  "name": "electron-kiosk",
+  "version": "1.0.0",
+  "description": "Very simple kiosk browser based on https://github.com/electron/electron-quick-start",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "repository": "https://github.com/electron/electron-quick-start",
+  "author": "Moritz Wilhelmy (https://barfooze.de)",
+  "contributors": ["GitHub"],
+  "license": "CC0-1.0",
+  "devDependencies": {
+    "electron": "~1.6.2"
+  }
+}
