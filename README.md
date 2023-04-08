@@ -61,6 +61,7 @@ Pull requests are also very welcome, especially if they fix a bug or add feature
 
 Here's a list of awesome forks:
 * https://github.com/maltezacharias/oeffimonitor
+* https://github.com/massitheduck/oeffimonitor // an adaptation for the styrian verbundlinie.at API
 
 ## License
 
