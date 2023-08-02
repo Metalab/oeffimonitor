@@ -11,6 +11,6 @@
   "contributors": ["GitHub"],
   "license": "CC0-1.0",
   "devDependencies": {
-    "electron": "~1.6.2"
+    "electron": "~25.4.0"
   }
 }
