@@ -88,7 +88,7 @@ tr > td:nth-child(2) img { height: 80%; }
 tr > td:nth-child(3) { padding-right: 10px; }
 
 td.time:nth-child(1)::before {
-	content: "⚫\00a0";
+	content: "●\00a0";
 	opacity:0;
 }
 td.hurry:nth-child(1)::before {
