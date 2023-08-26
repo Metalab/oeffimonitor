@@ -11,7 +11,8 @@ It includes a small server written in Node.js that pulls the needed data from th
 1.  Run ```npm install``` to fetch dependencies.
 2.  Move ```server/settings.example.js``` to ```server/settings.js``` and
   1. ~~Add your API key (mandatory, [get one here](http://www.wienerlinien.at/eportal3/ep/channelView.do?pageTypeId=66528&channelId=-48664)).~~ No API Key needed anymore. (See: [Open Data Info Page of Wiener Linien (DE)](https://www.wienerlinien.at/open-data))
-  2. Most likely you will also want to change the ```api_ids``` to the RBL numbers that correspond to the stops you want to include ([find them here](https://till.mabe.at/rbl/)) and change the ```location_coordinate``` to the location of your Öffimonitor.
+  2. Most likely you will also want to change the ```api_ids``` to the RBL numbers that correspond to the stops you want to include ([find them here](https://till.mabe.at/rbl/)) and change the ```location_coordinate``` to the location of your Öffimonitor.  
+**Attention:** OSRM API uses lon,lat as input, you will need to switch the coordinates in the `location_coordinate` variable, as they are usually in lat,lon format (e.g. from [OSM](https://www.openstreetmap.org))!
   3. Change additional settings (optional).
 3.  Run ```npm start```
 4.  Open Öffimonitor in a browser of your choice.
