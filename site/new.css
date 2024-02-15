@@ -1,0 +1,276 @@
+/* Defaults */
+html, body, #container, p, h1, h2 {
+    margin: 0;
+    font-family: 'Helvetica Neue', Roboto, Arial, sans-serif;
+    font-weight: bold;
+}
+
+#container {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    height: 100vh;
+}
+
+/* Style all lines */
+.line {
+    flex: 1 0 100%;
+
+    display: flex;
+    flex-wrap: wrap;
+    align-items: stretch;
+    text-align: center;
+
+   /* box-shadow: 0 40px 80px black; */
+}
+.line.half {
+    box-sizing: border-box;
+    flex: 1 0 50%;
+}
+.line.half:nth-of-type(odd) {
+    border-left: 1px solid rgba(255, 255, 255, 0.1);
+}
+.line.half:nth-of-type(even) {
+    border-right: 1px solid rgba(255, 255, 255, 0.1);
+}
+.warning {
+    flex: 1 0 100% !important;
+    align-self: center;
+}
+.warning p {
+    font-size: 1.2rem;
+    margin: 0rem 1rem;
+    font-weight: normal;
+}
+
+.line > * {
+    flex: 1;
+}
+
+.line > .station-name {
+    flex: 1 0 100% !important;
+    align-self: center;
+}
+
+.line .direction {
+    display: flex;
+    flex: 2;
+    justify-content: end;
+}
+.line .direction:first-of-type {
+    justify-content: start;
+}
+.line .direction.shutdown {
+    filter: grayscale(1);
+}
+.line .direction .direction-main {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: right;
+}
+.line .direction .direction-main .direction-names {
+    font-size: 3rem;
+    display: flex;
+    flex-direction: column;
+    text-align: right;
+}
+
+.line .direction:first-of-type .direction-main {
+    justify-content: left;
+}
+.line .direction:first-of-type .direction-main .direction-names {
+    text-align: left;
+}
+
+.line .direction-main .direction-names .default.strike {
+    font-size: 1.2rem;
+    text-decoration: line-through;
+    animation: strike .2s linear;
+}
+
+@keyframes strike {
+    from { text-decoration-color: transparent; }
+    to { text-decoration-color: auto; }
+}
+
+.line .direction-main .direction-names .header {
+    font-size: 1.2rem;
+    font-weight: normal;
+}
+.line .direction-main .direction-names .alternatives {
+    font-size: 1.2rem;
+    font-weight: normal;
+    margin-top: 0.2rem;
+}
+.line .direction-main .time-left {
+    font-weight: bold;
+    background-color: white;
+    color: black;
+    margin: 0.4rem 2rem;
+    border-radius: 50%;
+    height: 8rem;
+    width: 8rem;
+    flex: 0 0 8rem;
+}
+.line .direction.pulse .direction-main .time-left {
+    animation: pulse 1s infinite;
+}
+.line .direction.pulse-white .direction-main .time-left {
+    animation: pulse-white 1s infinite;
+}
+@keyframes pulse {
+	0% {
+		transform: scale(0.95);
+		box-shadow: 0 0 0 0 rgba(0, 0, 0, 0.7);
+	}
+
+	70% {
+		transform: scale(1);
+		box-shadow: 0 0 0 10px rgba(0, 0, 0, 0);
+	}
+
+	100% {
+		transform: scale(0.95);
+		box-shadow: 0 0 0 0 rgba(0, 0, 0, 0);
+	}
+}
+@keyframes pulse-white {
+	0% {
+		transform: scale(0.95);
+		box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.7);
+	}
+
+	70% {
+		transform: scale(1);
+		box-shadow: 0 0 0 10px rgba(255, 255, 255, 0);
+	}
+
+	100% {
+		transform: scale(0.95);
+		box-shadow: 0 0 0 0 rgba(255, 255, 255, 0);
+	}
+}
+.line .direction-main .time-left .main {
+    font-size: 6rem;
+}
+.line .direction-main .time-left .small {
+    margin-top: 1rem;
+    font-size: 1.2rem;
+    font-weight: normal;
+    color: white;
+}
+
+.line .direction-main .wheelchair {
+    position: relative;
+}
+.line .direction-main .wheelchair p {
+    position: absolute;
+    top: 3rem;
+    right: 1rem;
+    background-color: #269;
+    border-radius: 50%;
+    height: 2.4rem;
+    width: 2.4rem;
+    line-height: 2.4rem;
+    font-size: 1.6rem;
+}
+.inline-wheelchair {
+    display: inline-block;
+    text-align: center;
+    background-color: #269;
+    border-radius: 50%;
+    height: 1.6rem;
+    width: 1.6rem;
+    line-height: 1.6rem;
+    font-size: 1.2rem;
+}
+
+.line .line-name {
+    padding: 0.4rem 1rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+}
+.line .line-name h2 {
+    font-size: 6rem;
+    line-height: 6rem;
+}
+.line .line-name .station-name {
+    font-size: 1.2rem;
+}
+.line .line-name .walk-distance {
+    font-size: 1.2rem;
+    font-weight: normal;
+}
+
+/* Color specific lines */
+.u4 .direction, .u4 .line-name {
+    background-color: #009540;
+    color: white;
+}
+
+.u6 .direction, .u6 .line-name {
+    background-color: #9d6930;
+    color: white;
+}
+
+.bim {
+    background-color: black;
+    color: white;
+}
+
+.bus {
+    background-color: #030e6b;
+    color: white;
+}
+
+/* Test with U6 */
+.u6 {
+    border-top: 1rem solid #9d6930;
+}
+.u6 .line-name {
+    justify-content: center;
+}
+.u6 .station-name {
+    font-size: 1.2rem;
+}
+.u6 .direction:nth-of-type(2) {
+    justify-content: start;
+}
+.u6 .direction:nth-of-type(2) .direction-main .direction-names {
+    text-align: left;
+}
+
+/* Test with bim */
+.bim {
+    border-top: 1rem solid #9d6930;
+}
+.bim .line-name {
+    justify-content: center;
+}
+.bim .station-name {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.2rem;
+    gap: 1rem;
+}
+.bim .station-name p.station-name {
+    background-color: white;
+    color: black;
+    font-weight: normal;
+    border-radius: 1rem;
+    padding: 0 0.4rem;
+    font-size: 1.2rem;
+}
+.bim .station-name p.walk-time {
+    font-size: 0.8rem !important;
+}
+.bim .direction:nth-of-type(2) {
+    justify-content: start;
+}
+.bim .direction:nth-of-type(2) .direction-main .direction-names {
+    text-align: left;
+}
