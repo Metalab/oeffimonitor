@@ -62,7 +62,7 @@ Pull requests are also very welcome, especially if they fix a bug or add feature
 
 Here's a list of awesome forks:
 * https://github.com/maltezacharias/oeffimonitor
-* https://github.com/massitheduck/oeffimonitor // an adaptation for the styrian verbundlinie.at API
+* https://github.com/valeskini/oeffimonitor/tree/main // an adaptation for the styrian verbundlinie.at API
 
 ## License
 
@@ -70,7 +70,7 @@ This project is licensed under [AGPL-3](COPYING) by [Metalab](https://metalab.at
 
 For calculating the walking duration to the stop, Öffimonitor by default queries the [OSRM Demo Server](https://github.com/Project-OSRM/osrm-backend/wiki/Demo-server) and caches these results for the current runtime execution. By using the OSRM Demo Server you agree to this [API usage policy](https://github.com/Project-OSRM/osrm-backend/wiki/Api-usage-policy). The corresponding database is licensed under [ODbL](http://opendatacommons.org/licenses/odbl/) by [OSRM](http://project-osrm.org/). You can change the server address to any other OSRM instance in ```server/settings.js``` or leave it blank to disable the feature.
 
-The API Data is provided by Wienerlinien under [CC BY 4.0 License](https://creativecommons.org/licenses/by/4.0/). See [Open Data Info Page of Wiener Linien (DE)](https://www.wienerlinien.at/open-data) for furhter information and license.
+The API Data is provided by Wienerlinien under [CC BY 4.0 License](https://creativecommons.org/licenses/by/4.0/). See [Open Data Info Page of Wiener Linien (DE)](https://www.wienerlinien.at/open-data) for further information and license.
 
 ### Contributors
 * Bernhard Hayden [@burnoutberni](https://github.com/burnoutberni)
