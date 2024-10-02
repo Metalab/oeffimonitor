@@ -2,7 +2,7 @@
 
 Displays an info screen with the next Wiener Linien public transport connections nearby. It was developed and is currently in use at [Metalab](https://metalab.at).
 
-It includes a small server written in Node.js that pulls the needed data from the [Wiener Linien API (Info Page)](https://www.data.gv.at/katalog/dataset/522d3045-0b37-48d0-b868-57c99726b1c4#resources) ([API direct link](https://www.wienerlinien.at/ogd_realtime/), [API documentation](http://www.wienerlinien.at/ogd_realtime/doku/ogd/wienerlinien-echtzeitdaten-dokumentation.pdf)), caches it and serves it together with an HTML5 frontend. At Metalab, [all of this runs](https://metalab.at/wiki/%C3%96ffimonitor) on a Raspberry Pi, which also displays the frontend on a spare monitor (check out ```util``` for reproduction).
+It includes a small server written in Node.js that pulls the needed data from the [Wiener Linien API (Info Page)](https://www.data.gv.at/katalog/dataset/522d3045-0b37-48d0-b868-57c99726b1c4#resources) ([API direct link](https://www.wienerlinien.at/ogd_realtime/monitor), [API documentation](http://www.wienerlinien.at/ogd_realtime/doku/ogd/wienerlinien-echtzeitdaten-dokumentation.pdf)), caches it and serves it together with an HTML5 frontend. At Metalab, [all of this runs](https://metalab.at/wiki/%C3%96ffimonitor) on a Raspberry Pi, which also displays the frontend on a spare monitor (check out ```util``` for reproduction).
 
 ![Screenshot of Öffimonitor running at Metalab](https://metalab.at/wiki/images/b/b0/Oeffimonitor_screenshot.png)
 
