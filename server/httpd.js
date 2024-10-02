@@ -1,5 +1,5 @@
 const express = require('express')
-const http = require('http')
+const https = require('https')
 const url = require('url')
 const apicache = require('apicache')
 const settings = require(__dirname + '/settings.js');
@@ -37,7 +37,7 @@ const requestLoopOSRM = () => {
 		next.coordinates[0] + ',' +
 		next.coordinates[1] + '?overview=false');
 
-	http.get({
+	https.get({
 		protocol: osrm_url.protocol,
 		host: osrm_url.host,
 		path: osrm_url.path,
@@ -71,7 +71,7 @@ const errorHandler = (error, cb) => {
 }
 
 const getData = (cb) => {
-	http.get(settings.api_url, (response) => {
+	https.get(settings.api_url, (response) => {
 		let data = '';
 		response.on('data', (chunk) => data += chunk);
 		response.on('end', () => {
