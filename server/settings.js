@@ -1,8 +1,4 @@
-// add your API key here
-// const api_key = 'XXXXXXXXXX';
-
-// define all RBLs of stops you want to display
-const api_ids = [
+let api_ids = [
   "252",    // Rathaus – 2 (Richtung Friedrich-Engels-Platz)
   "269",    // Rathaus – 2 (Richtung Ottakringer Str./Erdbrustgasse)
   "4205",   // Rathaus – U2 (Richtung Karlsplatz)
@@ -23,21 +19,18 @@ const api_ids = [
   "5691",   // Auerspergstraße – N46 (stadtauswärts)
 ];
 
-const api_url = 'https://www.wienerlinien.at/ogd_realtime/monitor' +
+let api_url = 'https://www.wienerlinien.at/ogd_realtime/monitor' +
   '?activateTrafficInfo=stoerunglang' +
 //  `&sender=${api_key}`+
   '&rbl=' + api_ids.join("&rbl=");
 
-
-// define filters to exclude specific departures from the monitor
-// currently you can exclude lines as a whole or only at certain stops
-const filters = [
+let filters = [
   {
-    line: ['VRT'],  // excludes whole line (VRT = tourist line)
+    line: ['VRT'],  
   },
   {
     line: ['D', '1', '71'],
-    stop: ['Rathausplatz/Burgtheater'], // excludes lines only at given stop
+    stop: ['Rathausplatz/Burgtheater'], 
   },
   {
     line: ['2'],
@@ -45,11 +38,9 @@ const filters = [
   },
 ];
 
-// define your current location
-const location_coordinate = '16.3509389,48.2103151'
+let location_coordinate = '16.3509389,48.2103151'
 
-// define OSRM server for routing to stops. Empty string to disable feature
-const osrm_api_url = 'https://router.project-osrm.org/route/v1/foot/' + location_coordinate + ';'
+let osrm_api_url = 'https://router.project-osrm.org/route/v1/foot/' + location_coordinate + ';'
 
 
 module.exports = {
@@ -57,7 +48,7 @@ module.exports = {
 //  'api_key'         : api_key,
   'api_ids'         : api_ids,
   'filters'         : filters,
-  'api_cache_msec'  : 6000,   // cache API responses for this many milliseconds; default: 6s
-  'listen_port'     : 8080,   // port to listen on
+  'api_cache_msec'  : 6000,   
+  'listen_port'     : 8080,   
   'osrm_api_url'    : osrm_api_url
 };

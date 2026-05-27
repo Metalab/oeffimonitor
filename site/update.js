@@ -1,182 +1,360 @@
-/***
- * Öffimonitor - display the Wiener Linien timetable for nearby bus/tram/subway
- * lines on a screen in the Metalab Hauptraum
- *
- * Copyright (C) 2015-2016   Moritz Wilhelmy
- * Copyright (C) 2015-2016   Bernhard Hayden
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Affero General Public License as
- * published by the Free Software Foundation, either version 3 of the
- * License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Affero General Public License for more details.
- *
- * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *
- */
-// vim: set ts=8 noet: Use tabs, not spaces!
+
 "use strict";
 
-var cached_json = {};
+var API_URL = 'http://localhost:8080/api';
+var UPDATE_INTERVAL  = 10000;
+var CLOCK_INTERVAL   = 1000;
+var WARNING_INTERVAL = 6000;
+var MAX_CARDS        = 8;
 
-function capitalizeFirstLetter(str) {
-  return str.replace(/\w[^- ]*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});
+var TYPE_TO_CLASS = {
+    'ptMetro':    null,
+    'ptTram':     'tram',
+    'ptTramWLB':  'tram',
+    'ptBusCity':  'bus',
+    'ptBusNight': 'night',
+    'ptTrainS':   'sbahn'
+};
+
+var state = {
+    departures:      [],
+    warnings:        [],
+    last_update:     null,
+    current_warning: 0,
+    source_status:   'loading'
+};
+
+
+function getMockData() {
+    var now = Date.now();
+    var m = function (offset) { return new Date(now + offset * 60000).toISOString(); };
+    return {
+        status: 'ok',
+        departures: [
+            { stop: 'Rathaus',             line: 'U2', type: 'ptMetro',   towards: 'Seestadt',            barrierFree: true,  time: m(2),  walkDuration: 180 },
+            { stop: 'Rathaus',             line: 'U2', type: 'ptMetro',   towards: 'Seestadt',            barrierFree: true,  time: m(8),  walkDuration: 180 },
+            { stop: 'Rathaus',             line: 'U2', type: 'ptMetro',   towards: 'Karlsplatz',          barrierFree: true,  time: m(3),  walkDuration: 180 },
+            { stop: 'Rathaus',             line: 'U2', type: 'ptMetro',   towards: 'Karlsplatz',          barrierFree: false, time: m(9),  walkDuration: 180 },
+            { stop: 'Schottentor',         line: '41', type: 'ptTram',    towards: 'Pötzleinsdorf',       barrierFree: false, time: m(4),  walkDuration: 240 },
+            { stop: 'Schottentor',         line: '41', type: 'ptTram',    towards: 'Pötzleinsdorf',       barrierFree: false, time: m(11), walkDuration: 240 },
+            { stop: 'Schottentor',         line: '41', type: 'ptTram',    towards: 'Schottentor',         barrierFree: true,  time: m(5),  walkDuration: 240 },
+            { stop: 'Landesgerichtsstraße',line: '43', type: 'ptTram',    towards: 'Neuwaldegg',          barrierFree: true,  time: m(6),  walkDuration: 300 },
+            { stop: 'Landesgerichtsstraße',line: '43', type: 'ptTram',    towards: 'Neuwaldegg',          barrierFree: false, time: m(14), walkDuration: 300 },
+            { stop: 'Rathausplatz',        line: '1',  type: 'ptTram',    towards: 'Prater Hauptallee',   barrierFree: true,  time: m(3),  walkDuration: 120 },
+            { stop: 'Rathausplatz',        line: '1',  type: 'ptTram',    towards: 'Prater Hauptallee',   barrierFree: false, time: m(12), walkDuration: 120 },
+        ],
+        warnings: [
+            { title: 'U2 Betriebsstörung', description: 'Eingeschränkter Betrieb zwischen Schottentor und Karlsplatz.' }
+        ]
+    };
 }
 
-function addZeroBefore(n) {
-  return (n < 10 ? '0' : '') + n;
+
+
+function pad2(n) {
+    return (n < 10 ? '0' : '') + n;
 }
 
-function showError(error) {
-  document.querySelector('tbody').innerHTML = '';
-  var last_update_string = '–';
-  if (cached_json.departures) {
-    cached_json.departures.forEach(function (departure) {
-      addDeparture(departure);
+function capitalize(str) {
+    if (!str) return '';
+    return str.replace(/\w[^- ]*/g, function (txt) {
+        return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
     });
-    last_update_string = new Date(cached_json.last_update).toTimeString();
-  }
-
-  document.getElementById("error").style.display = "block";
-  document.getElementById("error_msg").innerHTML = error;
-  document.getElementById("error_last_update").innerHTML = last_update_string;
-
-  if(document.getElementById("warning").style.display === "block") {
-    document.getElementById("warning").style.bottom = document.getElementById("error").offsetHeight + 'px';
-  }
-  console.log(error);
 }
 
-function warning() {
-  if (!cached_json.warnings || cached_json.warnings.length === 0) {
-    document.getElementById("warning").style.display = "none";
-    return;
-  }
-  if (!cached_json.currentWarning) {
-    cached_json.currentWarning = 0;
-  }
+function classForLine(type, line) {
+    if (type === 'ptMetro') {
+        var num = (line || '').toLowerCase();
+        if (num === 'u1' || num === 'u2' || num === 'u3' ||
+            num === 'u4' || num === 'u6') {
+            return num;
+        }
+        return 'u1';
+    }
+    return TYPE_TO_CLASS[type] || 'tram';
+}
 
-  var currentWarning = cached_json.warnings[cached_json.currentWarning];
-  document.getElementById("warning").style.display = "block";
-  document.getElementById("warning_counter").innerHTML = (cached_json.currentWarning + 1) + '/' + cached_json.warnings.length;
-  document.getElementById("warning_text").innerHTML = '<b>' + currentWarning.title + '</b> ' + currentWarning.description;
+function isReachable(dep) {
+    var now = Date.now();
+    var depTime = new Date(dep.time).getTime();
+    var diff = (depTime - now) / 1000;
+    var walk = dep.walkDuration || 0;
+    if (diff < 0) return false;
+    if (walk * 0.9 > diff) return false;
+    return true;
+}
 
-  if (cached_json.warnings.length - 1 > cached_json.currentWarning) {
-    cached_json.currentWarning++;
-  } else {
-    cached_json.currentWarning = 0;
-  }
+function countdownMinutes(dep) {
+    var now = Date.now();
+    var depTime = new Date(dep.time).getTime();
+    var diff = Math.floor((depTime - now) / 1000 / 60);
+    return Math.max(0, diff);
+}
+
+
+function groupDepartures(departures) {
+    var groups = {};
+
+    departures.forEach(function (dep) {
+        if (!isReachable(dep)) return;
+
+        var key = dep.stop + '|' + dep.line;
+        if (!groups[key]) {
+            groups[key] = {
+                stop:         dep.stop,
+                line:         dep.line,
+                type:         dep.type,
+                walkDuration: dep.walkDuration || 0,
+                byTowards:    {}
+            };
+        }
+        var g = groups[key];
+        var towards = capitalize(dep.towards || '');
+        if (!g.byTowards[towards]) {
+            g.byTowards[towards] = {
+                towards:     towards,
+                barrierFree: !!dep.barrierFree,
+                deps:        []
+            };
+        }
+        g.byTowards[towards].deps.push(dep);
+        if (dep.barrierFree) g.byTowards[towards].barrierFree = true;
+    });
+
+    var cards = [];
+    Object.keys(groups).forEach(function (key) {
+        var g = groups[key];
+        var directions = Object.keys(g.byTowards).map(function (t) {
+            var d = g.byTowards[t];
+            d.deps.sort(function (a, b) {
+                return new Date(a.time) - new Date(b.time);
+            });
+            return {
+                towards:     d.towards,
+                barrierFree: d.barrierFree,
+                times:       d.deps.slice(0, 4).map(countdownMinutes)
+            };
+        });
+        directions.sort(function (a, b) {
+            return (a.times[0] || 999) - (b.times[0] || 999);
+        });
+        cards.push({
+            stop:         g.stop,
+            line:         g.line,
+            type:         g.type,
+            walkDuration: g.walkDuration,
+            directions:   directions
+        });
+    });
+
+    cards.sort(function (a, b) {
+        var ta = (a.directions[0] && a.directions[0].times[0]) || 999;
+        var tb = (b.directions[0] && b.directions[0].times[0]) || 999;
+        return ta - tb;
+    });
+
+    return cards.slice(0, MAX_CARDS);
+}
+function renderSide(dir, isRight) {
+    var sideClass = 'side' + (isRight ? ' side-right' : '');
+
+    if (!dir) {
+        return (
+            '<div class="' + sideClass + '">' +
+                '<span class="dest">-</span>' +
+            '</div>' +
+            '<div class="circle empty"><span class="num">-</span></div>'
+        );
+    }
+
+    var first = dir.times[0];
+    var rest  = dir.times.slice(1);
+
+    var circleClass = 'circle';
+    if (first <= 1) circleClass += ' imminent';
+    if (dir.times.length === 1) circleClass += ' last';
+
+    var bf = dir.barrierFree
+        ? ' <span class="badge-icon" title="Barrierefrei">♿</span>'
+        : '';
+
+    var nextStr = rest.length
+        ? 'danach in ' + rest.join(', ') + ' Minuten'
+        : '';
+
+    var nextWarn = (rest[0] !== undefined && rest[0] <= 2) ? ' warn' : '';
+
+    var circleHtml =
+        '<div class="' + circleClass + '">' +
+            '<span class="num">' + first + '</span>' +
+        '</div>';
+
+    var sideHtml =
+        '<div class="' + sideClass + '">' +
+            '<span class="label">Nächste Abfahrt nach</span>' +
+            '<span class="dest">' + dir.towards + bf + '</span>' +
+            (nextStr
+                ? '<span class="next' + nextWarn + '">' + nextStr + '</span>'
+                : '') +
+        '</div>';
+
+    return isRight ? (sideHtml + circleHtml) : (circleHtml + sideHtml);
+}
+
+function renderCard(card) {
+    var li = document.createElement('li');
+    li.className = 'dep ' + classForLine(card.type, card.line);
+
+    var walkMin = Math.round((card.walkDuration || 0) / 60);
+    var walkStr = walkMin > 0
+        ? 'Gehzeit ~' + walkMin + ' Minuten'
+        : '';
+
+    var left  = card.directions[0] || null;
+    var right = card.directions[1] || null;
+
+    li.innerHTML =
+        '<div class="stop-name">' + card.stop + '</div>' +
+        renderSide(left, false) +
+        '<div class="center">' +
+            '<span class="line-name">' + card.line + '</span>' +
+            (walkStr ? '<span class="walk">' + walkStr + '</span>' : '') +
+        '</div>' +
+        renderSide(right, true);
+
+    return li;
+}
+
+function renderAll() {
+    var ul = document.getElementById('departures');
+    var empty = document.getElementById('empty-state');
+    if (!ul) return;
+
+    var cards = groupDepartures(state.departures);
+
+    ul.innerHTML = '';
+    if (cards.length === 0) {
+        ul.classList.add('hidden');
+        if (empty) empty.classList.remove('hidden');
+    } else {
+        ul.classList.remove('hidden');
+        if (empty) empty.classList.add('hidden');
+        cards.forEach(function (c) {
+            ul.appendChild(renderCard(c));
+        });
+    }
+}
+
+function renderStatusbar() {
+    var badge = document.getElementById('source-badge');
+    var warn  = document.getElementById('warnings');
+    if (!badge || !warn) return;
+
+    badge.className = 'source-badge source-' + state.source_status;
+    if      (state.source_status === 'live')    badge.textContent = 'LIVE';
+    else if (state.source_status === 'mock')    badge.textContent = 'MOCK';
+    else if (state.source_status === 'error')   badge.textContent = 'ERROR';
+    else if (state.source_status === 'loading') badge.textContent = '...';
+    else                                        badge.textContent = state.source_status.toUpperCase();
+
+    if (state.warnings && state.warnings.length > 0) {
+        var w = state.warnings[state.current_warning % state.warnings.length];
+        warn.textContent =
+            '(' + ((state.current_warning % state.warnings.length) + 1) +
+            '/' + state.warnings.length + ') ' +
+            (w.title || '') + ' — ' + (w.description || '');
+        warn.style.color = '';
+    } else if (state.last_update) {
+        var d = new Date(state.last_update);
+        warn.textContent = 'UPDATED ' +
+            pad2(d.getHours()) + ':' + pad2(d.getMinutes()) + ':' + pad2(d.getSeconds());
+        warn.style.color = 'var(--fg-dim)';
+    } else {
+        warn.textContent = '';
+    }
 }
 
 function clock() {
-  var currentTime = new Date();
-  document.getElementById('currentTime').innerHTML = addZeroBefore(currentTime.getHours()) + ":"
-    + addZeroBefore(currentTime.getMinutes()) + ":"
-    + addZeroBefore(currentTime.getSeconds());
+    var now = document.getElementById('clock-time');
+    var dt  = document.getElementById('clock-date');
+    var d   = new Date();
+    if (now) {
+        now.textContent = pad2(d.getHours()) + ':' + pad2(d.getMinutes()) + ':' + pad2(d.getSeconds());
+    }
+    if (dt) {
+        var weekday  = d.toLocaleDateString('de-AT', { weekday: 'short' });
+        var datePart = d.toLocaleDateString('de-AT', { day: 'numeric', month: 'long' });
+        dt.textContent = weekday + ' ' + datePart;
+    }
+}
+
+function tickWarnings() {
+    if (!state.warnings || state.warnings.length === 0) return;
+    state.current_warning = (state.current_warning + 1) % state.warnings.length;
+    renderStatusbar();
+}
+
+function tickCountdown() {
+    if (state.departures && state.departures.length > 0) {
+        renderAll();
+    }
+}
+
+
+
+function useMockData() {
+    var json = getMockData();
+    state.departures     = json.departures;
+    state.warnings       = json.warnings;
+    state.last_update    = new Date();
+    state.current_warning = 0;
+    state.source_status  = 'mock';
+    renderAll();
+    renderStatusbar();
 }
 
 function update() {
-  document.getElementById("error").style.display = "none";
-  if(document.getElementById("warning").style.display === "block") {
-    document.getElementById("warning").style.bottom = '0%';
-  }
+    var req = new XMLHttpRequest();
+    req.open('GET', API_URL);
+    req.timeout = 3000;
+    req.ontimeout = useMockData;
+    req.onreadystatechange = function () {
+        if (req.readyState !== 4) return;
 
-  var req = new XMLHttpRequest();
-  req.open('GET', '/api');
-  req.onreadystatechange = function () {
-    if (req.readyState !== 4) {	return }
+        if (req.status !== 200) {
+            useMockData();
+            return;
+        }
 
-    if (req.status !== 200) {
-      showError('No connection to server');
-      return;
-    }
-
-    try {
-      var json = JSON.parse(req.responseText);
-      if (json.status && json.status === 'error') {
-        throw(json.error);
-      } else if (json.status && json.status !== 'ok') {
-        throw('Server response unvalid')
-      }
-
-      document.querySelector('tbody').innerHTML = '';
-      json.departures.forEach(function (departure) {
-        addDeparture(departure);
-      });
-      cached_json.departures = json.departures;
-      cached_json.warnings = json.warnings;
-      cached_json.last_update = new Date().toString();
-    } catch (e) {
-      showError(e);
-    }
-  };
-  req.send();
+        try {
+            var json = JSON.parse(req.responseText);
+            if (json.status && json.status === 'error') {
+                throw new Error(json.error || 'API error');
+            }
+            state.departures     = json.departures || [];
+            state.warnings       = json.warnings   || [];
+            state.last_update    = new Date();
+            state.current_warning = 0;
+            state.source_status  = 'live';
+            renderAll();
+            renderStatusbar();
+        } catch (e) {
+            useMockData();
+            console.log('Öffimonitor: ' + (e.message || e));
+        }
+    };
+    try { req.send(); } catch (e) { useMockData(); }
 }
 
-function addDeparture(departure) {
-  var departureRow = document.createElement('tr');
-  var now = new Date();
-  var departureTime = new Date(departure.time);
-  var difference = (departureTime.getTime() - now.getTime()) / 1000;
-  var walkDuration = departure.walkDuration;
-  var walkStatus = departure.walkStatus;
-
-  if (difference < 0 || walkDuration * 0.9 > difference) {
-    walkStatus = 'too late';
-    return false;
-  } else if (walkDuration + 2 * 60 > difference) {
-    walkStatus = 'hurry';
-  } else if (walkDuration + 5 * 60 > difference) {
-    walkStatus = 'soon';
-  }
-
-  var line = departure.line;
-  var type = departure.type;
-
-  if (type === 'ptMetro') {
-    line = '<img src="assets/u' + line.charAt(1) + '.svg" width="40" height="40" />';
-  } else if (type === 'ptTram') {
-    line = '<span class="tram">' + line + '</span>';
-  } else if (type === 'ptBusCity') {
-    line = '<span class="bus">' + line + '</span>';
-  } else if (type === 'ptBusNight') {
-    line = '<span class="nightline">' + line + '</span>';
-  }
-
-  var timeString = '<b>' + addZeroBefore(departureTime.getHours()) +
-    ':' + addZeroBefore(departureTime.getMinutes()) +
-    '</b>&nbsp;';
-
-  var differenceString = '+';
-
-  if (difference > 3600) {
-    differenceString += Math.floor(difference / 3600) + 'h';
-    difference = difference % 3600;
-  }
-
-  differenceString += addZeroBefore(Math.floor(difference / 60)) + 'm';
-  difference = difference % 60;
-
-  differenceString += parseInt(difference / 10) + '0s';
-
-  departureRow.innerHTML = '<tr><td class="time ' + walkStatus +
-    '">' + timeString + differenceString + '</td>' +
-    '<td>' + line + '</td><td>' + departure.stop +
-    '</td><td>' + capitalizeFirstLetter(departure.towards) +
-    '</td>';
-  document.querySelector('tbody').appendChild(departureRow);
-}
+//Bootstrap
 
 window.onload = function () {
-  clock();
-  update();
-  warning();
-  window.setInterval(clock, 1000);
-  window.setInterval(update, 10000);
-  window.setInterval(warning, 5000);
+    clock();
+    renderStatusbar();
+    update();
+
+    setInterval(clock,         CLOCK_INTERVAL);
+    setInterval(update,        UPDATE_INTERVAL);
+    setInterval(tickCountdown, 30000);
+    setInterval(tickWarnings,  WARNING_INTERVAL);
 };
