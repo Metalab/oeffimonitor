@@ -21,15 +21,12 @@ app.listen(settings.listen_port, () => {
 });
 
 const requestLoopOSRM = () => {
-	// check if unrequested walk duration was added to cache
 	const next = walkcache.find((element) => element.requested === false)
 
-	// if not, do nothing
 	if (next === undefined) {
 		return
 	}
 
-	// if yes, set requested to true to remove from queue
 	next.requested = true
 
 	console.log('OSRM: new request for', next.coordinates)
@@ -59,7 +56,6 @@ const requestLoopOSRM = () => {
 	}).on('error', (err) => console.error(err));
 }
 
-// rate limiting to once per second
 setInterval(requestLoopOSRM, 1000)
 
 const errorHandler = (error, cb) => {
@@ -88,7 +84,6 @@ const getData = (cb) => {
 
 const getWalkDuration = (coordinates) => {
 	if (!settings.osrm_api_url) {
-		// no OSRM server defined
 		return undefined;
 	}
 
@@ -97,12 +92,10 @@ const getWalkDuration = (coordinates) => {
 			element.coordinates[1] === coordinates[1];
 	}
 
-	// if cached, fetch from cache
 	if (walkcache.find(findCoordinates)) {
 		return walkcache.find(findCoordinates).duration
 	}
 	
-	// else push to cache queue
 	walkcache.push({ coordinates: coordinates, duration: undefined, requested: false })
 	return undefined;
 }
@@ -114,35 +107,27 @@ const flatten = (json, cb) => {
 	json.data.monitors.map(monitor => {
 		monitor.lines.map(line => {
 
-			// filter stuff as defined in settings.filters
 			if (settings.filters && !!settings.filters.find(filter => {
 				const keys = Object.keys(filter);
-				// check if there is a filter with only stop and line defined
 				if (keys.length === 2 && !!filter.stop && !!filter.line) {
-					// filter if both stop and line match
 					return filter.stop.indexOf(monitor.locationStop.properties.title) > -1
 						&& filter.line.indexOf(line.name) > -1;
 				}
-				// else check if there is a filter for the whole line
 				return keys.length === 1 && keys[0] === 'line' && filter.line.indexOf(line.name) > -1
 			})) {
 				return;
 			}
 
 			line.departures.departure.map(departure => {
-				// calculate most accurate known departure time
 				let time;
 
 				if (departure.departureTime.timeReal) {
-					// if realtime data is available, use that
 					time = new Date(departure.departureTime.timeReal);
 				} else if (departure.departureTime.timePlanned) {
-					// if not, use scheduled data
 					time = new Date(departure.departureTime.timePlanned);
 				} else if (line.towards.indexOf('NÄCHSTER ZUG') > -1 &&
 						line.towards.indexOf(' MIN') > -1) {
-					// if that's not available, try to find departure time elsewhere
-					let countdown = line.towards.split(' MIN')[0].substr(-2, 2); // grab last two chars before ' MIN'
+					let countdown = line.towards.split(' MIN')[0].substr(-2, 2); 
 					time = new Date();
 					time.setMinutes(time.getMinutes() + parseInt(countdown));
 				} else {
@@ -150,7 +135,7 @@ const flatten = (json, cb) => {
 						'stop': monitor.locationStop.properties.title,
 						'departure': departure
 					});
-					return; // connection does not have any time information -> log & skip
+					return; 
 				}
 
 				let walkDuration = getWalkDuration(monitor.locationStop.geometry.coordinates);
@@ -158,7 +143,6 @@ const flatten = (json, cb) => {
 				let walkStatus;
 
 				if (typeof walkDuration === 'undefined') {
-					// no walkDuration, no walkStatus
 				} else if (walkDuration * 0.9 > differenceToNow) {
 					walkStatus = 'too late';
 				} else if (walkDuration + 2 * 60 > differenceToNow) {

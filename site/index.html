@@ -1,40 +1,37 @@
 <!DOCTYPE html>
-<html>
-	<head>
-		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-		<script src="update.js"></script>
-		<link href="oeffis.css" type="text/css" rel="stylesheet">
-		<title>&Ouml;ffimonitor</title>
-	</head>
-	<body>
-		<div id="container">
-			<h1>Next public transport connections from Metalab <span id="currentTime"></span></h1>
-			<table id="overview">
-				<thead>
-					<tr>
-						<td>Departure</td>
-						<td>Line</td>
-						<td>Closest Station</td>
-						<td>Destination</td>
-					</tr>
-				</thead>
-				<tbody>
-				</tbody>
-			</table>
-		</div>
-		<div id="warning">
-			<p>
-				<span id="warning_counter"></span>
-				<span id="warning_text"></span>
-			</p>
-		</div>
-		<div id="error">
-			<p>
-				<b>Oh noes, something broke!</b>
-				<span id="error_msg"></span>
-				&bull; Last data update:
-				<span id="error_last_update"></span>
-			</p>
-		</div>
-	</body>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Öffimonitor — Metalab</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <header class="topbar">
+        <div class="location">
+            <span class="location-name">Metalab</span>
+            <span class="location-sub">Rathausstraße 6, 1010 Wien</span>
+        </div>
+        <div class="clock">
+            <span id="clock-time"></span>
+            <span id="clock-date" class="clock-date"></span>
+        </div>
+    </header>
+
+    <main>
+        <ul id="departures" class="departures"></ul>
+
+        <div id="empty-state" class="empty-state hidden">
+            No departures in sight.
+        </div>
+    </main>
+
+    <footer class="statusbar">
+        <span id="source-badge" class="source-badge source-loading">...</span>
+        <span id="warnings" class="warnings"></span>
+    </footer>
+
+    <script src="update.js"></script>
+</body>
 </html>
