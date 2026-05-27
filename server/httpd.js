@@ -1,0 +1,185 @@
+const express = require('express')
+const https = require('https')
+const url = require('url')
+const apicache = require('apicache')
+const settings = require(__dirname + '/settings.js');
+const package = require(__dirname + '/../package.json');
+
+let app = express()
+let cache = apicache.middleware
+let walkcache = []
+
+app.use(express.static(__dirname + '/../site'));
+
+app.get('/api', cache(settings.api_cache_msec), (req, res) => {
+	console.log('API: new request')
+	getData((data) => res.json(data));
+})
+
+app.listen(settings.listen_port, () => {
+	console.log('Server up on port', settings.listen_port);
+});
+
+const requestLoopOSRM = () => {
+	const next = walkcache.find((element) => element.requested === false)
+
+	if (next === undefined) {
+		return
+	}
+
+	next.requested = true
+
+	console.log('OSRM: new request for', next.coordinates)
+	const osrm_url = url.parse(settings.osrm_api_url +
+		next.coordinates[0] + ',' +
+		next.coordinates[1] + '?overview=false');
+
+	https.get({
+		protocol: osrm_url.protocol,
+		host: osrm_url.host,
+		path: osrm_url.path,
+		headers: {
+			'User-Agent': 'Öffimonitor/' + package.version + ' <https://github.com/metalab/oeffimonitor>',
+		}
+	}, (response) => {
+		let data = '';
+		response.on('data', (chunk) => data += chunk);
+		response.on('end', () => {
+			try {
+				next.duration = JSON.parse(data).routes[0].duration;
+				console.log('resolved for', next.coordinates, next.duration)
+			} catch (e) {
+				console.error('OSRM API response invalid JSON', data);
+			}
+		});
+		response.on('error', (err) => console.error(err));
+	}).on('error', (err) => console.error(err));
+}
+
+setInterval(requestLoopOSRM, 1000)
+
+const errorHandler = (error, cb) => {
+	console.error(error);
+	cb({
+		status: 'error',
+		error: error
+	});
+}
+
+const getData = (cb) => {
+	https.get(settings.api_url, (response) => {
+		let data = '';
+		response.on('data', (chunk) => data += chunk);
+		response.on('end', () => {
+			try {
+				const json = JSON.parse(data);
+				flatten(json, cb);
+			} catch (e) {
+				errorHandler('API response invalid JSON', cb);
+			}
+		});
+		response.on('error', (err) => errorHandler('API response failed', cb));
+	}).on('error', (err) => errorHandler('API request failed', cb));
+}
+
+const getWalkDuration = (coordinates) => {
+	if (!settings.osrm_api_url) {
+		return undefined;
+	}
+
+	const findCoordinates = (element) => {
+		return element.coordinates[0] === coordinates[0] &&
+			element.coordinates[1] === coordinates[1];
+	}
+
+	if (walkcache.find(findCoordinates)) {
+		return walkcache.find(findCoordinates).duration
+	}
+	
+	walkcache.push({ coordinates: coordinates, duration: undefined, requested: false })
+	return undefined;
+}
+
+const flatten = (json, cb) => {
+	let data = [];
+	let warnings = [];
+	let now = new Date();
+	json.data.monitors.map(monitor => {
+		monitor.lines.map(line => {
+
+			if (settings.filters && !!settings.filters.find(filter => {
+				const keys = Object.keys(filter);
+				if (keys.length === 2 && !!filter.stop && !!filter.line) {
+					return filter.stop.indexOf(monitor.locationStop.properties.title) > -1
+						&& filter.line.indexOf(line.name) > -1;
+				}
+				return keys.length === 1 && keys[0] === 'line' && filter.line.indexOf(line.name) > -1
+			})) {
+				return;
+			}
+
+			line.departures.departure.map(departure => {
+				let time;
+
+				if (departure.departureTime.timeReal) {
+					time = new Date(departure.departureTime.timeReal);
+				} else if (departure.departureTime.timePlanned) {
+					time = new Date(departure.departureTime.timePlanned);
+				} else if (line.towards.indexOf('NÄCHSTER ZUG') > -1 &&
+						line.towards.indexOf(' MIN') > -1) {
+					let countdown = line.towards.split(' MIN')[0].substr(-2, 2); 
+					time = new Date();
+					time.setMinutes(time.getMinutes() + parseInt(countdown));
+				} else {
+					console.warn({
+						'stop': monitor.locationStop.properties.title,
+						'departure': departure
+					});
+					return; 
+				}
+
+				let walkDuration = getWalkDuration(monitor.locationStop.geometry.coordinates);
+				let differenceToNow = (time.getTime() - now.getTime()) / 1000;
+				let walkStatus;
+
+				if (typeof walkDuration === 'undefined') {
+				} else if (walkDuration * 0.9 > differenceToNow) {
+					walkStatus = 'too late';
+				} else if (walkDuration + 2 * 60 > differenceToNow) {
+					walkStatus = 'hurry';
+				} else if (walkDuration + 5 * 60 > differenceToNow) {
+					walkStatus = 'soon';
+				}
+
+				time = time.toISOString();
+
+				data.push({
+					'stop': monitor.locationStop.properties.title,
+					'coordinates': monitor.locationStop.geometry.coordinates,
+					'line': departure.vehicle && departure.vehicle.name ? departure.vehicle.name : line.name,
+					'type': departure.vehicle && departure.vehicle.type ? departure.vehicle.type : line.type,
+					'towards': departure.vehicle && departure.vehicle.towards ? departure.vehicle.towards : line.towards,
+					'barrierFree': departure.vehicle && departure.vehicle.barrierFree ? departure.vehicle.barrierFree : line.barrierFree,
+					'time': time,
+					'timePlanned': departure.departureTime.timePlanned,
+					'timeReal': departure.departureTime.timeReal,
+					'countdown': departure.departureTime.countdown,
+					'walkDuration': walkDuration,
+					'walkStatus': walkStatus
+				});
+			})
+		})
+	})
+
+	data.sort((a, b) => {
+		return (a.time < b.time) ? -1 : ((a.time > b.time) ? 1 : 0);
+	})
+
+	if (json.data.trafficInfos) {
+		warnings = json.data.trafficInfos.map(trafficInfo => {
+			return { title: trafficInfo.title, description: trafficInfo.description };
+		})
+	}
+
+	cb({ status: 'ok', departures: data, warnings: warnings });
+}

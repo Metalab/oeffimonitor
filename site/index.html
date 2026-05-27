@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Öffimonitor — Metalab</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <header class="topbar">
+        <div class="location">
+            <span class="location-name">Metalab</span>
+            <span class="location-sub">Rathausstraße 6, 1010 Wien</span>
+        </div>
+        <div class="clock">
+            <span id="clock-time"></span>
+            <span id="clock-date" class="clock-date"></span>
+        </div>
+    </header>
+
+    <main>
+        <ul id="departures" class="departures"></ul>
+
+        <div id="empty-state" class="empty-state hidden">
+            No departures in sight.
+        </div>
+    </main>
+
+    <footer class="statusbar">
+        <span id="source-badge" class="source-badge source-loading">...</span>
+        <span id="warnings" class="warnings"></span>
+    </footer>
+
+    <script src="update.js"></script>
+</body>
+</html>
